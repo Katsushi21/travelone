@@ -17,8 +17,8 @@ export type accountsSchema = {
   name: string;
   email: string;
   gender: 'm' | 'f';
-  birth: number;
-  history: number;
+  birth: string;
+  history: string;
   avatar: string;
   favorite: string;
   introduction: string;
