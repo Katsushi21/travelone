@@ -1,0 +1,121 @@
+# root type
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  getPosts(id: ID!): Post
+  getUsers(id: ID!): User
+  getProfiles(id: ID!): Profile
+  getComments(id: ID!): Comment
+}
+
+type Mutation {
+  createPost(input: PostInput!): Post
+  createUser(input: UserInput!): User
+  createMarker(input: MarkerInput!): Marker
+  createComment(input: CommentInput!): Comment
+
+  updatePost(id: ID!, input: PostInput): Post
+  updateLiked(id: ID!, input: LikedInput): Post
+  updateUser(id: ID!, input: UserInput): User
+  updateMarker(id: ID!, input: MarkerInput): Marker
+  updateComment(id: ID!, input: CommentInput): Comment
+}
+
+# custom type
+scalar Timestamp
+
+type Post {
+  id: ID!
+  user: User!
+  title: String!
+  body: String!
+  img: String!
+  marker: Marker!
+  liked: [User]!
+  registration: Timestamp!
+  modification: Timestamp!
+}
+
+type User {
+  id: ID!
+  email: String
+  password: String
+  usertype: UserType
+}
+
+type Profile {
+  id: ID!
+  user: User
+  name: String
+  gender: Gender
+  avatar: String
+  introduction: String
+  registration: Timestamp
+}
+
+type Marker {
+  id: ID!
+  post: Post
+  user: User
+  title: String
+  lat: String
+  lng: String
+  registration: Timestamp
+  modification: Timestamp
+}
+
+type Comment {
+  id: ID!
+  post: Post
+  user: User
+  body: String
+  registration: Timestamp
+  modification: Timestamp
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum UserType {
+  active
+  inactive
+  admin
+}
+
+input PostInput {
+  title: String!
+  body: String!
+  img: String!
+  marker: Marker!
+}
+
+input UserInput {
+  email: String
+  password: String
+}
+
+input ProfileInput {
+  name: String
+  gender: Gender
+  avatar: String
+  introduction: String
+}
+
+input MarkerInput {
+  title: String
+  lat: String
+  lng: String
+}
+
+input CommentInput {
+  body: String
+}
+
+input LikedInput {
+  id: ID!
+}
