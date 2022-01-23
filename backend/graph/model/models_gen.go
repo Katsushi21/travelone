@@ -2,19 +2,176 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type Comment struct {
+	ID           string  `json:"id"`
+	Post         *Post   `json:"post"`
+	User         *User   `json:"user"`
+	Body         *string `json:"body"`
+	Registration *string `json:"registration"`
+	Modification *string `json:"modification"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type CommentInput struct {
+	Body string `json:"body"`
+}
+
+type LikedInput struct {
+	ID string `json:"id"`
+}
+
+type Marker struct {
+	ID           string  `json:"id"`
+	Post         *Post   `json:"post"`
+	User         *User   `json:"user"`
+	Title        *string `json:"title"`
+	Lat          *string `json:"lat"`
+	Lng          *string `json:"lng"`
+	Registration *string `json:"registration"`
+	Modification *string `json:"modification"`
+}
+
+type MarkerInput struct {
+	Title string `json:"title"`
+	Lat   string `json:"lat"`
+	Lng   string `json:"lng"`
+}
+
+type Post struct {
+	ID           string  `json:"id"`
+	User         *User   `json:"user"`
+	Title        string  `json:"title"`
+	Body         string  `json:"body"`
+	Img          string  `json:"img"`
+	Marker       *Marker `json:"marker"`
+	Liked        []*User `json:"liked"`
+	Registration string  `json:"registration"`
+	Modification string  `json:"modification"`
+}
+
+type PostInput struct {
+	Title  string       `json:"title"`
+	Body   string       `json:"body"`
+	Img    string       `json:"img"`
+	Marker *MarkerInput `json:"marker"`
+}
+
+type Profile struct {
+	ID           string  `json:"id"`
+	User         *User   `json:"user"`
+	Name         *string `json:"name"`
+	Gender       *Gender `json:"gender"`
+	Avatar       *string `json:"avatar"`
+	Introduction *string `json:"introduction"`
+	Registration *string `json:"registration"`
+}
+
+type ProfileInput struct {
+	Name         string `json:"name"`
+	Gender       Gender `json:"gender"`
+	Avatar       string `json:"avatar"`
+	Introduction string `json:"introduction"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string    `json:"id"`
+	Email    *string   `json:"email"`
+	Password *string   `json:"password"`
+	Usertype *UserType `json:"usertype"`
+}
+
+type UserInput struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Gender string
+
+const (
+	GenderMale   Gender = "male"
+	GenderFemale Gender = "female"
+	GenderNone   Gender = "none"
+)
+
+var AllGender = []Gender{
+	GenderMale,
+	GenderFemale,
+	GenderNone,
+}
+
+func (e Gender) IsValid() bool {
+	switch e {
+	case GenderMale, GenderFemale, GenderNone:
+		return true
+	}
+	return false
+}
+
+func (e Gender) String() string {
+	return string(e)
+}
+
+func (e *Gender) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Gender(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Gender", str)
+	}
+	return nil
+}
+
+func (e Gender) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type UserType string
+
+const (
+	UserTypeActive   UserType = "active"
+	UserTypeInactive UserType = "inactive"
+	UserTypeAdmin    UserType = "admin"
+)
+
+var AllUserType = []UserType{
+	UserTypeActive,
+	UserTypeInactive,
+	UserTypeAdmin,
+}
+
+func (e UserType) IsValid() bool {
+	switch e {
+	case UserTypeActive, UserTypeInactive, UserTypeAdmin:
+		return true
+	}
+	return false
+}
+
+func (e UserType) String() string {
+	return string(e)
+}
+
+func (e *UserType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = UserType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid UserType", str)
+	}
+	return nil
+}
+
+func (e UserType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

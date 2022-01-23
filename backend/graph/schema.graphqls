@@ -79,6 +79,7 @@ type Comment {
 enum Gender {
   male
   female
+  none
 }
 
 enum UserType {
@@ -91,29 +92,29 @@ input PostInput {
   title: String!
   body: String!
   img: String!
-  marker: Marker!
+  marker: MarkerInput!
 }
 
 input UserInput {
-  email: String
-  password: String
+  email: String!
+  password: String!
 }
 
 input ProfileInput {
-  name: String
-  gender: Gender
-  avatar: String
-  introduction: String
+  name: String!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
 }
 
 input MarkerInput {
-  title: String
-  lat: String
-  lng: String
+  title: String!
+  lat: String!
+  lng: String!
 }
 
 input CommentInput {
-  body: String
+  body: String!
 }
 
 input LikedInput {
