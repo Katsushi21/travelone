@@ -45,13 +45,13 @@ type MarkerInput struct {
 type Post struct {
 	ID           string  `json:"id"`
 	User         *User   `json:"user"`
-	Title        string  `json:"title"`
-	Body         string  `json:"body"`
-	Img          string  `json:"img"`
+	Title        *string `json:"title"`
+	Body         *string `json:"body"`
+	Img          *string `json:"img"`
 	Marker       *Marker `json:"marker"`
 	Liked        []*User `json:"liked"`
-	Registration string  `json:"registration"`
-	Modification string  `json:"modification"`
+	Registration *string `json:"registration"`
+	Modification *string `json:"modification"`
 }
 
 type PostInput struct {

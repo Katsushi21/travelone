@@ -14,12 +14,14 @@ type Query {
 type Mutation {
   createPost(input: PostInput!): Post
   createUser(input: UserInput!): User
+  createProfile(input: ProfileInput!): Profile
   createMarker(input: MarkerInput!): Marker
   createComment(input: CommentInput!): Comment
 
   updatePost(id: ID!, input: PostInput): Post
   updateLiked(id: ID!, input: LikedInput): Post
   updateUser(id: ID!, input: UserInput): User
+  updateProfile(id: ID!, input: ProfileInput): Profile
   updateMarker(id: ID!, input: MarkerInput): Marker
   updateComment(id: ID!, input: CommentInput): Comment
 }
@@ -29,14 +31,14 @@ scalar Timestamp
 
 type Post {
   id: ID!
-  user: User!
-  title: String!
-  body: String!
-  img: String!
-  marker: Marker!
-  liked: [User]!
-  registration: Timestamp!
-  modification: Timestamp!
+  user: User
+  title: String
+  body: String
+  img: String
+  marker: Marker
+  liked: [User]
+  registration: Timestamp
+  modification: Timestamp
 }
 
 type User {

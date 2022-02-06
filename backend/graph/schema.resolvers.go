@@ -1,5 +1,8 @@
 package graph
 
+// This file will be automatically regenerated based on the schema, any resolver implementations
+// will be copied through when generating and any unknown code will be moved to the end.
+
 import (
 	"context"
 	"fmt"
@@ -13,6 +16,10 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.PostInput
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) CreateProfile(ctx context.Context, input model.ProfileInput) (*model.Profile, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -33,6 +40,10 @@ func (r *mutationResolver) UpdateLiked(ctx context.Context, id string, input *mo
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input *model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UpdateProfile(ctx context.Context, id string, input *model.ProfileInput) (*model.Profile, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
