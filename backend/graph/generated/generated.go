@@ -8,10 +8,11 @@ import (
 	"errors"
 	"strconv"
 	"sync"
+	"sync/atomic"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/Katsushi/traveling_alone/graph/model"
+	"github.com/Katsushi21/traveling_alone/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -51,6 +52,10 @@ type ComplexityRoot struct {
 		User         func(childComplexity int) int
 	}
 
+	File struct {
+		Path func(childComplexity int) int
+	}
+
 	Marker struct {
 		ID           func(childComplexity int) int
 		Lat          func(childComplexity int) int
@@ -74,6 +79,7 @@ type ComplexityRoot struct {
 		UpdatePost    func(childComplexity int, id string, input *model.PostInput) int
 		UpdateProfile func(childComplexity int, id string, input *model.ProfileInput) int
 		UpdateUser    func(childComplexity int, id string, input *model.UserInput) int
+		UploadFile    func(childComplexity int, input model.UploadFile) int
 	}
 
 	Post struct {
@@ -99,10 +105,10 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetComments func(childComplexity int, id string) int
-		GetPosts    func(childComplexity int, id string) int
-		GetProfiles func(childComplexity int, id string) int
-		GetUsers    func(childComplexity int, id string) int
+		Comment func(childComplexity int) int
+		Post    func(childComplexity int) int
+		Profile func(childComplexity int) int
+		User    func(childComplexity int) int
 	}
 
 	User struct {
@@ -125,12 +131,13 @@ type MutationResolver interface {
 	UpdateProfile(ctx context.Context, id string, input *model.ProfileInput) (*model.Profile, error)
 	UpdateMarker(ctx context.Context, id string, input *model.MarkerInput) (*model.Marker, error)
 	UpdateComment(ctx context.Context, id string, input *model.CommentInput) (*model.Comment, error)
+	UploadFile(ctx context.Context, input model.UploadFile) (*model.File, error)
 }
 type QueryResolver interface {
-	GetPosts(ctx context.Context, id string) (*model.Post, error)
-	GetUsers(ctx context.Context, id string) (*model.User, error)
-	GetProfiles(ctx context.Context, id string) (*model.Profile, error)
-	GetComments(ctx context.Context, id string) (*model.Comment, error)
+	Post(ctx context.Context) ([]*model.Post, error)
+	User(ctx context.Context) ([]*model.User, error)
+	Profile(ctx context.Context) ([]*model.Profile, error)
+	Comment(ctx context.Context) ([]*model.Comment, error)
 }
 
 type executableSchema struct {
@@ -189,6 +196,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Comment.User(childComplexity), true
+
+	case "File.path":
+		if e.complexity.File.Path == nil {
+			break
+		}
+
+		return e.complexity.File.Path(childComplexity), true
 
 	case "Marker.id":
 		if e.complexity.Marker.ID == nil {
@@ -378,6 +392,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["input"].(*model.UserInput)), true
 
+	case "Mutation.uploadFile":
+		if e.complexity.Mutation.UploadFile == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadFile_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadFile(childComplexity, args["input"].(model.UploadFile)), true
+
 	case "Post.body":
 		if e.complexity.Post.Body == nil {
 			break
@@ -490,53 +516,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Profile.User(childComplexity), true
 
-	case "Query.getComments":
-		if e.complexity.Query.GetComments == nil {
+	case "Query.Comment":
+		if e.complexity.Query.Comment == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getComments_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
+		return e.complexity.Query.Comment(childComplexity), true
 
-		return e.complexity.Query.GetComments(childComplexity, args["id"].(string)), true
-
-	case "Query.getPosts":
-		if e.complexity.Query.GetPosts == nil {
+	case "Query.Post":
+		if e.complexity.Query.Post == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getPosts_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
+		return e.complexity.Query.Post(childComplexity), true
 
-		return e.complexity.Query.GetPosts(childComplexity, args["id"].(string)), true
-
-	case "Query.getProfiles":
-		if e.complexity.Query.GetProfiles == nil {
+	case "Query.Profile":
+		if e.complexity.Query.Profile == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getProfiles_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
+		return e.complexity.Query.Profile(childComplexity), true
 
-		return e.complexity.Query.GetProfiles(childComplexity, args["id"].(string)), true
-
-	case "Query.getUsers":
-		if e.complexity.Query.GetUsers == nil {
+	case "Query.User":
+		if e.complexity.Query.User == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getUsers_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetUsers(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.User(childComplexity), true
 
 	case "User.email":
 		if e.complexity.User.Email == nil {
@@ -637,18 +643,18 @@ schema {
 }
 
 type Query {
-  getPosts(id: ID!): Post
-  getUsers(id: ID!): User
-  getProfiles(id: ID!): Profile
-  getComments(id: ID!): Comment
+  Post: [Post]!
+  User: [User]!
+  Profile: [Profile]!
+  Comment: [Comment]!
 }
 
 type Mutation {
-  createPost(input: PostInput!): Post
-  createUser(input: UserInput!): User
-  createProfile(input: ProfileInput!): Profile
-  createMarker(input: MarkerInput!): Marker
-  createComment(input: CommentInput!): Comment
+  createPost(input: PostInput!): Post!
+  createUser(input: UserInput!): User!
+  createProfile(input: ProfileInput!): Profile!
+  createMarker(input: MarkerInput!): Marker!
+  createComment(input: CommentInput!): Comment!
 
   updatePost(id: ID!, input: PostInput): Post
   updateLiked(id: ID!, input: LikedInput): Post
@@ -656,11 +662,15 @@ type Mutation {
   updateProfile(id: ID!, input: ProfileInput): Profile
   updateMarker(id: ID!, input: MarkerInput): Marker
   updateComment(id: ID!, input: CommentInput): Comment
+
+  uploadFile(input: UploadFile!): File!
 }
 
-# custom type
+# scalar
+scalar Upload
 scalar Timestamp
 
+# Post
 type Post {
   id: ID!
   user: User
@@ -673,6 +683,18 @@ type Post {
   modification: Timestamp
 }
 
+input PostInput {
+  title: String!
+  body: String!
+  img: String!
+  marker: MarkerInput!
+}
+
+input LikedInput {
+  id: ID!
+}
+
+# User
 type User {
   id: ID!
   email: String
@@ -680,6 +702,18 @@ type User {
   usertype: UserType
 }
 
+enum UserType {
+  active
+  inactive
+  admin
+}
+
+input UserInput {
+  email: String!
+  password: String!
+}
+
+# Profile
 type Profile {
   id: ID!
   user: User
@@ -690,6 +724,20 @@ type Profile {
   registration: Timestamp
 }
 
+enum Gender {
+  male
+  female
+  none
+}
+
+input ProfileInput {
+  name: String!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+}
+
+# Marker
 type Marker {
   id: ID!
   post: Post
@@ -701,6 +749,13 @@ type Marker {
   modification: Timestamp
 }
 
+input MarkerInput {
+  title: String!
+  lat: String!
+  lng: String!
+}
+
+# Comment
 type Comment {
   id: ID!
   post: Post
@@ -710,49 +765,17 @@ type Comment {
   modification: Timestamp
 }
 
-enum Gender {
-  male
-  female
-  none
-}
-
-enum UserType {
-  active
-  inactive
-  admin
-}
-
-input PostInput {
-  title: String!
-  body: String!
-  img: String!
-  marker: MarkerInput!
-}
-
-input UserInput {
-  email: String!
-  password: String!
-}
-
-input ProfileInput {
-  name: String!
-  gender: Gender!
-  avatar: String!
-  introduction: String!
-}
-
-input MarkerInput {
-  title: String!
-  lat: String!
-  lng: String!
-}
-
 input CommentInput {
   body: String!
 }
 
-input LikedInput {
-  id: ID!
+# File
+type File {
+  path: String!
+}
+
+input UploadFile {
+  content: Upload!
 }
 `, BuiltIn: false},
 }
@@ -768,7 +791,7 @@ func (ec *executionContext) field_Mutation_createComment_args(ctx context.Contex
 	var arg0 model.CommentInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCommentInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCommentInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -783,7 +806,7 @@ func (ec *executionContext) field_Mutation_createMarker_args(ctx context.Context
 	var arg0 model.MarkerInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNMarkerInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx, tmp)
+		arg0, err = ec.unmarshalNMarkerInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -798,7 +821,7 @@ func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, 
 	var arg0 model.PostInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNPostInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx, tmp)
+		arg0, err = ec.unmarshalNPostInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -813,7 +836,7 @@ func (ec *executionContext) field_Mutation_createProfile_args(ctx context.Contex
 	var arg0 model.ProfileInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNProfileInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx, tmp)
+		arg0, err = ec.unmarshalNProfileInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -828,7 +851,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg0 model.UserInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -852,7 +875,7 @@ func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Contex
 	var arg1 *model.CommentInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOCommentInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx, tmp)
+		arg1, err = ec.unmarshalOCommentInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -876,7 +899,7 @@ func (ec *executionContext) field_Mutation_updateLiked_args(ctx context.Context,
 	var arg1 *model.LikedInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOLikedInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐLikedInput(ctx, tmp)
+		arg1, err = ec.unmarshalOLikedInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐLikedInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -900,7 +923,7 @@ func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context
 	var arg1 *model.MarkerInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOMarkerInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx, tmp)
+		arg1, err = ec.unmarshalOMarkerInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -924,7 +947,7 @@ func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, 
 	var arg1 *model.PostInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOPostInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx, tmp)
+		arg1, err = ec.unmarshalOPostInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -948,7 +971,7 @@ func (ec *executionContext) field_Mutation_updateProfile_args(ctx context.Contex
 	var arg1 *model.ProfileInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOProfileInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx, tmp)
+		arg1, err = ec.unmarshalOProfileInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -972,12 +995,27 @@ func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, 
 	var arg1 *model.UserInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOUserInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx, tmp)
+		arg1, err = ec.unmarshalOUserInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadFile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UploadFile
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUploadFile2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUploadFile(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -993,66 +1031,6 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getComments_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getPosts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getProfiles_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getUsers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -1158,7 +1136,7 @@ func (ec *executionContext) _Comment_post(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Comment_user(ctx context.Context, field graphql.CollectedField, obj *model.Comment) (ret graphql.Marshaler) {
@@ -1190,7 +1168,7 @@ func (ec *executionContext) _Comment_user(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Comment_body(ctx context.Context, field graphql.CollectedField, obj *model.Comment) (ret graphql.Marshaler) {
@@ -1289,6 +1267,41 @@ func (ec *executionContext) _Comment_modification(ctx context.Context, field gra
 	return ec.marshalOTimestamp2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _File_path(ctx context.Context, field graphql.CollectedField, obj *model.File) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Path, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Marker_id(ctx context.Context, field graphql.CollectedField, obj *model.Marker) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1353,7 +1366,7 @@ func (ec *executionContext) _Marker_post(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Marker_user(ctx context.Context, field graphql.CollectedField, obj *model.Marker) (ret graphql.Marshaler) {
@@ -1385,7 +1398,7 @@ func (ec *executionContext) _Marker_user(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Marker_title(ctx context.Context, field graphql.CollectedField, obj *model.Marker) (ret graphql.Marshaler) {
@@ -1580,11 +1593,14 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1619,11 +1635,14 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1658,11 +1677,14 @@ func (ec *executionContext) _Mutation_createProfile(ctx context.Context, field g
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Profile)
 	fc.Result = res
-	return ec.marshalOProfile2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
+	return ec.marshalNProfile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1697,11 +1719,14 @@ func (ec *executionContext) _Mutation_createMarker(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Marker)
 	fc.Result = res
-	return ec.marshalOMarker2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx, field.Selections, res)
+	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1736,11 +1761,14 @@ func (ec *executionContext) _Mutation_createComment(ctx context.Context, field g
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalOComment2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updatePost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1779,7 +1807,7 @@ func (ec *executionContext) _Mutation_updatePost(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateLiked(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1818,7 +1846,7 @@ func (ec *executionContext) _Mutation_updateLiked(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1857,7 +1885,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1896,7 +1924,7 @@ func (ec *executionContext) _Mutation_updateProfile(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Profile)
 	fc.Result = res
-	return ec.marshalOProfile2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
+	return ec.marshalOProfile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1935,7 +1963,7 @@ func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Marker)
 	fc.Result = res
-	return ec.marshalOMarker2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx, field.Selections, res)
+	return ec.marshalOMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1974,7 +2002,49 @@ func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalOComment2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalOComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadFile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadFile_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadFile(rctx, args["input"].(model.UploadFile))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.File)
+	fc.Result = res
+	return ec.marshalNFile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐFile(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Post_id(ctx context.Context, field graphql.CollectedField, obj *model.Post) (ret graphql.Marshaler) {
@@ -2041,7 +2111,7 @@ func (ec *executionContext) _Post_user(ctx context.Context, field graphql.Collec
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Post_title(ctx context.Context, field graphql.CollectedField, obj *model.Post) (ret graphql.Marshaler) {
@@ -2169,7 +2239,7 @@ func (ec *executionContext) _Post_marker(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Marker)
 	fc.Result = res
-	return ec.marshalOMarker2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx, field.Selections, res)
+	return ec.marshalOMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Post_liked(ctx context.Context, field graphql.CollectedField, obj *model.Post) (ret graphql.Marshaler) {
@@ -2201,7 +2271,7 @@ func (ec *executionContext) _Post_liked(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Post_registration(ctx context.Context, field graphql.CollectedField, obj *model.Post) (ret graphql.Marshaler) {
@@ -2332,7 +2402,7 @@ func (ec *executionContext) _Profile_user(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Profile_name(ctx context.Context, field graphql.CollectedField, obj *model.Profile) (ret graphql.Marshaler) {
@@ -2396,7 +2466,7 @@ func (ec *executionContext) _Profile_gender(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Gender)
 	fc.Result = res
-	return ec.marshalOGender2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
+	return ec.marshalOGender2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Profile_avatar(ctx context.Context, field graphql.CollectedField, obj *model.Profile) (ret graphql.Marshaler) {
@@ -2495,7 +2565,7 @@ func (ec *executionContext) _Profile_registration(ctx context.Context, field gra
 	return ec.marshalOTimestamp2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_Post(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2511,30 +2581,26 @@ func (ec *executionContext) _Query_getPosts(ctx context.Context, field graphql.C
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getPosts_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPosts(rctx, args["id"].(string))
+		return ec.resolvers.Query().Post(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Post)
+	res := resTmp.([]*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_User(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2550,30 +2616,26 @@ func (ec *executionContext) _Query_getUsers(ctx context.Context, field graphql.C
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getUsers_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUsers(rctx, args["id"].(string))
+		return ec.resolvers.Query().User(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getProfiles(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_Profile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2589,30 +2651,26 @@ func (ec *executionContext) _Query_getProfiles(ctx context.Context, field graphq
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getProfiles_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetProfiles(rctx, args["id"].(string))
+		return ec.resolvers.Query().Profile(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Profile)
+	res := resTmp.([]*model.Profile)
 	fc.Result = res
-	return ec.marshalOProfile2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
+	return ec.marshalNProfile2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getComments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_Comment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2628,27 +2686,23 @@ func (ec *executionContext) _Query_getComments(ctx context.Context, field graphq
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getComments_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetComments(rctx, args["id"].(string))
+		return ec.resolvers.Query().Comment(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Comment)
+	res := resTmp.([]*model.Comment)
 	fc.Result = res
-	return ec.marshalOComment2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2850,7 +2904,7 @@ func (ec *executionContext) _User_usertype(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.UserType)
 	fc.Result = res
-	return ec.marshalOUserType2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserType(ctx, field.Selections, res)
+	return ec.marshalOUserType2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -4097,7 +4151,7 @@ func (ec *executionContext) unmarshalInputPostInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("marker"))
-			it.Marker, err = ec.unmarshalNMarkerInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx, v)
+			it.Marker, err = ec.unmarshalNMarkerInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4128,7 +4182,7 @@ func (ec *executionContext) unmarshalInputProfileInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
-			it.Gender, err = ec.unmarshalNGender2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx, v)
+			it.Gender, err = ec.unmarshalNGender2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4145,6 +4199,29 @@ func (ec *executionContext) unmarshalInputProfileInput(ctx context.Context, obj 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("introduction"))
 			it.Introduction, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUploadFile(ctx context.Context, obj interface{}) (model.UploadFile, error) {
+	var it model.UploadFile
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("content"))
+			it.Content, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4248,6 +4325,37 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = innerFunc(ctx)
 
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var fileImplementors = []string{"File"}
+
+func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj *model.File) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fileImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("File")
+		case "path":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._File_path(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4365,6 +4473,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createUser":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createUser(ctx, field)
@@ -4372,6 +4483,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createProfile":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createProfile(ctx, field)
@@ -4379,6 +4493,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createMarker":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createMarker(ctx, field)
@@ -4386,6 +4503,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createComment":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createComment(ctx, field)
@@ -4393,6 +4513,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "updatePost":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updatePost(ctx, field)
@@ -4435,6 +4558,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
 
+		case "uploadFile":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadFile(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4625,7 +4758,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "getPosts":
+		case "Post":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -4634,7 +4767,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getPosts(ctx, field)
+				res = ec._Query_Post(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -4645,7 +4781,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getUsers":
+		case "User":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -4654,7 +4790,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getUsers(ctx, field)
+				res = ec._Query_User(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -4665,7 +4804,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getProfiles":
+		case "Profile":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -4674,7 +4813,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getProfiles(ctx, field)
+				res = ec._Query_Profile(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -4685,7 +4827,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getComments":
+		case "Comment":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -4694,7 +4836,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getComments(ctx, field)
+				res = ec._Query_Comment(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			}
 
@@ -5206,18 +5351,84 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNCommentInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx context.Context, v interface{}) (model.CommentInput, error) {
+func (ec *executionContext) marshalNComment2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v model.Comment) graphql.Marshaler {
+	return ec._Comment(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNComment2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v []*model.Comment) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Comment(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNCommentInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx context.Context, v interface{}) (model.CommentInput, error) {
 	res, err := ec.unmarshalInputCommentInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNGender2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (model.Gender, error) {
+func (ec *executionContext) marshalNFile2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐFile(ctx context.Context, sel ast.SelectionSet, v model.File) graphql.Marshaler {
+	return ec._File(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐFile(ctx context.Context, sel ast.SelectionSet, v *model.File) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._File(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNGender2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (model.Gender, error) {
 	var res model.Gender
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNGender2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v model.Gender) graphql.Marshaler {
+func (ec *executionContext) marshalNGender2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v model.Gender) graphql.Marshaler {
 	return v
 }
 
@@ -5236,22 +5447,140 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNMarkerInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx context.Context, v interface{}) (model.MarkerInput, error) {
+func (ec *executionContext) marshalNMarker2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx context.Context, sel ast.SelectionSet, v model.Marker) graphql.Marshaler {
+	return ec._Marker(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx context.Context, sel ast.SelectionSet, v *model.Marker) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Marker(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNMarkerInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx context.Context, v interface{}) (model.MarkerInput, error) {
 	res, err := ec.unmarshalInputMarkerInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNMarkerInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx context.Context, v interface{}) (*model.MarkerInput, error) {
+func (ec *executionContext) unmarshalNMarkerInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx context.Context, v interface{}) (*model.MarkerInput, error) {
 	res, err := ec.unmarshalInputMarkerInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNPostInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx context.Context, v interface{}) (model.PostInput, error) {
+func (ec *executionContext) marshalNPost2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v model.Post) graphql.Marshaler {
+	return ec._Post(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPost2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v []*model.Post) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Post(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNPostInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx context.Context, v interface{}) (model.PostInput, error) {
 	res, err := ec.unmarshalInputPostInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNProfileInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx context.Context, v interface{}) (model.ProfileInput, error) {
+func (ec *executionContext) marshalNProfile2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v model.Profile) graphql.Marshaler {
+	return ec._Profile(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNProfile2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v []*model.Profile) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOProfile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalNProfile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v *model.Profile) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Profile(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNProfileInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx context.Context, v interface{}) (model.ProfileInput, error) {
 	res, err := ec.unmarshalInputProfileInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -5271,7 +5600,79 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalNUserInput2githubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx context.Context, v interface{}) (model.UserInput, error) {
+func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
+	res, err := graphql.UnmarshalUpload(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
+	res := graphql.MarshalUpload(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNUploadFile2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUploadFile(ctx context.Context, v interface{}) (model.UploadFile, error) {
+	res, err := ec.unmarshalInputUploadFile(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNUser2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+	return ec._User(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._User(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNUserInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx context.Context, v interface{}) (model.UserInput, error) {
 	res, err := ec.unmarshalInputUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -5555,14 +5956,14 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOComment2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalOComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Comment(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOCommentInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx context.Context, v interface{}) (*model.CommentInput, error) {
+func (ec *executionContext) unmarshalOCommentInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐCommentInput(ctx context.Context, v interface{}) (*model.CommentInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5570,7 +5971,7 @@ func (ec *executionContext) unmarshalOCommentInput2ᚖgithubᚗcomᚋKatsushiᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOGender2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (*model.Gender, error) {
+func (ec *executionContext) unmarshalOGender2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (*model.Gender, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5579,14 +5980,14 @@ func (ec *executionContext) unmarshalOGender2ᚖgithubᚗcomᚋKatsushiᚋtravel
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOGender2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v *model.Gender) graphql.Marshaler {
+func (ec *executionContext) marshalOGender2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v *model.Gender) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOLikedInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐLikedInput(ctx context.Context, v interface{}) (*model.LikedInput, error) {
+func (ec *executionContext) unmarshalOLikedInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐLikedInput(ctx context.Context, v interface{}) (*model.LikedInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5594,14 +5995,14 @@ func (ec *executionContext) unmarshalOLikedInput2ᚖgithubᚗcomᚋKatsushiᚋtr
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMarker2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx context.Context, sel ast.SelectionSet, v *model.Marker) graphql.Marshaler {
+func (ec *executionContext) marshalOMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarker(ctx context.Context, sel ast.SelectionSet, v *model.Marker) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Marker(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMarkerInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx context.Context, v interface{}) (*model.MarkerInput, error) {
+func (ec *executionContext) unmarshalOMarkerInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐMarkerInput(ctx context.Context, v interface{}) (*model.MarkerInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5609,14 +6010,14 @@ func (ec *executionContext) unmarshalOMarkerInput2ᚖgithubᚗcomᚋKatsushiᚋt
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPost2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
+func (ec *executionContext) marshalOPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Post(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPostInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx context.Context, v interface{}) (*model.PostInput, error) {
+func (ec *executionContext) unmarshalOPostInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐPostInput(ctx context.Context, v interface{}) (*model.PostInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5624,14 +6025,14 @@ func (ec *executionContext) unmarshalOPostInput2ᚖgithubᚗcomᚋKatsushiᚋtra
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOProfile2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v *model.Profile) graphql.Marshaler {
+func (ec *executionContext) marshalOProfile2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v *model.Profile) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Profile(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOProfileInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx context.Context, v interface{}) (*model.ProfileInput, error) {
+func (ec *executionContext) unmarshalOProfileInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐProfileInput(ctx context.Context, v interface{}) (*model.ProfileInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5681,7 +6082,7 @@ func (ec *executionContext) marshalOTimestamp2ᚖstring(ctx context.Context, sel
 	return res
 }
 
-func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5708,7 +6109,7 @@ func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋKatsushiᚋtraveli
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5722,14 +6123,14 @@ func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋKatsushiᚋtraveli
 	return ret
 }
 
-func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOUserInput2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx context.Context, v interface{}) (*model.UserInput, error) {
+func (ec *executionContext) unmarshalOUserInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserInput(ctx context.Context, v interface{}) (*model.UserInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5737,7 +6138,7 @@ func (ec *executionContext) unmarshalOUserInput2ᚖgithubᚗcomᚋKatsushiᚋtra
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOUserType2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserType(ctx context.Context, v interface{}) (*model.UserType, error) {
+func (ec *executionContext) unmarshalOUserType2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserType(ctx context.Context, v interface{}) (*model.UserType, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5746,7 +6147,7 @@ func (ec *executionContext) unmarshalOUserType2ᚖgithubᚗcomᚋKatsushiᚋtrav
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOUserType2ᚖgithubᚗcomᚋKatsushiᚋtraveling_aloneᚋgraphᚋmodelᚐUserType(ctx context.Context, sel ast.SelectionSet, v *model.UserType) graphql.Marshaler {
+func (ec *executionContext) marshalOUserType2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋgraphᚋmodelᚐUserType(ctx context.Context, sel ast.SelectionSet, v *model.UserType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

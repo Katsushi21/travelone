@@ -1,4 +1,4 @@
-module github.com/Katsushi/traveling_alone
+module github.com/Katsushi21/traveling_alone
 
 go 1.17
 
