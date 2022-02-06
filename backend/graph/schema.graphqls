@@ -5,18 +5,18 @@ schema {
 }
 
 type Query {
-  getPosts(id: ID!): Post
-  getUsers(id: ID!): User
-  getProfiles(id: ID!): Profile
-  getComments(id: ID!): Comment
+  Post: [Post]!
+  User: [User]!
+  Profile: [Profile]!
+  Comment: [Comment]!
 }
 
 type Mutation {
-  createPost(input: PostInput!): Post
-  createUser(input: UserInput!): User
-  createProfile(input: ProfileInput!): Profile
-  createMarker(input: MarkerInput!): Marker
-  createComment(input: CommentInput!): Comment
+  createPost(input: PostInput!): Post!
+  createUser(input: UserInput!): User!
+  createProfile(input: ProfileInput!): Profile!
+  createMarker(input: MarkerInput!): Marker!
+  createComment(input: CommentInput!): Comment!
 
   updatePost(id: ID!, input: PostInput): Post
   updateLiked(id: ID!, input: LikedInput): Post
@@ -24,11 +24,15 @@ type Mutation {
   updateProfile(id: ID!, input: ProfileInput): Profile
   updateMarker(id: ID!, input: MarkerInput): Marker
   updateComment(id: ID!, input: CommentInput): Comment
+
+  uploadFile(input: UploadFile!): File!
 }
 
-# custom type
+# scalar
+scalar Upload
 scalar Timestamp
 
+# Post
 type Post {
   id: ID!
   user: User
@@ -41,6 +45,18 @@ type Post {
   modification: Timestamp
 }
 
+input PostInput {
+  title: String!
+  body: String!
+  img: String!
+  marker: MarkerInput!
+}
+
+input LikedInput {
+  id: ID!
+}
+
+# User
 type User {
   id: ID!
   email: String
@@ -48,6 +64,18 @@ type User {
   usertype: UserType
 }
 
+enum UserType {
+  active
+  inactive
+  admin
+}
+
+input UserInput {
+  email: String!
+  password: String!
+}
+
+# Profile
 type Profile {
   id: ID!
   user: User
@@ -58,6 +86,20 @@ type Profile {
   registration: Timestamp
 }
 
+enum Gender {
+  male
+  female
+  none
+}
+
+input ProfileInput {
+  name: String!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+}
+
+# Marker
 type Marker {
   id: ID!
   post: Post
@@ -69,6 +111,13 @@ type Marker {
   modification: Timestamp
 }
 
+input MarkerInput {
+  title: String!
+  lat: String!
+  lng: String!
+}
+
+# Comment
 type Comment {
   id: ID!
   post: Post
@@ -78,47 +127,15 @@ type Comment {
   modification: Timestamp
 }
 
-enum Gender {
-  male
-  female
-  none
-}
-
-enum UserType {
-  active
-  inactive
-  admin
-}
-
-input PostInput {
-  title: String!
-  body: String!
-  img: String!
-  marker: MarkerInput!
-}
-
-input UserInput {
-  email: String!
-  password: String!
-}
-
-input ProfileInput {
-  name: String!
-  gender: Gender!
-  avatar: String!
-  introduction: String!
-}
-
-input MarkerInput {
-  title: String!
-  lat: String!
-  lng: String!
-}
-
 input CommentInput {
   body: String!
 }
 
-input LikedInput {
-  id: ID!
+# File
+type File {
+  path: String!
+}
+
+input UploadFile {
+  content: Upload!
 }

@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Katsushi/traveling_alone/graph/generated"
-	"github.com/Katsushi/traveling_alone/graph/model"
+	"github.com/Katsushi21/traveling_alone/graph/generated"
+	"github.com/Katsushi21/traveling_alone/graph/model"
 )
 
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.PostInput) (*model.Post, error) {
@@ -55,19 +55,23 @@ func (r *mutationResolver) UpdateComment(ctx context.Context, id string, input *
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetPosts(ctx context.Context, id string) (*model.Post, error) {
+func (r *mutationResolver) UploadFile(ctx context.Context, input model.UploadFile) (*model.File, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetUsers(ctx context.Context, id string) (*model.User, error) {
+func (r *queryResolver) Post(ctx context.Context) ([]*model.Post, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetProfiles(ctx context.Context, id string) (*model.Profile, error) {
+func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) GetComments(ctx context.Context, id string) (*model.Comment, error) {
+func (r *queryResolver) Profile(ctx context.Context) ([]*model.Profile, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Comment(ctx context.Context) ([]*model.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

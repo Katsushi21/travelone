@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 type Comment struct {
@@ -19,6 +21,10 @@ type Comment struct {
 
 type CommentInput struct {
 	Body string `json:"body"`
+}
+
+type File struct {
+	Path string `json:"path"`
 }
 
 type LikedInput struct {
@@ -76,6 +82,10 @@ type ProfileInput struct {
 	Gender       Gender `json:"gender"`
 	Avatar       string `json:"avatar"`
 	Introduction string `json:"introduction"`
+}
+
+type UploadFile struct {
+	Content graphql.Upload `json:"content"`
 }
 
 type User struct {

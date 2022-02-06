@@ -1,4 +1,4 @@
-package database
+package connect
 
 import (
 	"database/sql"
