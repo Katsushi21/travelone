@@ -18,14 +18,20 @@ type Mutation {
   createMarker(input: MarkerInput!): Marker!
   createComment(input: CommentInput!): Comment!
 
-  updatePost(id: ID!, input: PostInput): Post
-  updateLiked(id: ID!, input: LikedInput): Post
-  updateUser(id: ID!, input: UserInput): User
-  updateProfile(id: ID!, input: ProfileInput): Profile
-  updateMarker(id: ID!, input: MarkerInput): Marker
-  updateComment(id: ID!, input: CommentInput): Comment
-
+  updatePost(id: ID!, input: PostInput!): Post
+  updateLiked(id: ID!, input: LikedInput!): Post
+  updateUser(id: ID!, input: UserInput!): User
+  updateProfile(id: ID!, input: ProfileInput!): Profile
+  updateMarker(id: ID!, input: MarkerInput!): Marker
+  updateComment(id: ID!, input: CommentInput!): Comment
   uploadFile(input: UploadFile!): File!
+
+  deletePost(id: ID!): Post
+  deleteLiked(id: ID!): Post
+  deleteUser(id: ID!): User
+  deleteProfile(id: ID!): Profile
+  deleteMarker(id: ID!): Marker
+  deleteComment(id: ID!): Comment
 }
 
 # scalar
@@ -35,11 +41,11 @@ scalar Timestamp
 # Post
 type Post {
   id: ID!
-  user: User
-  title: String
-  body: String
+  title: String!
+  body: String!
   img: String
   marker: Marker
+  comments: [Comment]
   liked: [User]
   registration: Timestamp
   modification: Timestamp
@@ -59,6 +65,8 @@ input LikedInput {
 # User
 type User {
   id: ID!
+  profile: Profile
+  posts: [Post]
   email: String
   password: String
   usertype: UserType
@@ -78,12 +86,10 @@ input UserInput {
 # Profile
 type Profile {
   id: ID!
-  user: User
   name: String
   gender: Gender
   avatar: String
   introduction: String
-  registration: Timestamp
 }
 
 enum Gender {
@@ -102,13 +108,9 @@ input ProfileInput {
 # Marker
 type Marker {
   id: ID!
-  post: Post
-  user: User
   title: String
   lat: String
   lng: String
-  registration: Timestamp
-  modification: Timestamp
 }
 
 input MarkerInput {
@@ -120,7 +122,6 @@ input MarkerInput {
 # Comment
 type Comment {
   id: ID!
-  post: Post
   user: User
   body: String
   registration: Timestamp
