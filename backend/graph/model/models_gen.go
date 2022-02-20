@@ -12,7 +12,6 @@ import (
 
 type Comment struct {
 	ID           string  `json:"id"`
-	Post         *Post   `json:"post"`
 	User         *User   `json:"user"`
 	Body         *string `json:"body"`
 	Registration *string `json:"registration"`
@@ -32,14 +31,10 @@ type LikedInput struct {
 }
 
 type Marker struct {
-	ID           string  `json:"id"`
-	Post         *Post   `json:"post"`
-	User         *User   `json:"user"`
-	Title        *string `json:"title"`
-	Lat          *string `json:"lat"`
-	Lng          *string `json:"lng"`
-	Registration *string `json:"registration"`
-	Modification *string `json:"modification"`
+	ID    string  `json:"id"`
+	Title *string `json:"title"`
+	Lat   *string `json:"lat"`
+	Lng   *string `json:"lng"`
 }
 
 type MarkerInput struct {
@@ -49,15 +44,15 @@ type MarkerInput struct {
 }
 
 type Post struct {
-	ID           string  `json:"id"`
-	User         *User   `json:"user"`
-	Title        *string `json:"title"`
-	Body         *string `json:"body"`
-	Img          *string `json:"img"`
-	Marker       *Marker `json:"marker"`
-	Liked        []*User `json:"liked"`
-	Registration *string `json:"registration"`
-	Modification *string `json:"modification"`
+	ID           string     `json:"id"`
+	Title        string     `json:"title"`
+	Body         string     `json:"body"`
+	Img          *string    `json:"img"`
+	Marker       *Marker    `json:"marker"`
+	Comments     []*Comment `json:"comments"`
+	Liked        []*User    `json:"liked"`
+	Registration *string    `json:"registration"`
+	Modification *string    `json:"modification"`
 }
 
 type PostInput struct {
@@ -69,12 +64,10 @@ type PostInput struct {
 
 type Profile struct {
 	ID           string  `json:"id"`
-	User         *User   `json:"user"`
 	Name         *string `json:"name"`
 	Gender       *Gender `json:"gender"`
 	Avatar       *string `json:"avatar"`
 	Introduction *string `json:"introduction"`
-	Registration *string `json:"registration"`
 }
 
 type ProfileInput struct {
@@ -90,6 +83,8 @@ type UploadFile struct {
 
 type User struct {
 	ID       string    `json:"id"`
+	Profile  *Profile  `json:"profile"`
+	Posts    []*Post   `json:"posts"`
 	Email    *string   `json:"email"`
 	Password *string   `json:"password"`
 	Usertype *UserType `json:"usertype"`

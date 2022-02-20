@@ -69,7 +69,7 @@ type User {
   posts: [Post]
   email: String
   password: String
-  usertype: UserType
+  type: UserType
 }
 
 enum UserType {
