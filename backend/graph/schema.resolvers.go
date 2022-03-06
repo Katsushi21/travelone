@@ -19,15 +19,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserInput
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateProfile(ctx context.Context, input model.ProfileInput) (*model.Profile, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) CreateMarker(ctx context.Context, input model.MarkerInput) (*model.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.CommentInput) (*model.Comment, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) CreateFriendRequest(ctx context.Context, input model.FriendRequestInput) (*model.FriendRequest, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -43,10 +43,6 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input mode
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateProfile(ctx context.Context, id string, input model.ProfileInput) (*model.Profile, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) UpdateMarker(ctx context.Context, id string, input model.MarkerInput) (*model.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
@@ -56,6 +52,10 @@ func (r *mutationResolver) UpdateComment(ctx context.Context, id string, input m
 }
 
 func (r *mutationResolver) UploadFile(ctx context.Context, input model.UploadFile) (*model.File, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) UpdateFriendRequest(ctx context.Context, id string, input model.FriendRequestInput) (*model.FriendRequest, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -71,15 +71,15 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.Us
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteProfile(ctx context.Context, id string) (*model.Profile, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) DeleteMarker(ctx context.Context, id string) (*model.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (*model.Comment, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *mutationResolver) DeleteFriendRequest(ctx context.Context, id string) (*model.FriendRequest, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -91,11 +91,15 @@ func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Profile(ctx context.Context) ([]*model.Profile, error) {
+func (r *queryResolver) Comment(ctx context.Context) ([]*model.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Comment(ctx context.Context) ([]*model.Comment, error) {
+func (r *queryResolver) Marker(ctx context.Context) ([]*model.Marker, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) FriendRequest(ctx context.Context) ([]*model.FriendRequest, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
