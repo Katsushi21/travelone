@@ -71,6 +71,7 @@ type User {
   type: UserType
   session: String
   name: String
+  age: Int
   gender: Gender
   avatar: String
   introduction: String
@@ -90,6 +91,7 @@ input UserInput {
   type: UserType!
   session: String!
   name: String!
+  age: Int!
   gender: Gender!
   avatar: String!
   introduction: String!

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT public.users (
   type text NOT NULL DEFAULT '',
   session text NOT NULL DEFAULT '',
   name text NOT NULL DEFAULT '',
+  age integer NOT NULL DEFAULT '',
   gender text NOT NULL DEFAULT '',
   avater text NOT NULL DEFAULT '',
   introduction text NOT NULL DEFAULT '',
