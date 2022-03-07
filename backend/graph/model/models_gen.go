@@ -12,7 +12,6 @@ import (
 
 type Comment struct {
 	ID           string  `json:"id"`
-	Post         *Post   `json:"post"`
 	User         *User   `json:"user"`
 	Body         *string `json:"body"`
 	Registration *string `json:"registration"`
@@ -27,19 +26,26 @@ type File struct {
 	Path string `json:"path"`
 }
 
+type FriendRequest struct {
+	ID           string        `json:"id"`
+	RequestUID   *User         `json:"request_uid"`
+	RequestedUID *User         `json:"requested_uid"`
+	Status       RequestStatus `json:"status"`
+}
+
+type FriendRequestInput struct {
+	Status RequestStatus `json:"status"`
+}
+
 type LikedInput struct {
 	ID string `json:"id"`
 }
 
 type Marker struct {
-	ID           string  `json:"id"`
-	Post         *Post   `json:"post"`
-	User         *User   `json:"user"`
-	Title        *string `json:"title"`
-	Lat          *string `json:"lat"`
-	Lng          *string `json:"lng"`
-	Registration *string `json:"registration"`
-	Modification *string `json:"modification"`
+	ID    string  `json:"id"`
+	Title *string `json:"title"`
+	Lat   *string `json:"lat"`
+	Lng   *string `json:"lng"`
 }
 
 type MarkerInput struct {
@@ -49,15 +55,15 @@ type MarkerInput struct {
 }
 
 type Post struct {
-	ID           string  `json:"id"`
-	User         *User   `json:"user"`
-	Title        *string `json:"title"`
-	Body         *string `json:"body"`
-	Img          *string `json:"img"`
-	Marker       *Marker `json:"marker"`
-	Liked        []*User `json:"liked"`
-	Registration *string `json:"registration"`
-	Modification *string `json:"modification"`
+	ID           string     `json:"id"`
+	Title        string     `json:"title"`
+	Body         string     `json:"body"`
+	Img          *string    `json:"img"`
+	Marker       *Marker    `json:"marker"`
+	Comments     []*Comment `json:"comments"`
+	Liked        []*User    `json:"liked"`
+	Registration *string    `json:"registration"`
+	Modification *string    `json:"modification"`
 }
 
 type PostInput struct {
@@ -67,37 +73,35 @@ type PostInput struct {
 	Marker *MarkerInput `json:"marker"`
 }
 
-type Profile struct {
-	ID           string  `json:"id"`
-	User         *User   `json:"user"`
-	Name         *string `json:"name"`
-	Gender       *Gender `json:"gender"`
-	Avatar       *string `json:"avatar"`
-	Introduction *string `json:"introduction"`
-	Registration *string `json:"registration"`
-}
-
-type ProfileInput struct {
-	Name         string `json:"name"`
-	Gender       Gender `json:"gender"`
-	Avatar       string `json:"avatar"`
-	Introduction string `json:"introduction"`
-}
-
 type UploadFile struct {
 	Content graphql.Upload `json:"content"`
 }
 
 type User struct {
-	ID       string    `json:"id"`
-	Email    *string   `json:"email"`
-	Password *string   `json:"password"`
-	Usertype *UserType `json:"usertype"`
+	ID           string    `json:"id"`
+	Email        *string   `json:"email"`
+	Password     *string   `json:"password"`
+	Type         *UserType `json:"type"`
+	Session      *string   `json:"session"`
+	Name         *string   `json:"name"`
+	Gender       *Gender   `json:"gender"`
+	Avatar       *string   `json:"avatar"`
+	Introduction *string   `json:"introduction"`
+	Friends      []*int    `json:"friends"`
+	Mute         []*int    `json:"mute"`
 }
 
 type UserInput struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email        string   `json:"email"`
+	Password     string   `json:"password"`
+	Type         UserType `json:"type"`
+	Session      string   `json:"session"`
+	Name         string   `json:"name"`
+	Gender       Gender   `json:"gender"`
+	Avatar       string   `json:"avatar"`
+	Introduction string   `json:"introduction"`
+	Friends      []*int   `json:"friends"`
+	Mute         []*int   `json:"mute"`
 }
 
 type Gender string
@@ -140,6 +144,57 @@ func (e *Gender) UnmarshalGQL(v interface{}) error {
 }
 
 func (e Gender) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type RequestStatus string
+
+const (
+	RequestStatusInProcess      RequestStatus = "in_process"
+	RequestStatusAccept         RequestStatus = "accept"
+	RequestStatusDeny           RequestStatus = "deny"
+	RequestStatusBreakInProcess RequestStatus = "break_in_process"
+	RequestStatusBreakAccept    RequestStatus = "break_accept"
+	RequestStatusBreakDeny      RequestStatus = "break_deny"
+	RequestStatusCancel         RequestStatus = "cancel"
+)
+
+var AllRequestStatus = []RequestStatus{
+	RequestStatusInProcess,
+	RequestStatusAccept,
+	RequestStatusDeny,
+	RequestStatusBreakInProcess,
+	RequestStatusBreakAccept,
+	RequestStatusBreakDeny,
+	RequestStatusCancel,
+}
+
+func (e RequestStatus) IsValid() bool {
+	switch e {
+	case RequestStatusInProcess, RequestStatusAccept, RequestStatusDeny, RequestStatusBreakInProcess, RequestStatusBreakAccept, RequestStatusBreakDeny, RequestStatusCancel:
+		return true
+	}
+	return false
+}
+
+func (e RequestStatus) String() string {
+	return string(e)
+}
+
+func (e *RequestStatus) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = RequestStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid RequestStatus", str)
+	}
+	return nil
+}
+
+func (e RequestStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

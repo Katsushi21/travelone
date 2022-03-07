@@ -1,31 +1,20 @@
-package postgres
+package models
 
 import (
 	"gorm.io/gorm"
 )
 
-type User struct {
+type Todo struct {
 	gorm.Model
-	email    string
-	password string
-}
-
-type Profile struct {
-	gorm.Model
-	name         string
-	gender       string
-	avatar       string
-	introduction string
-}
-
-type Post struct {
-	gorm.Model
-	userno int
-}
-
-func main() {
-	// db, err := gorm.Open(postgres.Open("test.db"), &gorm.Config{})
-	// if err != nil {
-	// 	panic("failed to connect database")
-	// }
+	Email        string
+	Password     string
+	Type         string
+	Session      string
+	Name         string
+	Age          uint8
+	Gender       string
+	Avater       string
+	Introduction string
+	Friends      []uint
+	Mute         []uint
 }

@@ -7,31 +7,32 @@ schema {
 type Query {
   Post: [Post]!
   User: [User]!
-  Profile: [Profile]!
   Comment: [Comment]!
+  Marker: [Marker]!
+  FriendRequest: [FriendRequest]!
 }
 
 type Mutation {
   createPost(input: PostInput!): Post!
   createUser(input: UserInput!): User!
-  createProfile(input: ProfileInput!): Profile!
   createMarker(input: MarkerInput!): Marker!
   createComment(input: CommentInput!): Comment!
+  createFriendRequest(input: FriendRequestInput!): FriendRequest!
 
   updatePost(id: ID!, input: PostInput!): Post
   updateLiked(id: ID!, input: LikedInput!): Post
   updateUser(id: ID!, input: UserInput!): User
-  updateProfile(id: ID!, input: ProfileInput!): Profile
   updateMarker(id: ID!, input: MarkerInput!): Marker
   updateComment(id: ID!, input: CommentInput!): Comment
   uploadFile(input: UploadFile!): File!
+  updateFriendRequest(id: ID!, input: FriendRequestInput!): FriendRequest
 
   deletePost(id: ID!): Post
   deleteLiked(id: ID!): Post
   deleteUser(id: ID!): User
-  deleteProfile(id: ID!): Profile
   deleteMarker(id: ID!): Marker
   deleteComment(id: ID!): Comment
+  deleteFriendRequest(id: ID!): FriendRequest
 }
 
 # scalar
@@ -65,11 +66,17 @@ input LikedInput {
 # User
 type User {
   id: ID!
-  profile: Profile
-  posts: [Post]
   email: String
   password: String
-  usertype: UserType
+  type: UserType
+  session: String
+  name: String
+  age: Int
+  gender: Gender
+  avatar: String
+  introduction: String
+  friends: [Int]
+  mute: [Int]
 }
 
 enum UserType {
@@ -81,28 +88,21 @@ enum UserType {
 input UserInput {
   email: String!
   password: String!
-}
-
-# Profile
-type Profile {
-  id: ID!
-  name: String
-  gender: Gender
-  avatar: String
-  introduction: String
+  type: UserType!
+  session: String!
+  name: String!
+  age: Int!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+  friends: [Int]!
+  mute: [Int]!
 }
 
 enum Gender {
   male
   female
   none
-}
-
-input ProfileInput {
-  name: String!
-  gender: Gender!
-  avatar: String!
-  introduction: String!
 }
 
 # Marker
@@ -139,4 +139,26 @@ type File {
 
 input UploadFile {
   content: Upload!
+}
+
+# FriendRequest
+type FriendRequest {
+  id: ID!
+  request_uid: User!
+  requested_uid: User!
+  status: RequestStatus!
+}
+
+enum RequestStatus {
+  in_process
+  accept
+  deny
+  break_in_process
+  break_accept
+  break_deny
+  cancel
+}
+
+input FriendRequestInput {
+  status: RequestStatus!
 }
