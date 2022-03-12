@@ -63,7 +63,13 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.Commen
 }
 
 func (r *mutationResolver) CreateRequest(ctx context.Context, input model.RequestInput) (*model.Request, error) {
-	panic(fmt.Errorf("not implemented"))
+	request := &model.Request{
+		Request:   *input.Request,
+		Requested: *input.Requested,
+		Status:    input.Status,
+	}
+	r.requests = append(r.requests, request)
+	return request, nil
 }
 
 func (r *mutationResolver) UpdatePost(ctx context.Context, id string, input model.PostInput) (*model.Post, error) {
@@ -127,7 +133,7 @@ func (r *mutationResolver) DeleteRequest(ctx context.Context, id string) (*model
 }
 
 func (r *postResolver) User(ctx context.Context, obj *model.Post) (*model.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	return &model.User{ID: obj.UID}, nil
 }
 
 func (r *queryResolver) Post(ctx context.Context) ([]*model.Post, error) {
@@ -147,7 +153,15 @@ func (r *queryResolver) Marker(ctx context.Context) ([]*model.Marker, error) {
 }
 
 func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
-	return r.Requests, nil
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *requestResolver) Request(ctx context.Context, obj *model.Request) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *requestResolver) Requested(ctx context.Context, obj *model.Request) (*model.User, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Comment returns generated.CommentResolver implementation.
@@ -162,7 +176,11 @@ func (r *Resolver) Post() generated.PostResolver { return &postResolver{r} }
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+// Request returns generated.RequestResolver implementation.
+func (r *Resolver) Request() generated.RequestResolver { return &requestResolver{r} }
+
 type commentResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type postResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type requestResolver struct{ *Resolver }

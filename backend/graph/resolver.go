@@ -11,5 +11,5 @@ type Resolver struct {
 	users    []*model.User
 	markers  []*model.Marker
 	comments []*model.Comment
-	Requests []*model.Request
+	requests []*model.Request
 }

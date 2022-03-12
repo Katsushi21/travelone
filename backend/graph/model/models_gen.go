@@ -54,13 +54,6 @@ type PostInput struct {
 	Img   string `json:"img"`
 }
 
-type Request struct {
-	ID        string        `json:"id"`
-	Request   *User         `json:"request"`
-	Requested *User         `json:"requested"`
-	Status    RequestStatus `json:"status"`
-}
-
 type RequestInput struct {
 	Request   *string       `json:"request"`
 	Requested *string       `json:"requested"`
