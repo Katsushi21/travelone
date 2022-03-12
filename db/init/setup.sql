@@ -49,10 +49,10 @@ CREATE TABLE IF NOT public.markers (
   deleted_at timestamp
 );
 
-CREATE TABLE IF NOT public.friend_requests (
+CREATE TABLE IF NOT public.requests (
   id serial PRIMARY KEY,
-  request_uid integer NOT NULL DEFAULT '',
-  requested_uid integer NOT NULL DEFAULT '',
+  request integer NOT NULL DEFAULT '',
+  requested integer NOT NULL DEFAULT '',
   status text NOT NULL DEFAULT '',
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),

@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Todo struct {
+type User struct {
 	gorm.Model
 	Email        string
 	Password     string

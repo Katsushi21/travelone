@@ -9,7 +9,7 @@ type Query {
   User: [User]!
   Comment: [Comment]!
   Marker: [Marker]!
-  FriendRequest: [FriendRequest]!
+  Request: [Request]!
 }
 
 type Mutation {
@@ -17,7 +17,7 @@ type Mutation {
   createUser(input: UserInput!): User!
   createMarker(input: MarkerInput!): Marker!
   createComment(input: CommentInput!): Comment!
-  createFriendRequest(input: FriendRequestInput!): FriendRequest!
+  createRequest(input: RequestInput!): Request!
 
   updatePost(id: ID!, input: PostInput!): Post
   updateLiked(id: ID!, input: LikedInput!): Post
@@ -25,14 +25,14 @@ type Mutation {
   updateMarker(id: ID!, input: MarkerInput!): Marker
   updateComment(id: ID!, input: CommentInput!): Comment
   uploadFile(input: UploadFile!): File!
-  updateFriendRequest(id: ID!, input: FriendRequestInput!): FriendRequest
+  updateRequest(id: ID!, input: RequestInput!): Request
 
   deletePost(id: ID!): Post
   deleteLiked(id: ID!): Post
   deleteUser(id: ID!): User
   deleteMarker(id: ID!): Marker
   deleteComment(id: ID!): Comment
-  deleteFriendRequest(id: ID!): FriendRequest
+  deleteRequest(id: ID!): Request
 }
 
 # scalar
@@ -141,11 +141,11 @@ input UploadFile {
   content: Upload!
 }
 
-# FriendRequest
-type FriendRequest {
+# Request
+type Request {
   id: ID!
-  request_uid: User!
-  requested_uid: User!
+  request: User!
+  requested: User!
   status: RequestStatus!
 }
 
@@ -159,6 +159,6 @@ enum RequestStatus {
   cancel
 }
 
-input FriendRequestInput {
+input RequestInput {
   status: RequestStatus!
 }

@@ -26,17 +26,6 @@ type File struct {
 	Path string `json:"path"`
 }
 
-type FriendRequest struct {
-	ID           string        `json:"id"`
-	RequestUID   *User         `json:"request_uid"`
-	RequestedUID *User         `json:"requested_uid"`
-	Status       RequestStatus `json:"status"`
-}
-
-type FriendRequestInput struct {
-	Status RequestStatus `json:"status"`
-}
-
 type LikedInput struct {
 	ID string `json:"id"`
 }
@@ -73,6 +62,17 @@ type PostInput struct {
 	Marker *MarkerInput `json:"marker"`
 }
 
+type Request struct {
+	ID        string        `json:"id"`
+	Request   *User         `json:"request"`
+	Requested *User         `json:"requested"`
+	Status    RequestStatus `json:"status"`
+}
+
+type RequestInput struct {
+	Status RequestStatus `json:"status"`
+}
+
 type UploadFile struct {
 	Content graphql.Upload `json:"content"`
 }
@@ -84,6 +84,7 @@ type User struct {
 	Type         *UserType `json:"type"`
 	Session      *string   `json:"session"`
 	Name         *string   `json:"name"`
+	Age          *int      `json:"age"`
 	Gender       *Gender   `json:"gender"`
 	Avatar       *string   `json:"avatar"`
 	Introduction *string   `json:"introduction"`
@@ -97,6 +98,7 @@ type UserInput struct {
 	Type         UserType `json:"type"`
 	Session      string   `json:"session"`
 	Name         string   `json:"name"`
+	Age          int      `json:"age"`
 	Gender       Gender   `json:"gender"`
 	Avatar       string   `json:"avatar"`
 	Introduction string   `json:"introduction"`
