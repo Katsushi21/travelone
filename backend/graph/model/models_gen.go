@@ -10,67 +10,65 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
-type Comment struct {
-	ID           string  `json:"id"`
-	User         *User   `json:"user"`
-	Body         *string `json:"body"`
-	Registration *string `json:"registration"`
-	Modification *string `json:"modification"`
-}
-
 type CommentInput struct {
-	Body string `json:"body"`
+	UID    string `json:"uid"`
+	PostID string `json:"post_id"`
+	Body   string `json:"body"`
 }
 
 type File struct {
 	Path string `json:"path"`
 }
 
-type FriendRequest struct {
-	ID           string        `json:"id"`
-	RequestUID   *User         `json:"request_uid"`
-	RequestedUID *User         `json:"requested_uid"`
-	Status       RequestStatus `json:"status"`
-}
-
-type FriendRequestInput struct {
-	Status RequestStatus `json:"status"`
+type FriendInput struct {
+	Friends string `json:"friends"`
 }
 
 type LikedInput struct {
-	ID string `json:"id"`
+	Liked string `json:"liked"`
 }
 
 type Marker struct {
-	ID    string  `json:"id"`
-	Title *string `json:"title"`
-	Lat   *string `json:"lat"`
-	Lng   *string `json:"lng"`
+	ID     string  `json:"id"`
+	PostID string  `json:"post_id"`
+	Title  *string `json:"title"`
+	Lat    *string `json:"lat"`
+	Lng    *string `json:"lng"`
 }
 
 type MarkerInput struct {
-	Title string `json:"title"`
-	Lat   string `json:"lat"`
-	Lng   string `json:"lng"`
+	PostID string `json:"post_id"`
+	Title  string `json:"title"`
+	Lat    string `json:"lat"`
+	Lng    string `json:"lng"`
 }
 
-type Post struct {
-	ID           string     `json:"id"`
-	Title        string     `json:"title"`
-	Body         string     `json:"body"`
-	Img          *string    `json:"img"`
-	Marker       *Marker    `json:"marker"`
-	Comments     []*Comment `json:"comments"`
-	Liked        []*User    `json:"liked"`
-	Registration *string    `json:"registration"`
-	Modification *string    `json:"modification"`
+type MuteInput struct {
+	Mute string `json:"mute"`
 }
 
 type PostInput struct {
-	Title  string       `json:"title"`
-	Body   string       `json:"body"`
-	Img    string       `json:"img"`
-	Marker *MarkerInput `json:"marker"`
+	UID   string `json:"uid"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
+	Img   string `json:"img"`
+}
+
+type Request struct {
+	ID        string        `json:"id"`
+	Request   *User         `json:"request"`
+	Requested *User         `json:"requested"`
+	Status    RequestStatus `json:"status"`
+}
+
+type RequestInput struct {
+	Request   *string       `json:"request"`
+	Requested *string       `json:"requested"`
+	Status    RequestStatus `json:"status"`
+}
+
+type SessionInput struct {
+	Session string `json:"session"`
 }
 
 type UploadFile struct {
@@ -84,24 +82,23 @@ type User struct {
 	Type         *UserType `json:"type"`
 	Session      *string   `json:"session"`
 	Name         *string   `json:"name"`
+	Age          *int      `json:"age"`
 	Gender       *Gender   `json:"gender"`
 	Avatar       *string   `json:"avatar"`
 	Introduction *string   `json:"introduction"`
-	Friends      []*int    `json:"friends"`
-	Mute         []*int    `json:"mute"`
+	Friends      []*string `json:"friends"`
+	Mute         []*string `json:"mute"`
 }
 
 type UserInput struct {
 	Email        string   `json:"email"`
 	Password     string   `json:"password"`
 	Type         UserType `json:"type"`
-	Session      string   `json:"session"`
 	Name         string   `json:"name"`
+	Age          int      `json:"age"`
 	Gender       Gender   `json:"gender"`
 	Avatar       string   `json:"avatar"`
 	Introduction string   `json:"introduction"`
-	Friends      []*int   `json:"friends"`
-	Mute         []*int   `json:"mute"`
 }
 
 type Gender string
