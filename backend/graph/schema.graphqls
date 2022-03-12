@@ -13,26 +13,33 @@ type Query {
 }
 
 type Mutation {
+  # CREATE
   createPost(input: PostInput!): Post!
   createUser(input: UserInput!): User!
   createMarker(input: MarkerInput!): Marker!
   createComment(input: CommentInput!): Comment!
   createRequest(input: RequestInput!): Request!
 
-  updatePost(id: ID!, input: PostInput!): Post
-  updateLiked(id: ID!, input: LikedInput!): Post
-  updateUser(id: ID!, input: UserInput!): User
-  updateMarker(id: ID!, input: MarkerInput!): Marker
-  updateComment(id: ID!, input: CommentInput!): Comment
-  uploadFile(input: UploadFile!): File!
-  updateRequest(id: ID!, input: RequestInput!): Request
+  # UPDATE
+  updatePost(id: ID!, input: PostInput!): Post!
+  updateLiked(id: ID!, input: LikedInput!): Post!
 
-  deletePost(id: ID!): Post
-  deleteLiked(id: ID!): Post
-  deleteUser(id: ID!): User
-  deleteMarker(id: ID!): Marker
-  deleteComment(id: ID!): Comment
-  deleteRequest(id: ID!): Request
+  updateUser(id: ID!, input: UserInput!): User!
+  updateSession(id: ID!, input: SessionInput!): User!
+  updateFriend(id: ID!, input: FriendInput!): User!
+  updateMute(id: ID!, input: MuteInput): User!
+
+  updateMarker(id: ID!, input: MarkerInput!): Marker!
+  updateComment(id: ID!, input: CommentInput!): Comment!
+  uploadFile(input: UploadFile!): File!
+  updateRequest(id: ID!, input: RequestInput!): Request!
+
+  # DELETE
+  deletePost(id: ID!): Post!
+  deleteUser(id: ID!): User!
+  deleteMarker(id: ID!): Marker!
+  deleteComment(id: ID!): Comment!
+  deleteRequest(id: ID!): Request!
 }
 
 # scalar
@@ -42,25 +49,24 @@ scalar Timestamp
 # Post
 type Post {
   id: ID!
+  user: User!
   title: String!
   body: String!
   img: String
-  marker: Marker
-  comments: [Comment]
-  liked: [User]
+  liked: [String]
   registration: Timestamp
   modification: Timestamp
 }
 
 input PostInput {
+  uid: String!
   title: String!
   body: String!
   img: String!
-  marker: MarkerInput!
 }
 
 input LikedInput {
-  id: ID!
+  liked: String!
 }
 
 # User
@@ -75,8 +81,8 @@ type User {
   gender: Gender
   avatar: String
   introduction: String
-  friends: [Int]
-  mute: [Int]
+  friends: [String]
+  mute: [String]
 }
 
 enum UserType {
@@ -89,14 +95,23 @@ input UserInput {
   email: String!
   password: String!
   type: UserType!
-  session: String!
   name: String!
   age: Int!
   gender: Gender!
   avatar: String!
   introduction: String!
-  friends: [Int]!
-  mute: [Int]!
+}
+
+input SessionInput {
+  session: String!
+}
+
+input FriendInput {
+  friends: String!
+}
+
+input MuteInput {
+  mute: String!
 }
 
 enum Gender {
@@ -108,12 +123,14 @@ enum Gender {
 # Marker
 type Marker {
   id: ID!
+  post_id: String!
   title: String
   lat: String
   lng: String
 }
 
 input MarkerInput {
+  post_id: String!
   title: String!
   lat: String!
   lng: String!
@@ -122,13 +139,16 @@ input MarkerInput {
 # Comment
 type Comment {
   id: ID!
-  user: User
+  user: User!
+  post_id: String!
   body: String
   registration: Timestamp
   modification: Timestamp
 }
 
 input CommentInput {
+  uid: String!
+  post_id: String!
   body: String!
 }
 
@@ -160,5 +180,7 @@ enum RequestStatus {
 }
 
 input RequestInput {
+  request: String
+  requested: String
   status: RequestStatus!
 }
