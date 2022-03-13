@@ -28,14 +28,6 @@ type LikedInput struct {
 	Liked string `json:"liked"`
 }
 
-type Marker struct {
-	ID     string  `json:"id"`
-	PostID string  `json:"post_id"`
-	Title  *string `json:"title"`
-	Lat    *string `json:"lat"`
-	Lng    *string `json:"lng"`
-}
-
 type MarkerInput struct {
 	PostID string `json:"post_id"`
 	Title  string `json:"title"`
@@ -69,18 +61,20 @@ type UploadFile struct {
 }
 
 type User struct {
-	ID           string    `json:"id"`
-	Email        *string   `json:"email"`
-	Password     *string   `json:"password"`
-	Type         *UserType `json:"type"`
-	Session      *string   `json:"session"`
-	Name         *string   `json:"name"`
-	Age          *int      `json:"age"`
-	Gender       *Gender   `json:"gender"`
-	Avatar       *string   `json:"avatar"`
-	Introduction *string   `json:"introduction"`
-	Friends      []*string `json:"friends"`
-	Mute         []*string `json:"mute"`
+	ID           string     `json:"id"`
+	Email        *string    `json:"email"`
+	Password     *string    `json:"password"`
+	Type         *UserType  `json:"type"`
+	Session      *string    `json:"session"`
+	Name         *string    `json:"name"`
+	Age          *int       `json:"age"`
+	Gender       *Gender    `json:"gender"`
+	Avatar       *string    `json:"avatar"`
+	Introduction *string    `json:"introduction"`
+	Friends      []*string  `json:"friends"`
+	Mute         []*string  `json:"mute"`
+	Post         []*Post    `json:"post"`
+	Comment      []*Comment `json:"comment"`
 }
 
 type UserInput struct {

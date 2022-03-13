@@ -56,6 +56,8 @@ type Post {
   liked: [String]
   registration: Timestamp
   modification: Timestamp
+  marker: Marker
+  comment: [Comment]
 }
 
 input PostInput {
@@ -83,6 +85,8 @@ type User {
   introduction: String
   friends: [String]
   mute: [String]
+  post: [Post]
+  comment: [Comment]
 }
 
 enum UserType {
@@ -123,7 +127,7 @@ enum Gender {
 # Marker
 type Marker {
   id: ID!
-  post_id: String!
+  post: Post!
   title: String
   lat: String
   lng: String
@@ -140,7 +144,7 @@ input MarkerInput {
 type Comment {
   id: ID!
   user: User!
-  post_id: String!
+  post: Post!
   body: String
   registration: Timestamp
   modification: Timestamp
