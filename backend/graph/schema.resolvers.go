@@ -15,6 +15,14 @@ func (r *commentResolver) User(ctx context.Context, obj *model.Comment) (*model.
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *commentResolver) Post(ctx context.Context, obj *model.Comment) (*model.Post, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *markerResolver) Post(ctx context.Context, obj *model.Marker) (*model.Post, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.PostInput) (*model.Post, error) {
 	post := &model.Post{
 		UID:   input.UID,
@@ -136,6 +144,14 @@ func (r *postResolver) User(ctx context.Context, obj *model.Post) (*model.User, 
 	return &model.User{ID: obj.UID}, nil
 }
 
+func (r *postResolver) Marker(ctx context.Context, obj *model.Post) (*model.Marker, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *postResolver) Comment(ctx context.Context, obj *model.Post) ([]*model.Comment, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) Post(ctx context.Context) ([]*model.Post, error) {
 	return r.posts, nil
 }
@@ -167,6 +183,9 @@ func (r *requestResolver) Requested(ctx context.Context, obj *model.Request) (*m
 // Comment returns generated.CommentResolver implementation.
 func (r *Resolver) Comment() generated.CommentResolver { return &commentResolver{r} }
 
+// Marker returns generated.MarkerResolver implementation.
+func (r *Resolver) Marker() generated.MarkerResolver { return &markerResolver{r} }
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
@@ -180,6 +199,7 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 func (r *Resolver) Request() generated.RequestResolver { return &requestResolver{r} }
 
 type commentResolver struct{ *Resolver }
+type markerResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type postResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
