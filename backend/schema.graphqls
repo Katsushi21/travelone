@@ -53,7 +53,7 @@ type Post {
   title: String!
   body: String!
   img: String
-  liked: [String]
+  liked: [User]
   registration: Timestamp
   modification: Timestamp
   marker: Marker
@@ -61,14 +61,13 @@ type Post {
 }
 
 input PostInput {
-  uid: String!
   title: String!
   body: String!
   img: String!
 }
 
 input LikedInput {
-  liked: String!
+  uid: String!
 }
 
 # User
@@ -134,7 +133,6 @@ type Marker {
 }
 
 input MarkerInput {
-  post_id: String!
   title: String!
   lat: String!
   lng: String!
@@ -151,8 +149,6 @@ type Comment {
 }
 
 input CommentInput {
-  uid: String!
-  post_id: String!
   body: String!
 }
 
@@ -184,7 +180,6 @@ enum RequestStatus {
 }
 
 input RequestInput {
-  request: String
   requested: String
   status: RequestStatus!
 }

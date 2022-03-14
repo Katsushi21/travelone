@@ -1,4 +1,4 @@
-package model
+package models
 
 type Marker struct {
 	ID     string  `json:"id"`
