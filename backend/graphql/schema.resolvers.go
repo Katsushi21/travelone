@@ -10,18 +10,6 @@ import (
 	"github.com/Katsushi21/traveling_alone/models"
 )
 
-func (r *commentResolver) User(ctx context.Context, obj *models.Comment) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *commentResolver) Post(ctx context.Context, obj *models.Comment) (*models.Post, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *markerResolver) Post(ctx context.Context, obj *models.Marker) (*models.Post, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) CreatePost(ctx context.Context, input models.PostInput) (*models.Post, error) {
 	panic(fmt.Errorf("not implemented"))
 }
@@ -102,19 +90,7 @@ func (r *mutationResolver) DeleteRequest(ctx context.Context, id string) (*model
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *postResolver) User(ctx context.Context, obj *models.Post) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *postResolver) Liked(ctx context.Context, obj *models.Post) ([]*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *postResolver) Marker(ctx context.Context, obj *models.Post) (*models.Marker, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *postResolver) Comment(ctx context.Context, obj *models.Post) ([]*models.Comment, error) {
+func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -138,23 +114,11 @@ func (r *queryResolver) Request(ctx context.Context) ([]*models.Request, error) 
 	panic(fmt.Errorf("not implemented"))
 }
 
-// Comment returns CommentResolver implementation.
-func (r *Resolver) Comment() CommentResolver { return &commentResolver{r} }
-
-// Marker returns MarkerResolver implementation.
-func (r *Resolver) Marker() MarkerResolver { return &markerResolver{r} }
-
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
-
-// Post returns PostResolver implementation.
-func (r *Resolver) Post() PostResolver { return &postResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-type commentResolver struct{ *Resolver }
-type markerResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
-type postResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

@@ -1,47 +1,3 @@
-# root type
-schema {
-  query: Query
-  mutation: Mutation
-}
-
-type Query {
-  Post: [Post]!
-  User: [User]!
-  Comment: [Comment]!
-  Marker: [Marker]!
-  Request: [Request]!
-}
-
-type Mutation {
-  # CREATE
-  createPost(input: PostInput!): Post!
-  createUser(input: UserInput!): User!
-  createMarker(input: MarkerInput!): Marker!
-  createComment(input: CommentInput!): Comment!
-  createRequest(input: RequestInput!): Request!
-
-  # UPDATE
-  updatePost(id: ID!, input: PostInput!): Post!
-  updateLiked(id: ID!, input: LikedInput!): Post!
-
-  updateUser(id: ID!, input: UserInput!): User!
-  updateSession(id: ID!, input: SessionInput!): User!
-  updateFriend(id: ID!, input: FriendInput!): User!
-  updateMute(id: ID!, input: MuteInput): User!
-
-  updateMarker(id: ID!, input: MarkerInput!): Marker!
-  updateComment(id: ID!, input: CommentInput!): Comment!
-  uploadFile(input: UploadFile!): File!
-  updateRequest(id: ID!, input: RequestInput!): Request!
-
-  # DELETE
-  deletePost(id: ID!): Post!
-  deleteUser(id: ID!): User!
-  deleteMarker(id: ID!): Marker!
-  deleteComment(id: ID!): Comment!
-  deleteRequest(id: ID!): Request!
-}
-
 # scalar
 scalar Upload
 scalar Timestamp
@@ -117,6 +73,11 @@ input MuteInput {
   mute: String!
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 enum Gender {
   male
   female
@@ -144,8 +105,8 @@ type Comment {
   user: User!
   post: Post!
   body: String
-  registration: Timestamp
-  modification: Timestamp
+  createdAt: Timestamp
+  updatedAt: Timestamp
 }
 
 input CommentInput {
@@ -182,4 +143,51 @@ enum RequestStatus {
 input RequestInput {
   requested: String
   status: RequestStatus!
+}
+
+# root type
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  Post: [Post]!
+  User: [User]!
+  Comment: [Comment]!
+  Marker: [Marker]!
+  Request: [Request]!
+}
+
+type Mutation {
+  # CREATE
+  createPost(input: PostInput!): Post!
+  createUser(input: UserInput!): User!
+  createMarker(input: MarkerInput!): Marker!
+  createComment(input: CommentInput!): Comment!
+  createRequest(input: RequestInput!): Request!
+
+  # UPDATE
+  updatePost(id: ID!, input: PostInput!): Post!
+  updateLiked(id: ID!, input: LikedInput!): Post!
+
+  updateUser(id: ID!, input: UserInput!): User!
+  updateSession(id: ID!, input: SessionInput!): User!
+  updateFriend(id: ID!, input: FriendInput!): User!
+  updateMute(id: ID!, input: MuteInput): User!
+
+  updateMarker(id: ID!, input: MarkerInput!): Marker!
+  updateComment(id: ID!, input: CommentInput!): Comment!
+  uploadFile(input: UploadFile!): File!
+  updateRequest(id: ID!, input: RequestInput!): Request!
+
+  # DELETE
+  deletePost(id: ID!): Post!
+  deleteUser(id: ID!): User!
+  deleteMarker(id: ID!): Marker!
+  deleteComment(id: ID!): Comment!
+  deleteRequest(id: ID!): Request!
+
+  # OTHER
+  login(input: LoginInput!): User!
 }
