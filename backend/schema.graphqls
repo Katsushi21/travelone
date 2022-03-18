@@ -145,12 +145,6 @@ input RequestInput {
   status: RequestStatus!
 }
 
-# root type
-schema {
-  query: Query
-  mutation: Mutation
-}
-
 type Query {
   Post: [Post]!
   User: [User]!

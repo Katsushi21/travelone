@@ -1,8 +1,13 @@
 package graphql
 
-// This file will not be regenerated automatically.
-//
-// It serves as dependency injection for your app, add any dependencies you require here.
+import (
+	"github.com/Katsushi21/traveling_alone/models"
+)
 
 type Resolver struct {
+	posts    []*models.Post
+	users    []*models.User
+	comments []*models.Comment
+	markers  []*models.Marker
+	requests []*models.Request
 }
