@@ -11,10 +11,10 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input models.Comme
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateComment(ctx context.Context, id string, input models.CommentInput) (*models.Comment, error) {
+func (r *mutationResolver) UpdateComment(ctx context.Context, id int, input models.CommentInput) (*models.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteComment(ctx context.Context, id string) (*models.Comment, error) {
+func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*models.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }

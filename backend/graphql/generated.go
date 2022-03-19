@@ -70,21 +70,21 @@ type ComplexityRoot struct {
 		CreatePost    func(childComplexity int, input models.PostInput) int
 		CreateRequest func(childComplexity int, input models.RequestInput) int
 		CreateUser    func(childComplexity int, input models.UserInput) int
-		DeleteComment func(childComplexity int, id string) int
-		DeleteMarker  func(childComplexity int, id string) int
-		DeletePost    func(childComplexity int, id string) int
-		DeleteRequest func(childComplexity int, id string) int
-		DeleteUser    func(childComplexity int, id string) int
+		DeleteComment func(childComplexity int, id int) int
+		DeleteMarker  func(childComplexity int, id int) int
+		DeletePost    func(childComplexity int, id int) int
+		DeleteRequest func(childComplexity int, id int) int
+		DeleteUser    func(childComplexity int, id int) int
 		Login         func(childComplexity int, input models.LoginInput) int
-		UpdateComment func(childComplexity int, id string, input models.CommentInput) int
-		UpdateFriend  func(childComplexity int, id string, input models.FriendInput) int
-		UpdateLiked   func(childComplexity int, id string, input models.LikedInput) int
-		UpdateMarker  func(childComplexity int, id string, input models.MarkerInput) int
-		UpdateMute    func(childComplexity int, id string, input *models.MuteInput) int
-		UpdatePost    func(childComplexity int, id string, input models.PostInput) int
-		UpdateRequest func(childComplexity int, id string, input models.RequestInput) int
-		UpdateSession func(childComplexity int, id string, input models.SessionInput) int
-		UpdateUser    func(childComplexity int, id string, input models.UserInput) int
+		UpdateComment func(childComplexity int, id int, input models.CommentInput) int
+		UpdateFriend  func(childComplexity int, id int, input models.FriendInput) int
+		UpdateLiked   func(childComplexity int, id int, input models.LikedInput) int
+		UpdateMarker  func(childComplexity int, id int, input models.MarkerInput) int
+		UpdateMute    func(childComplexity int, id int, input *models.MuteInput) int
+		UpdatePost    func(childComplexity int, id int, input models.PostInput) int
+		UpdateRequest func(childComplexity int, id int, input models.RequestInput) int
+		UpdateSession func(childComplexity int, id int, input models.SessionInput) int
+		UpdateUser    func(childComplexity int, id int, input models.UserInput) int
 		UploadFile    func(childComplexity int, input models.UploadFile) int
 	}
 
@@ -140,21 +140,21 @@ type MutationResolver interface {
 	CreateMarker(ctx context.Context, input models.MarkerInput) (*models.Marker, error)
 	CreateComment(ctx context.Context, input models.CommentInput) (*models.Comment, error)
 	CreateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error)
-	UpdatePost(ctx context.Context, id string, input models.PostInput) (*models.Post, error)
-	UpdateLiked(ctx context.Context, id string, input models.LikedInput) (*models.Post, error)
-	UpdateUser(ctx context.Context, id string, input models.UserInput) (*models.User, error)
-	UpdateSession(ctx context.Context, id string, input models.SessionInput) (*models.User, error)
-	UpdateFriend(ctx context.Context, id string, input models.FriendInput) (*models.User, error)
-	UpdateMute(ctx context.Context, id string, input *models.MuteInput) (*models.User, error)
-	UpdateMarker(ctx context.Context, id string, input models.MarkerInput) (*models.Marker, error)
-	UpdateComment(ctx context.Context, id string, input models.CommentInput) (*models.Comment, error)
+	UpdatePost(ctx context.Context, id int, input models.PostInput) (*models.Post, error)
+	UpdateLiked(ctx context.Context, id int, input models.LikedInput) (*models.Post, error)
+	UpdateUser(ctx context.Context, id int, input models.UserInput) (*models.User, error)
+	UpdateSession(ctx context.Context, id int, input models.SessionInput) (*models.User, error)
+	UpdateFriend(ctx context.Context, id int, input models.FriendInput) (*models.User, error)
+	UpdateMute(ctx context.Context, id int, input *models.MuteInput) (*models.User, error)
+	UpdateMarker(ctx context.Context, id int, input models.MarkerInput) (*models.Marker, error)
+	UpdateComment(ctx context.Context, id int, input models.CommentInput) (*models.Comment, error)
 	UploadFile(ctx context.Context, input models.UploadFile) (*models.File, error)
-	UpdateRequest(ctx context.Context, id string, input models.RequestInput) (*models.Request, error)
-	DeletePost(ctx context.Context, id string) (*models.Post, error)
-	DeleteUser(ctx context.Context, id string) (*models.User, error)
-	DeleteMarker(ctx context.Context, id string) (*models.Marker, error)
-	DeleteComment(ctx context.Context, id string) (*models.Comment, error)
-	DeleteRequest(ctx context.Context, id string) (*models.Request, error)
+	UpdateRequest(ctx context.Context, id int, input models.RequestInput) (*models.Request, error)
+	DeletePost(ctx context.Context, id int) (*models.Post, error)
+	DeleteUser(ctx context.Context, id int) (*models.User, error)
+	DeleteMarker(ctx context.Context, id int) (*models.Marker, error)
+	DeleteComment(ctx context.Context, id int) (*models.Comment, error)
+	DeleteRequest(ctx context.Context, id int) (*models.Request, error)
 	Login(ctx context.Context, input models.LoginInput) (*models.User, error)
 }
 type QueryResolver interface {
@@ -334,7 +334,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteComment(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteComment(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteMarker":
 		if e.complexity.Mutation.DeleteMarker == nil {
@@ -346,7 +346,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteMarker(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteMarker(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deletePost":
 		if e.complexity.Mutation.DeletePost == nil {
@@ -358,7 +358,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeletePost(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeletePost(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteRequest":
 		if e.complexity.Mutation.DeleteRequest == nil {
@@ -370,7 +370,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteRequest(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteRequest(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteUser":
 		if e.complexity.Mutation.DeleteUser == nil {
@@ -382,7 +382,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(int)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -406,7 +406,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateComment(childComplexity, args["id"].(string), args["input"].(models.CommentInput)), true
+		return e.complexity.Mutation.UpdateComment(childComplexity, args["id"].(int), args["input"].(models.CommentInput)), true
 
 	case "Mutation.updateFriend":
 		if e.complexity.Mutation.UpdateFriend == nil {
@@ -418,7 +418,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateFriend(childComplexity, args["id"].(string), args["input"].(models.FriendInput)), true
+		return e.complexity.Mutation.UpdateFriend(childComplexity, args["id"].(int), args["input"].(models.FriendInput)), true
 
 	case "Mutation.updateLiked":
 		if e.complexity.Mutation.UpdateLiked == nil {
@@ -430,7 +430,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateLiked(childComplexity, args["id"].(string), args["input"].(models.LikedInput)), true
+		return e.complexity.Mutation.UpdateLiked(childComplexity, args["id"].(int), args["input"].(models.LikedInput)), true
 
 	case "Mutation.updateMarker":
 		if e.complexity.Mutation.UpdateMarker == nil {
@@ -442,7 +442,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMarker(childComplexity, args["id"].(string), args["input"].(models.MarkerInput)), true
+		return e.complexity.Mutation.UpdateMarker(childComplexity, args["id"].(int), args["input"].(models.MarkerInput)), true
 
 	case "Mutation.updateMute":
 		if e.complexity.Mutation.UpdateMute == nil {
@@ -454,7 +454,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMute(childComplexity, args["id"].(string), args["input"].(*models.MuteInput)), true
+		return e.complexity.Mutation.UpdateMute(childComplexity, args["id"].(int), args["input"].(*models.MuteInput)), true
 
 	case "Mutation.updatePost":
 		if e.complexity.Mutation.UpdatePost == nil {
@@ -466,7 +466,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdatePost(childComplexity, args["id"].(string), args["input"].(models.PostInput)), true
+		return e.complexity.Mutation.UpdatePost(childComplexity, args["id"].(int), args["input"].(models.PostInput)), true
 
 	case "Mutation.updateRequest":
 		if e.complexity.Mutation.UpdateRequest == nil {
@@ -478,7 +478,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateRequest(childComplexity, args["id"].(string), args["input"].(models.RequestInput)), true
+		return e.complexity.Mutation.UpdateRequest(childComplexity, args["id"].(int), args["input"].(models.RequestInput)), true
 
 	case "Mutation.updateSession":
 		if e.complexity.Mutation.UpdateSession == nil {
@@ -490,7 +490,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateSession(childComplexity, args["id"].(string), args["input"].(models.SessionInput)), true
+		return e.complexity.Mutation.UpdateSession(childComplexity, args["id"].(int), args["input"].(models.SessionInput)), true
 
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
@@ -502,7 +502,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["input"].(models.UserInput)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(int), args["input"].(models.UserInput)), true
 
 	case "Mutation.uploadFile":
 		if e.complexity.Mutation.UploadFile == nil {
@@ -836,7 +836,7 @@ input PostInput {
 }
 
 input LikedInput {
-  uid: String!
+  uid: Int!
 }
 
 # User
@@ -851,8 +851,8 @@ type User {
   gender: Gender
   avatar: String
   introduction: String
-  friends: [String]
-  mute: [String]
+  friends: [User]
+  mute: [User]
   post: [Post]
   comment: [Comment]
 }
@@ -879,11 +879,11 @@ input SessionInput {
 }
 
 input FriendInput {
-  friends: String!
+  friends: Int!
 }
 
 input MuteInput {
-  mute: String!
+  mute: Int!
 }
 
 input LoginInput {
@@ -954,7 +954,7 @@ enum RequestStatus {
 }
 
 input RequestInput {
-  requested: String
+  requested_uid: Int
   status: RequestStatus!
 }
 
@@ -1084,10 +1084,10 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1099,10 +1099,10 @@ func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1114,10 +1114,10 @@ func (ec *executionContext) field_Mutation_deleteMarker_args(ctx context.Context
 func (ec *executionContext) field_Mutation_deletePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1129,10 +1129,10 @@ func (ec *executionContext) field_Mutation_deletePost_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1144,10 +1144,10 @@ func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1174,10 +1174,10 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1198,10 +1198,10 @@ func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateFriend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1222,10 +1222,10 @@ func (ec *executionContext) field_Mutation_updateFriend_args(ctx context.Context
 func (ec *executionContext) field_Mutation_updateLiked_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1246,10 +1246,10 @@ func (ec *executionContext) field_Mutation_updateLiked_args(ctx context.Context,
 func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1270,10 +1270,10 @@ func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context
 func (ec *executionContext) field_Mutation_updateMute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1294,10 +1294,10 @@ func (ec *executionContext) field_Mutation_updateMute_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1318,10 +1318,10 @@ func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1342,10 +1342,10 @@ func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1366,10 +1366,10 @@ func (ec *executionContext) field_Mutation_updateSession_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1485,9 +1485,9 @@ func (ec *executionContext) _Comment_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Comment_user(ctx context.Context, field graphql.CollectedField, obj *models.Comment) (ret graphql.Marshaler) {
@@ -1721,9 +1721,9 @@ func (ec *executionContext) _Marker_id(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Marker_post(ctx context.Context, field graphql.CollectedField, obj *models.Marker) (ret graphql.Marshaler) {
@@ -2092,7 +2092,7 @@ func (ec *executionContext) _Mutation_updatePost(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdatePost(rctx, args["id"].(string), args["input"].(models.PostInput))
+		return ec.resolvers.Mutation().UpdatePost(rctx, args["id"].(int), args["input"].(models.PostInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2134,7 +2134,7 @@ func (ec *executionContext) _Mutation_updateLiked(ctx context.Context, field gra
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateLiked(rctx, args["id"].(string), args["input"].(models.LikedInput))
+		return ec.resolvers.Mutation().UpdateLiked(rctx, args["id"].(int), args["input"].(models.LikedInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2176,7 +2176,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUser(rctx, args["id"].(string), args["input"].(models.UserInput))
+		return ec.resolvers.Mutation().UpdateUser(rctx, args["id"].(int), args["input"].(models.UserInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2218,7 +2218,7 @@ func (ec *executionContext) _Mutation_updateSession(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateSession(rctx, args["id"].(string), args["input"].(models.SessionInput))
+		return ec.resolvers.Mutation().UpdateSession(rctx, args["id"].(int), args["input"].(models.SessionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2260,7 +2260,7 @@ func (ec *executionContext) _Mutation_updateFriend(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateFriend(rctx, args["id"].(string), args["input"].(models.FriendInput))
+		return ec.resolvers.Mutation().UpdateFriend(rctx, args["id"].(int), args["input"].(models.FriendInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2302,7 +2302,7 @@ func (ec *executionContext) _Mutation_updateMute(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMute(rctx, args["id"].(string), args["input"].(*models.MuteInput))
+		return ec.resolvers.Mutation().UpdateMute(rctx, args["id"].(int), args["input"].(*models.MuteInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2344,7 +2344,7 @@ func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMarker(rctx, args["id"].(string), args["input"].(models.MarkerInput))
+		return ec.resolvers.Mutation().UpdateMarker(rctx, args["id"].(int), args["input"].(models.MarkerInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2386,7 +2386,7 @@ func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateComment(rctx, args["id"].(string), args["input"].(models.CommentInput))
+		return ec.resolvers.Mutation().UpdateComment(rctx, args["id"].(int), args["input"].(models.CommentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2470,7 +2470,7 @@ func (ec *executionContext) _Mutation_updateRequest(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateRequest(rctx, args["id"].(string), args["input"].(models.RequestInput))
+		return ec.resolvers.Mutation().UpdateRequest(rctx, args["id"].(int), args["input"].(models.RequestInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2512,7 +2512,7 @@ func (ec *executionContext) _Mutation_deletePost(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeletePost(rctx, args["id"].(string))
+		return ec.resolvers.Mutation().DeletePost(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2554,7 +2554,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteUser(rctx, args["id"].(string))
+		return ec.resolvers.Mutation().DeleteUser(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2596,7 +2596,7 @@ func (ec *executionContext) _Mutation_deleteMarker(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteMarker(rctx, args["id"].(string))
+		return ec.resolvers.Mutation().DeleteMarker(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2638,7 +2638,7 @@ func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteComment(rctx, args["id"].(string))
+		return ec.resolvers.Mutation().DeleteComment(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2680,7 +2680,7 @@ func (ec *executionContext) _Mutation_deleteRequest(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteRequest(rctx, args["id"].(string))
+		return ec.resolvers.Mutation().DeleteRequest(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2769,9 +2769,9 @@ func (ec *executionContext) _Post_id(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Post_user(ctx context.Context, field graphql.CollectedField, obj *models.Post) (ret graphql.Marshaler) {
@@ -3347,9 +3347,9 @@ func (ec *executionContext) _Request_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Request_request(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
@@ -3487,9 +3487,9 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
@@ -3807,9 +3807,9 @@ func (ec *executionContext) _User_friends(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*string)
+	res := resTmp.([]*models.User)
 	fc.Result = res
-	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_mute(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
@@ -3839,9 +3839,9 @@ func (ec *executionContext) _User_mute(ctx context.Context, field graphql.Collec
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*string)
+	res := resTmp.([]*models.User)
 	fc.Result = res
-	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_post(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
@@ -5130,7 +5130,7 @@ func (ec *executionContext) unmarshalInputFriendInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("friends"))
-			it.Friends, err = ec.unmarshalNString2string(ctx, v)
+			it.Friends, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5153,7 +5153,7 @@ func (ec *executionContext) unmarshalInputLikedInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uid"))
-			it.UID, err = ec.unmarshalNString2string(ctx, v)
+			it.UID, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5246,7 +5246,7 @@ func (ec *executionContext) unmarshalInputMuteInput(ctx context.Context, obj int
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mute"))
-			it.Mute, err = ec.unmarshalNString2string(ctx, v)
+			it.Mute, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5304,11 +5304,11 @@ func (ec *executionContext) unmarshalInputRequestInput(ctx context.Context, obj 
 
 	for k, v := range asMap {
 		switch k {
-		case "requested":
+		case "requested_uid":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requested"))
-			it.Requested, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requested_uid"))
+			it.RequestedUID, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -6833,13 +6833,13 @@ func (ec *executionContext) marshalNGender2githubᚗcomᚋKatsushi21ᚋtraveling
 	return v
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
+func (ec *executionContext) unmarshalNID2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalIntID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
+func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalIntID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -7588,38 +7588,6 @@ func (ec *executionContext) marshalORequest2ᚖgithubᚗcomᚋKatsushi21ᚋtrave
 		return graphql.Null
 	}
 	return ec._Request(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

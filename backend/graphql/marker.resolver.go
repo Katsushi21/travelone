@@ -11,10 +11,10 @@ func (r *mutationResolver) CreateMarker(ctx context.Context, input models.Marker
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateMarker(ctx context.Context, id string, input models.MarkerInput) (*models.Marker, error) {
+func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input models.MarkerInput) (*models.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteMarker(ctx context.Context, id string) (*models.Marker, error) {
+func (r *mutationResolver) DeleteMarker(ctx context.Context, id int) (*models.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
