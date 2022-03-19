@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 type Request struct {
@@ -11,6 +12,8 @@ type Request struct {
 	Request   *User         `json:"request"`
 	Requested *User         `json:"requested"`
 	Status    RequestStatus `json:"status"`
+	CreatedAt time.Time     `json:"createdAt"`
+	UpdatedAt time.Time     `json:"updatedAt"`
 }
 
 type RequestInput struct {

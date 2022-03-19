@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT public.users (
-  id integer PRIMARY KEY,
-  email text NOT NULL DEFAULT '' default '',
+  id serial PRIMARY KEY,
+  email text UNIQUE NOT NULL DEFAULT '',
   password text NOT NULL DEFAULT '',
   type text NOT NULL DEFAULT '',
   session text NOT NULL DEFAULT '',
@@ -13,11 +13,10 @@ CREATE TABLE IF NOT public.users (
   mute integer [] NOT NULL DEFAULT [],
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),
-  deleted_at timestamp
 );
 
 CREATE TABLE IF NOT public.posts (
-  id integer PRIMARY KEY,
+  id serial PRIMARY KEY,
   uid integer NOT NULL DEFAULT '',
   title text NOT NULL DEFAULT '',
   body text NOT NULL DEFAULT '',
@@ -25,36 +24,32 @@ CREATE TABLE IF NOT public.posts (
   liked integer [] text NOT NULL DEFAULT [],
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),
-  deleted_at timestamp
 );
 
 CREATE TABLE IF NOT public.comments (
-  id integer PRIMARY KEY,
+  id serial PRIMARY KEY,
   post_id integer NOT NULL DEFAULT '',
   uid integer NOT NULL DEFAULT '',
   body text NOT NULL DEFAULT '',
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),
-  deleted_at timestamp
 );
 
 CREATE TABLE IF NOT public.markers (
-  id integer PRIMARY KEY,
+  id serial PRIMARY KEY,
   post_id integer NOT NULL DEFAULT '',
   title text NOT NULL DEFAULT '',
   lat text NOT NULL DEFAULT '',
   lng text NOT NULL DEFAULT '',
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),
-  deleted_at timestamp
 );
 
 CREATE TABLE IF NOT public.requests (
-  id integer PRIMARY KEY,
+  id serial PRIMARY KEY,
   request integer NOT NULL DEFAULT '',
   requested integer NOT NULL DEFAULT '',
   status text NOT NULL DEFAULT '',
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),
-  deleted_at timestamp
 );

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 type User struct {
@@ -19,6 +20,8 @@ type User struct {
 	Introduction *string    `json:"introduction"`
 	Friends      []*User    `json:"friends"`
 	Mute         []*User    `json:"mute"`
+	CreatedAt    time.Time  `json:"createdAt"`
+	UpdatedAt    time.Time  `json:"updatedAt"`
 	Post         []*Post    `json:"post"`
 	Comment      []*Comment `json:"comment"`
 }

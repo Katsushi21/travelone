@@ -1,6 +1,6 @@
 # scalar
 scalar Upload
-scalar Timestamp
+scalar Time
 
 # Post
 type Post {
@@ -10,8 +10,8 @@ type Post {
   body: String!
   img: String
   liked: [User]
-  registration: Timestamp
-  modification: Timestamp
+  createdAt: Time!
+  updatedAt: Time!
   marker: Marker
   comment: [Comment]
 }
@@ -40,6 +40,8 @@ type User {
   introduction: String
   friends: [User]
   mute: [User]
+  createdAt: Time!
+  updatedAt: Time!
   post: [Post]
   comment: [Comment]
 }
@@ -91,6 +93,8 @@ type Marker {
   title: String
   lat: String
   lng: String
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 input MarkerInput {
@@ -105,8 +109,8 @@ type Comment {
   user: User!
   post: Post!
   body: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 input CommentInput {
@@ -128,6 +132,8 @@ type Request {
   request: User!
   requested: User!
   status: RequestStatus!
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 enum RequestStatus {
