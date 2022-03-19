@@ -5,11 +5,14 @@ go 1.17
 require (
 	github.com/99designs/gqlgen v0.17.1
 	github.com/vektah/gqlparser/v2 v2.4.0
+	gorm.io/gorm v1.23.3
 )
 
 require (
 	github.com/agnivade/levenshtein v1.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/matryer/moq v0.2.3 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect

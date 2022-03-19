@@ -1,13 +1,7 @@
 package graphql
 
-import (
-	"github.com/Katsushi21/traveling_alone/models"
-)
+import "gorm.io/gorm"
 
 type Resolver struct {
-	posts    []*models.Post
-	users    []*models.User
-	comments []*models.Comment
-	markers  []*models.Marker
-	requests []*models.Request
+	DB *gorm.DB
 }
