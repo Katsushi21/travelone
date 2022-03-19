@@ -11,23 +11,23 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input models.UserInput) (*models.User, error) {
+func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.UserInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*models.User, error) {
+func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateSession(ctx context.Context, id string, input models.SessionInput) (*models.User, error) {
+func (r *mutationResolver) UpdateSession(ctx context.Context, id int, input models.SessionInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateFriend(ctx context.Context, id string, input models.FriendInput) (*models.User, error) {
+func (r *mutationResolver) UpdateFriend(ctx context.Context, id int, input models.FriendInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateMute(ctx context.Context, id string, input *models.MuteInput) (*models.User, error) {
+func (r *mutationResolver) UpdateMute(ctx context.Context, id int, input *models.MuteInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

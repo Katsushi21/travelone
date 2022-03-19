@@ -23,7 +23,7 @@ input PostInput {
 }
 
 input LikedInput {
-  uid: String!
+  uid: Int!
 }
 
 # User
@@ -38,8 +38,8 @@ type User {
   gender: Gender
   avatar: String
   introduction: String
-  friends: [String]
-  mute: [String]
+  friends: [User]
+  mute: [User]
   post: [Post]
   comment: [Comment]
 }
@@ -66,11 +66,11 @@ input SessionInput {
 }
 
 input FriendInput {
-  friends: String!
+  friends: Int!
 }
 
 input MuteInput {
-  mute: String!
+  mute: Int!
 }
 
 input LoginInput {
@@ -141,7 +141,7 @@ enum RequestStatus {
 }
 
 input RequestInput {
-  requested: String
+  requested_uid: Int
   status: RequestStatus!
 }
 

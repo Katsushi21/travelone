@@ -7,15 +7,15 @@ import (
 )
 
 type Request struct {
-	ID        string        `json:"id"`
+	ID        int           `json:"id"`
 	Request   *User         `json:"request"`
 	Requested *User         `json:"requested"`
 	Status    RequestStatus `json:"status"`
 }
 
 type RequestInput struct {
-	Requested *string       `json:"requested"`
-	Status    RequestStatus `json:"status"`
+	RequestedUID *int          `json:"requested_uid"`
+	Status       RequestStatus `json:"status"`
 }
 
 type RequestStatus string

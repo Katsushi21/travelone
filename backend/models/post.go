@@ -1,7 +1,7 @@
 package models
 
 type Post struct {
-	ID           string     `json:"id"`
+	ID           int        `json:"id"`
 	User         *User      `json:"user"`
 	Title        string     `json:"title"`
 	Body         string     `json:"body"`
@@ -17,4 +17,8 @@ type PostInput struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
 	Img   string `json:"img"`
+}
+
+type LikedInput struct {
+	UID int `json:"uid"`
 }

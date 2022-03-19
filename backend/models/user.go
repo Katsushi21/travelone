@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	ID           string     `json:"id"`
+	ID           int        `json:"id"`
 	Email        *string    `json:"email"`
 	Password     *string    `json:"password"`
 	Type         *UserType  `json:"type"`
@@ -17,8 +17,8 @@ type User struct {
 	Gender       *Gender    `json:"gender"`
 	Avatar       *string    `json:"avatar"`
 	Introduction *string    `json:"introduction"`
-	Friends      []*string  `json:"friends"`
-	Mute         []*string  `json:"mute"`
+	Friends      []*User    `json:"friends"`
+	Mute         []*User    `json:"mute"`
 	Post         []*Post    `json:"post"`
 	Comment      []*Comment `json:"comment"`
 }
@@ -38,19 +38,16 @@ type SessionInput struct {
 	Session string `json:"session"`
 }
 type FriendInput struct {
-	Friends string `json:"friends"`
+	Friends int `json:"friends"`
 }
 
-type LikedInput struct {
-	UID string `json:"uid"`
+type MuteInput struct {
+	Mute int `json:"mute"`
 }
 
 type LoginInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
-}
-type MuteInput struct {
-	Mute string `json:"mute"`
 }
 
 type Gender string

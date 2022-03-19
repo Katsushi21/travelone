@@ -1,7 +1,7 @@
 package models
 
 type Comment struct {
-	ID        string  `json:"id"`
+	ID        int     `json:"id"`
 	User      *User   `json:"user"`
 	Post      *Post   `json:"post"`
 	Body      *string `json:"body"`

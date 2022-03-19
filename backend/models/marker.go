@@ -1,7 +1,7 @@
 package models
 
 type Marker struct {
-	ID    string  `json:"id"`
+	ID    int     `json:"id"`
 	Post  *Post   `json:"post"`
 	Title *string `json:"title"`
 	Lat   *string `json:"lat"`
