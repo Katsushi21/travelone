@@ -1,4 +1,3 @@
-// Query returns QueryResolver implementation.
 package graphql
 
 import (

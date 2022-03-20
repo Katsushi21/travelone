@@ -41,7 +41,6 @@ type ResolverRoot interface {
 	Mutation() MutationResolver
 	Post() PostResolver
 	Query() QueryResolver
-	Request() RequestResolver
 	User() UserResolver
 }
 
@@ -118,12 +117,12 @@ type ComplexityRoot struct {
 	}
 
 	Request struct {
-		CreatedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Request   func(childComplexity int) int
-		Requested func(childComplexity int) int
-		Status    func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		ID           func(childComplexity int) int
+		RequestUID   func(childComplexity int) int
+		RequestedUID func(childComplexity int) int
+		Status       func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 	}
 
 	User struct {
@@ -190,10 +189,6 @@ type QueryResolver interface {
 	Comment(ctx context.Context) ([]*models.Comment, error)
 	Marker(ctx context.Context) ([]*models.Marker, error)
 	Request(ctx context.Context) ([]*models.Request, error)
-}
-type RequestResolver interface {
-	Request(ctx context.Context, obj *models.Request) (*models.User, error)
-	Requested(ctx context.Context, obj *models.Request) (*models.User, error)
 }
 type UserResolver interface {
 	Friends(ctx context.Context, obj *models.User) ([]*models.User, error)
@@ -687,19 +682,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Request.ID(childComplexity), true
 
-	case "Request.request":
-		if e.complexity.Request.Request == nil {
+	case "Request.request_uid":
+		if e.complexity.Request.RequestUID == nil {
 			break
 		}
 
-		return e.complexity.Request.Request(childComplexity), true
+		return e.complexity.Request.RequestUID(childComplexity), true
 
-	case "Request.requested":
-		if e.complexity.Request.Requested == nil {
+	case "Request.requested_uid":
+		if e.complexity.Request.RequestedUID == nil {
 			break
 		}
 
-		return e.complexity.Request.Requested(childComplexity), true
+		return e.complexity.Request.RequestedUID(childComplexity), true
 
 	case "Request.status":
 		if e.complexity.Request.Status == nil {
@@ -1022,8 +1017,8 @@ input UploadFile {
 # Request
 type Request {
   id: ID!
-  request: User!
-  requested: User!
+  request_uid: User!
+  requested_uid: User!
   status: RequestStatus!
   createdAt: Time!
   updatedAt: Time!
@@ -3520,7 +3515,7 @@ func (ec *executionContext) _Request_id(ctx context.Context, field graphql.Colle
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Request_request(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
+func (ec *executionContext) _Request_request_uid(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3531,14 +3526,14 @@ func (ec *executionContext) _Request_request(ctx context.Context, field graphql.
 		Object:     "Request",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().Request(rctx, obj)
+		return obj.RequestUID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3555,7 +3550,7 @@ func (ec *executionContext) _Request_request(ctx context.Context, field graphql.
 	return ec.marshalNUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Request_requested(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
+func (ec *executionContext) _Request_requested_uid(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3566,14 +3561,14 @@ func (ec *executionContext) _Request_requested(ctx context.Context, field graphq
 		Object:     "Request",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().Requested(rctx, obj)
+		return obj.RequestedUID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6554,48 +6549,28 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
-		case "request":
-			field := field
-
+		case "request_uid":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_request(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+				return ec._Request_request_uid(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
-		case "requested":
-			field := field
-
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "requested_uid":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_requested(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+				return ec._Request_requested_uid(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "status":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Request_status(ctx, field, obj)
@@ -6604,7 +6579,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "createdAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6614,7 +6589,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "updatedAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6624,7 +6599,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))

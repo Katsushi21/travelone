@@ -129,8 +129,8 @@ input UploadFile {
 # Request
 type Request {
   id: ID!
-  request: User!
-  requested: User!
+  request_uid: User!
+  requested_uid: User!
   status: RequestStatus!
   createdAt: Time!
   updatedAt: Time!

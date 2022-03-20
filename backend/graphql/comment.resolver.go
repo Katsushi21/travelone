@@ -26,7 +26,3 @@ func (r *commentResolver) User(ctx context.Context, obj *models.Comment) (*model
 func (r *commentResolver) Post(ctx context.Context, obj *models.Comment) (*models.Post, error) {
 	panic(fmt.Errorf("not implemented"))
 }
-
-func (r *userResolver) Comment(ctx context.Context, obj *models.User) ([]*models.Comment, error) {
-	panic(fmt.Errorf("not implemented"))
-}

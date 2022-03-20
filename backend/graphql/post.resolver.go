@@ -38,7 +38,3 @@ func (r *postResolver) Marker(ctx context.Context, obj *models.Post) (*models.Ma
 func (r *postResolver) Comment(ctx context.Context, obj *models.Post) ([]*models.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }
-
-func (r *userResolver) Post(ctx context.Context, obj *models.User) ([]*models.Post, error) {
-	panic(fmt.Errorf("not implemented"))
-}
