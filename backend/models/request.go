@@ -9,8 +9,8 @@ import (
 
 type Request struct {
 	ID        int           `json:"id"`
-	Request   *User         `json:"request"`
-	Requested *User         `json:"requested"`
+	Request   *int          `json:"request"`
+	Requested *int          `json:"requested"`
 	Status    RequestStatus `json:"status"`
 	CreatedAt time.Time     `json:"createdAt"`
 	UpdatedAt time.Time     `json:"updatedAt"`

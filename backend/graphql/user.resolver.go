@@ -34,3 +34,19 @@ func (r *mutationResolver) UpdateMute(ctx context.Context, id int, input *models
 func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }
+
+func (r *requestResolver) Request(ctx context.Context, obj *models.Request) (*models.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *requestResolver) Requested(ctx context.Context, obj *models.Request) (*models.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *userResolver) Friends(ctx context.Context, obj *models.User) ([]*models.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *userResolver) Mute(ctx context.Context, obj *models.User) ([]*models.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}

@@ -18,3 +18,7 @@ func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input model
 func (r *mutationResolver) DeleteMarker(ctx context.Context, id int) (*models.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
+
+func (r *markerResolver) Post(ctx context.Context, obj *models.Marker) (*models.Post, error) {
+	panic(fmt.Errorf("not implemented"))
+}
