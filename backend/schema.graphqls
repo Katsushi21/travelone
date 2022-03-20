@@ -5,18 +5,20 @@ scalar Time
 # Post
 type Post {
   id: ID!
-  user: User!
+  uid: Int!
   title: String!
   body: String!
-  img: String
-  liked: [User]
+  img: String!
+  liked: [User]!
   createdAt: Time!
   updatedAt: Time!
+  user: User
   marker: Marker
   comment: [Comment]
 }
 
 input PostInput {
+  uid: Int!
   title: String!
   body: String!
   img: String!
@@ -40,8 +42,8 @@ type User {
   introduction: String
   friends: [User]
   mute: [User]
-  createdAt: Time!
-  updatedAt: Time!
+  createdAt: Time
+  updatedAt: Time
   post: [Post]
   comment: [Comment]
 }
@@ -89,15 +91,17 @@ enum Gender {
 # Marker
 type Marker {
   id: ID!
-  post: Post!
-  title: String
-  lat: String
-  lng: String
+  post_id: Int!
+  title: String!
+  lat: String!
+  lng: String!
   createdAt: Time!
   updatedAt: Time!
+  post: Post
 }
 
 input MarkerInput {
+  post_id: Int!
   title: String!
   lat: String!
   lng: String!
@@ -106,14 +110,18 @@ input MarkerInput {
 # Comment
 type Comment {
   id: ID!
-  user: User!
-  post: Post!
-  body: String
+  post_id: Int!
+  uid: Int!
+  body: String!
   createdAt: Time!
   updatedAt: Time!
+  post: Post
+  user: User
 }
 
 input CommentInput {
+  post_id: Int!
+  uid: Int!
   body: String!
 }
 
@@ -129,11 +137,13 @@ input UploadFile {
 # Request
 type Request {
   id: ID!
-  request_uid: User!
-  requested_uid: User!
+  request_uid: Int!
+  requested_uid: Int!
   status: RequestStatus!
   createdAt: Time!
   updatedAt: Time!
+  request_user: User
+  requested_user: User
 }
 
 enum RequestStatus {
@@ -147,7 +157,8 @@ enum RequestStatus {
 }
 
 input RequestInput {
-  requested_uid: Int
+  request_uid: Int!
+  requested_uid: Int!
   status: RequestStatus!
 }
 

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT public.posts (
   title text NOT NULL DEFAULT '',
   body text NOT NULL DEFAULT '',
   img text NOT NULL DEFAULT '',
-  liked integer [] text NOT NULL DEFAULT [],
+  liked integer [] NOT NULL DEFAULT [],
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),
 );
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT public.markers (
 
 CREATE TABLE IF NOT public.requests (
   id serial PRIMARY KEY,
-  request integer NOT NULL DEFAULT '',
-  requested integer NOT NULL DEFAULT '',
+  request_uid integer NOT NULL DEFAULT '',
+  requested_uid integer NOT NULL DEFAULT '',
   status text NOT NULL DEFAULT '',
   created_at timestamp NOT NULL DEFAULT now(),
   updated_at timestamp NOT NULL DEFAULT now(),

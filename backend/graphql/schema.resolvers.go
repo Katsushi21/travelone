@@ -15,6 +15,9 @@ func (r *Resolver) Post() PostResolver { return &postResolver{r} }
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Request returns RequestResolver implementation.
+func (r *Resolver) Request() RequestResolver { return &requestResolver{r} }
+
 // User returns UserResolver implementation.
 func (r *Resolver) User() UserResolver { return &userResolver{r} }
 
@@ -23,4 +26,5 @@ type markerResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type postResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type requestResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
