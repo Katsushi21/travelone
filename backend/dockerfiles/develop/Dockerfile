@@ -1,6 +1,6 @@
 FROM golang:1.18.0-alpine3.15 as dev
 
-ENV ROOT=/go/src/app
+ENV ROOT=/src/app
 ENV CGO_ENABLED 0
 WORKDIR ${ROOT}
 

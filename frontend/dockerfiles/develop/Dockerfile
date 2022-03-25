@@ -1,7 +1,7 @@
 FROM node:16-alpine3.12 AS build
 
-RUN mkdir /app
-WORKDIR /app
+RUN mkdir -p /src/app
+WORKDIR /src/app
 
 COPY . .
 
