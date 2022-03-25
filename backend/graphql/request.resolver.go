@@ -18,3 +18,11 @@ func (r *mutationResolver) UpdateRequest(ctx context.Context, id int, input mode
 func (r *mutationResolver) DeleteRequest(ctx context.Context, id int) (*models.Request, error) {
 	panic(fmt.Errorf("not implemented"))
 }
+
+func (r *requestResolver) RequestUser(ctx context.Context, obj *models.Request) (*models.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *requestResolver) RequestedUser(ctx context.Context, obj *models.Request) (*models.User, error) {
+	panic(fmt.Errorf("not implemented"))
+}

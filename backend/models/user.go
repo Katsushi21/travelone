@@ -8,20 +8,20 @@ import (
 )
 
 type User struct {
-	ID           int       `json:"id"`
-	Email        *string   `json:"email"`
-	Password     *string   `json:"password"`
-	Type         *UserType `json:"type"`
-	Session      *string   `json:"session"`
-	Name         *string   `json:"name"`
-	Age          *int      `json:"age"`
-	Gender       *Gender   `json:"gender"`
-	Avatar       *string   `json:"avatar"`
-	Introduction *string   `json:"introduction"`
-	Friends      []*int    `json:"friends"`
-	Mute         []*int    `json:"mute"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
+	ID           int        `json:"id"`
+	Email        *string    `json:"email"`
+	Password     *string    `json:"password"`
+	Type         *UserType  `json:"type"`
+	Session      *string    `json:"session"`
+	Name         *string    `json:"name"`
+	Age          *int       `json:"age"`
+	Gender       *Gender    `json:"gender"`
+	Avatar       *string    `json:"avatar"`
+	Introduction *string    `json:"introduction"`
+	Friends      []*int     `json:"friends"`
+	Mute         []*int     `json:"mute"`
+	CreatedAt    *time.Time `json:"createdAt"`
+	UpdatedAt    *time.Time `json:"updatedAt"`
 }
 
 type UserInput struct {
@@ -38,6 +38,7 @@ type UserInput struct {
 type SessionInput struct {
 	Session string `json:"session"`
 }
+
 type FriendInput struct {
 	Friends int `json:"friends"`
 }
