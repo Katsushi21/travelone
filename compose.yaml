@@ -4,6 +4,7 @@ services:
       context: ./frontend
       dockerfile: ./dockerfiles/develop/Dockerfile
     container_name: frontend
+    hostname: travel-back.com
     ports:
       - "3000:3000"
     volumes:
@@ -15,6 +16,7 @@ services:
       dockerfile: ./dockerfiles/develop/Dockerfile
       target: dev
     container_name: backend
+    hostname: travel-front.com
     ports:
       - "8000:8000"
     volumes:
@@ -25,6 +27,7 @@ services:
   db:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: db
+    hostname: travel-db.com
     restart: always
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
@@ -42,6 +45,7 @@ services:
   proxy:
     build: proxy
     container_name: proxy
+    hostname: travel-proxy.com
     ports:
       - 80:80
     depends_on:

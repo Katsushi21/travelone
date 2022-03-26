@@ -18,13 +18,15 @@ type Post {
 }
 
 input PostInput {
-  uid: Int!
+  id: Int
+  uid: Int
   title: String!
   body: String!
   img: String!
 }
 
 input LikedInput {
+  post_id: Int!
   uid: Int!
 }
 
@@ -55,6 +57,7 @@ enum UserType {
 }
 
 input UserInput {
+  id: Int
   email: String!
   password: String!
   type: UserType!
@@ -66,18 +69,22 @@ input UserInput {
 }
 
 input SessionInput {
+  id: Int
   session: String!
 }
 
 input FriendInput {
+  id: Int
   friends: Int!
 }
 
 input MuteInput {
+  id: Int
   mute: Int!
 }
 
 input LoginInput {
+  id: Int
   email: String!
   password: String!
 }
@@ -101,7 +108,8 @@ type Marker {
 }
 
 input MarkerInput {
-  post_id: Int!
+  id: Int
+  post_id: Int
   title: String!
   lat: String!
   lng: String!
@@ -120,7 +128,8 @@ type Comment {
 }
 
 input CommentInput {
-  post_id: Int!
+  id: Int
+  post_id: Int
   uid: Int!
   body: String!
 }
@@ -188,7 +197,6 @@ type Mutation {
   updateMute(id: ID!, input: MuteInput): User!
 
   updateMarker(id: ID!, input: MarkerInput!): Marker!
-  updateComment(id: ID!, input: CommentInput!): Comment!
   uploadFile(input: UploadFile!): File!
   updateRequest(id: ID!, input: RequestInput!): Request!
 
