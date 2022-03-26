@@ -5,10 +5,23 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
+	"github.com/Katsushi21/traveling_alone/postgres"
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInput) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	db := postgres.Connect()
+	user := &models.User{
+		Email:        &input.Email,
+		Password:     &input.Password,
+		Type:         &input.Type,
+		Name:         &input.Name,
+		Age:          &input.Age,
+		Gender:       &input.Gender,
+		Avatar:       &input.Avatar,
+		Introduction: &input.Introduction,
+	}
+	db.Create(&user)
+	return user, nil
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.UserInput) (*models.User, error) {

@@ -13,7 +13,8 @@ type Marker struct {
 }
 
 type MarkerInput struct {
-	PostID int    `json:"post_id"`
+	ID     *int   `json:"id"`
+	PostID *int   `json:"post_id"`
 	Title  string `json:"title"`
 	Lat    string `json:"lat"`
 	Lng    string `json:"lng"`

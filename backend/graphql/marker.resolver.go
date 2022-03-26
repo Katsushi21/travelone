@@ -5,10 +5,19 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
+	"github.com/Katsushi21/traveling_alone/postgres"
 )
 
 func (r *mutationResolver) CreateMarker(ctx context.Context, input models.MarkerInput) (*models.Marker, error) {
-	panic(fmt.Errorf("not implemented"))
+	db := postgres.Connect()
+	marker := &models.Marker{
+		PostID: *input.PostID,
+		Title:  input.Title,
+		Lat:    input.Lat,
+		Lng:    input.Lng,
+	}
+	db.Create(&marker)
+	return marker, nil
 }
 
 func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input models.MarkerInput) (*models.Marker, error) {

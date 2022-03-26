@@ -87,7 +87,6 @@ type ComplexityRoot struct {
 		DeleteRequest func(childComplexity int, id int) int
 		DeleteUser    func(childComplexity int, id int) int
 		Login         func(childComplexity int, input models.LoginInput) int
-		UpdateComment func(childComplexity int, id int, input models.CommentInput) int
 		UpdateFriend  func(childComplexity int, id int, input models.FriendInput) int
 		UpdateLiked   func(childComplexity int, id int, input models.LikedInput) int
 		UpdateMarker  func(childComplexity int, id int, input models.MarkerInput) int
@@ -172,7 +171,6 @@ type MutationResolver interface {
 	UpdateFriend(ctx context.Context, id int, input models.FriendInput) (*models.User, error)
 	UpdateMute(ctx context.Context, id int, input *models.MuteInput) (*models.User, error)
 	UpdateMarker(ctx context.Context, id int, input models.MarkerInput) (*models.Marker, error)
-	UpdateComment(ctx context.Context, id int, input models.CommentInput) (*models.Comment, error)
 	UploadFile(ctx context.Context, input models.UploadFile) (*models.File, error)
 	UpdateRequest(ctx context.Context, id int, input models.RequestInput) (*models.Request, error)
 	DeletePost(ctx context.Context, id int) (*models.Post, error)
@@ -473,18 +471,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Login(childComplexity, args["input"].(models.LoginInput)), true
-
-	case "Mutation.updateComment":
-		if e.complexity.Mutation.UpdateComment == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateComment_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateComment(childComplexity, args["id"].(int), args["input"].(models.CommentInput)), true
 
 	case "Mutation.updateFriend":
 		if e.complexity.Mutation.UpdateFriend == nil {
@@ -958,13 +944,15 @@ type Post {
 }
 
 input PostInput {
-  uid: Int!
+  id: Int
+  uid: Int
   title: String!
   body: String!
   img: String!
 }
 
 input LikedInput {
+  post_id: Int!
   uid: Int!
 }
 
@@ -995,6 +983,7 @@ enum UserType {
 }
 
 input UserInput {
+  id: Int
   email: String!
   password: String!
   type: UserType!
@@ -1006,18 +995,22 @@ input UserInput {
 }
 
 input SessionInput {
+  id: Int
   session: String!
 }
 
 input FriendInput {
+  id: Int
   friends: Int!
 }
 
 input MuteInput {
+  id: Int
   mute: Int!
 }
 
 input LoginInput {
+  id: Int
   email: String!
   password: String!
 }
@@ -1041,7 +1034,8 @@ type Marker {
 }
 
 input MarkerInput {
-  post_id: Int!
+  id: Int
+  post_id: Int
   title: String!
   lat: String!
   lng: String!
@@ -1060,7 +1054,8 @@ type Comment {
 }
 
 input CommentInput {
-  post_id: Int!
+  id: Int
+  post_id: Int
   uid: Int!
   body: String!
 }
@@ -1128,7 +1123,6 @@ type Mutation {
   updateMute(id: ID!, input: MuteInput): User!
 
   updateMarker(id: ID!, input: MarkerInput!): Marker!
-  updateComment(id: ID!, input: CommentInput!): Comment!
   uploadFile(input: UploadFile!): File!
   updateRequest(id: ID!, input: RequestInput!): Request!
 
@@ -1312,30 +1306,6 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 		}
 	}
 	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	var arg1 models.CommentInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCommentInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐCommentInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg1
 	return args, nil
 }
 
@@ -2687,48 +2657,6 @@ func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field gr
 	res := resTmp.(*models.Marker)
 	fc.Result = res
 	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐMarker(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updateComment_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateComment(rctx, args["id"].(int), args["input"].(models.CommentInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Comment)
-	fc.Result = res
-	return ec.marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_uploadFile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5673,11 +5601,19 @@ func (ec *executionContext) unmarshalInputCommentInput(ctx context.Context, obj 
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "post_id":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("post_id"))
-			it.PostID, err = ec.unmarshalNInt2int(ctx, v)
+			it.PostID, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5712,6 +5648,14 @@ func (ec *executionContext) unmarshalInputFriendInput(ctx context.Context, obj i
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "friends":
 			var err error
 
@@ -5735,6 +5679,14 @@ func (ec *executionContext) unmarshalInputLikedInput(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
+		case "post_id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("post_id"))
+			it.PostID, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "uid":
 			var err error
 
@@ -5758,6 +5710,14 @@ func (ec *executionContext) unmarshalInputLoginInput(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "email":
 			var err error
 
@@ -5789,11 +5749,19 @@ func (ec *executionContext) unmarshalInputMarkerInput(ctx context.Context, obj i
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "post_id":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("post_id"))
-			it.PostID, err = ec.unmarshalNInt2int(ctx, v)
+			it.PostID, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5836,6 +5804,14 @@ func (ec *executionContext) unmarshalInputMuteInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "mute":
 			var err error
 
@@ -5859,11 +5835,19 @@ func (ec *executionContext) unmarshalInputPostInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "uid":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uid"))
-			it.UID, err = ec.unmarshalNInt2int(ctx, v)
+			it.UID, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5945,6 +5929,14 @@ func (ec *executionContext) unmarshalInputSessionInput(ctx context.Context, obj 
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "session":
 			var err error
 
@@ -5991,6 +5983,14 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "email":
 			var err error
 
@@ -6455,16 +6455,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateMarker":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateMarker(ctx, field)
-			}
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "updateComment":
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateComment(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)

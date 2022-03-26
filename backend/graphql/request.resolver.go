@@ -5,10 +5,18 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
+	"github.com/Katsushi21/traveling_alone/postgres"
 )
 
 func (r *mutationResolver) CreateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
-	panic(fmt.Errorf("not implemented"))
+	db := postgres.Connect()
+	request := &models.Request{
+		RequestUID:   input.RequestUID,
+		RequestedUID: input.RequestedUID,
+		Status:       input.Status,
+	}
+	db.Create(&request)
+	return request, nil
 }
 
 func (r *mutationResolver) UpdateRequest(ctx context.Context, id int, input models.RequestInput) (*models.Request, error) {

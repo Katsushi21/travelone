@@ -5,14 +5,18 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
+	"github.com/Katsushi21/traveling_alone/postgres"
 )
 
 func (r *mutationResolver) CreateComment(ctx context.Context, input models.CommentInput) (*models.Comment, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *mutationResolver) UpdateComment(ctx context.Context, id int, input models.CommentInput) (*models.Comment, error) {
-	panic(fmt.Errorf("not implemented"))
+	db := postgres.Connect()
+	comment := &models.Comment{
+		PostID: *input.PostID,
+		UID:    input.UID,
+		Body:   input.Body,
+	}
+	db.Create(&comment)
+	return comment, nil
 }
 
 func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*models.Comment, error) {
