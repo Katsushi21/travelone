@@ -944,15 +944,13 @@ type Post {
 }
 
 input PostInput {
-  id: Int
-  uid: Int
+  uid: Int!
   title: String!
   body: String!
   img: String!
 }
 
 input LikedInput {
-  post_id: Int!
   uid: Int!
 }
 
@@ -983,7 +981,6 @@ enum UserType {
 }
 
 input UserInput {
-  id: Int
   email: String!
   password: String!
   type: UserType!
@@ -995,22 +992,18 @@ input UserInput {
 }
 
 input SessionInput {
-  id: Int
   session: String!
 }
 
 input FriendInput {
-  id: Int
   friends: Int!
 }
 
 input MuteInput {
-  id: Int
   mute: Int!
 }
 
 input LoginInput {
-  id: Int
   email: String!
   password: String!
 }
@@ -1034,8 +1027,7 @@ type Marker {
 }
 
 input MarkerInput {
-  id: Int
-  post_id: Int
+  post_id: Int!
   title: String!
   lat: String!
   lng: String!
@@ -1054,8 +1046,7 @@ type Comment {
 }
 
 input CommentInput {
-  id: Int
-  post_id: Int
+  post_id: Int!
   uid: Int!
   body: String!
 }
@@ -5601,19 +5592,11 @@ func (ec *executionContext) unmarshalInputCommentInput(ctx context.Context, obj 
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "post_id":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("post_id"))
-			it.PostID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5648,14 +5631,6 @@ func (ec *executionContext) unmarshalInputFriendInput(ctx context.Context, obj i
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "friends":
 			var err error
 
@@ -5679,14 +5654,6 @@ func (ec *executionContext) unmarshalInputLikedInput(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
-		case "post_id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("post_id"))
-			it.PostID, err = ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "uid":
 			var err error
 
@@ -5710,14 +5677,6 @@ func (ec *executionContext) unmarshalInputLoginInput(ctx context.Context, obj in
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "email":
 			var err error
 
@@ -5749,19 +5708,11 @@ func (ec *executionContext) unmarshalInputMarkerInput(ctx context.Context, obj i
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "post_id":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("post_id"))
-			it.PostID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5804,14 +5755,6 @@ func (ec *executionContext) unmarshalInputMuteInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "mute":
 			var err error
 
@@ -5835,19 +5778,11 @@ func (ec *executionContext) unmarshalInputPostInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "uid":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uid"))
-			it.UID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			it.UID, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5929,14 +5864,6 @@ func (ec *executionContext) unmarshalInputSessionInput(ctx context.Context, obj 
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "session":
 			var err error
 
@@ -5983,14 +5910,6 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "email":
 			var err error
 

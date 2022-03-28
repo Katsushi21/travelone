@@ -14,14 +14,12 @@ type Post struct {
 }
 
 type PostInput struct {
-	ID    *int   `json:"id"`
-	UID   *int   `json:"uid"`
+	UID   int    `json:"uid"`
 	Title string `json:"title"`
 	Body  string `json:"body"`
 	Img   string `json:"img"`
 }
 
 type LikedInput struct {
-	PostID int `json:"post_id"`
-	UID    int `json:"uid"`
+	UID int `json:"uid"`
 }

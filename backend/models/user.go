@@ -25,7 +25,6 @@ type User struct {
 }
 
 type UserInput struct {
-	ID           *int     `json:"id"`
 	Email        string   `json:"email"`
 	Password     string   `json:"password"`
 	Type         UserType `json:"type"`
@@ -37,22 +36,18 @@ type UserInput struct {
 }
 
 type SessionInput struct {
-	ID      *int   `json:"id"`
 	Session string `json:"session"`
 }
 
 type FriendInput struct {
-	ID      *int `json:"id"`
-	Friends int  `json:"friends"`
+	Friends int `json:"friends"`
 }
 
 type MuteInput struct {
-	ID   *int `json:"id"`
-	Mute int  `json:"mute"`
+	Mute int `json:"mute"`
 }
 
 type LoginInput struct {
-	ID       *int   `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

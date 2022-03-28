@@ -18,15 +18,13 @@ type Post {
 }
 
 input PostInput {
-  id: Int
-  uid: Int
+  uid: Int!
   title: String!
   body: String!
   img: String!
 }
 
 input LikedInput {
-  post_id: Int!
   uid: Int!
 }
 
@@ -57,7 +55,6 @@ enum UserType {
 }
 
 input UserInput {
-  id: Int
   email: String!
   password: String!
   type: UserType!
@@ -69,22 +66,18 @@ input UserInput {
 }
 
 input SessionInput {
-  id: Int
   session: String!
 }
 
 input FriendInput {
-  id: Int
   friends: Int!
 }
 
 input MuteInput {
-  id: Int
   mute: Int!
 }
 
 input LoginInput {
-  id: Int
   email: String!
   password: String!
 }
@@ -108,8 +101,7 @@ type Marker {
 }
 
 input MarkerInput {
-  id: Int
-  post_id: Int
+  post_id: Int!
   title: String!
   lat: String!
   lng: String!
@@ -128,8 +120,7 @@ type Comment {
 }
 
 input CommentInput {
-  id: Int
-  post_id: Int
+  post_id: Int!
   uid: Int!
   body: String!
 }

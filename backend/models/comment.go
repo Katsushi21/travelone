@@ -12,8 +12,7 @@ type Comment struct {
 }
 
 type CommentInput struct {
-	ID     *int   `json:"id"`
-	PostID *int   `json:"post_id"`
+	PostID int    `json:"post_id"`
 	UID    int    `json:"uid"`
 	Body   string `json:"body"`
 }
