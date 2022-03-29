@@ -38,7 +38,6 @@ services:
       - POSTGRES_DBNAME=${POSTGRES_DBNAME}
     expose:
       - 5432:5432
-    command: echo "running ${POSTGRES_DBNAME}"
     depends_on:
       - backend
 
