@@ -10,6 +10,7 @@ type Marker struct {
 	Lng       string    `json:"lng"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+	Post      *Post     `json:"post"`
 }
 
 type MarkerInput struct {

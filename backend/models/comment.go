@@ -9,6 +9,8 @@ type Comment struct {
 	Body      string    `json:"body"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+	Post      *Post     `json:"post"`
+	User      *User     `json:"user"`
 }
 
 type CommentInput struct {

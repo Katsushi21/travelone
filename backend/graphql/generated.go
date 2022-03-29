@@ -36,13 +36,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Comment() CommentResolver
-	Marker() MarkerResolver
 	Mutation() MutationResolver
-	Post() PostResolver
 	Query() QueryResolver
-	Request() RequestResolver
-	User() UserResolver
 }
 
 type DirectiveRoot struct {
@@ -151,13 +146,6 @@ type ComplexityRoot struct {
 	}
 }
 
-type CommentResolver interface {
-	Post(ctx context.Context, obj *models.Comment) (*models.Post, error)
-	User(ctx context.Context, obj *models.Comment) (*models.User, error)
-}
-type MarkerResolver interface {
-	Post(ctx context.Context, obj *models.Marker) (*models.Post, error)
-}
 type MutationResolver interface {
 	CreatePost(ctx context.Context, input models.PostInput) (*models.Post, error)
 	CreateUser(ctx context.Context, input models.UserInput) (*models.User, error)
@@ -180,30 +168,12 @@ type MutationResolver interface {
 	DeleteRequest(ctx context.Context, id int) (*models.Request, error)
 	Login(ctx context.Context, input models.LoginInput) (*models.User, error)
 }
-type PostResolver interface {
-	Liked(ctx context.Context, obj *models.Post) ([]*models.User, error)
-
-	User(ctx context.Context, obj *models.Post) (*models.User, error)
-	Marker(ctx context.Context, obj *models.Post) (*models.Marker, error)
-	Comment(ctx context.Context, obj *models.Post) ([]*models.Comment, error)
-}
 type QueryResolver interface {
 	Post(ctx context.Context) ([]*models.Post, error)
 	User(ctx context.Context) ([]*models.User, error)
 	Comment(ctx context.Context) ([]*models.Comment, error)
 	Marker(ctx context.Context) ([]*models.Marker, error)
 	Request(ctx context.Context) ([]*models.Request, error)
-}
-type RequestResolver interface {
-	RequestUser(ctx context.Context, obj *models.Request) (*models.User, error)
-	RequestedUser(ctx context.Context, obj *models.Request) (*models.User, error)
-}
-type UserResolver interface {
-	Friends(ctx context.Context, obj *models.User) ([]*models.User, error)
-	Mute(ctx context.Context, obj *models.User) ([]*models.User, error)
-
-	Post(ctx context.Context, obj *models.User) ([]*models.Post, error)
-	Comment(ctx context.Context, obj *models.User) ([]*models.Comment, error)
 }
 
 type executableSchema struct {
@@ -1781,14 +1751,14 @@ func (ec *executionContext) _Comment_post(ctx context.Context, field graphql.Col
 		Object:     "Comment",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Comment().Post(rctx, obj)
+		return obj.Post, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1813,14 +1783,14 @@ func (ec *executionContext) _Comment_user(ctx context.Context, field graphql.Col
 		Object:     "Comment",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Comment().User(rctx, obj)
+		return obj.User, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2125,14 +2095,14 @@ func (ec *executionContext) _Marker_post(ctx context.Context, field graphql.Coll
 		Object:     "Marker",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Marker().Post(rctx, obj)
+		return obj.Post, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3172,14 +3142,14 @@ func (ec *executionContext) _Post_liked(ctx context.Context, field graphql.Colle
 		Object:     "Post",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Post().Liked(rctx, obj)
+		return obj.Liked, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3277,14 +3247,14 @@ func (ec *executionContext) _Post_user(ctx context.Context, field graphql.Collec
 		Object:     "Post",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Post().User(rctx, obj)
+		return obj.User, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3309,14 +3279,14 @@ func (ec *executionContext) _Post_marker(ctx context.Context, field graphql.Coll
 		Object:     "Post",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Post().Marker(rctx, obj)
+		return obj.Marker, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3341,14 +3311,14 @@ func (ec *executionContext) _Post_comment(ctx context.Context, field graphql.Col
 		Object:     "Post",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Post().Comment(rctx, obj)
+		return obj.Comment, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3829,14 +3799,14 @@ func (ec *executionContext) _Request_request_user(ctx context.Context, field gra
 		Object:     "Request",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().RequestUser(rctx, obj)
+		return obj.RequestUser, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3861,14 +3831,14 @@ func (ec *executionContext) _Request_requested_user(ctx context.Context, field g
 		Object:     "Request",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().RequestedUser(rctx, obj)
+		return obj.RequestedUser, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4216,14 +4186,14 @@ func (ec *executionContext) _User_friends(ctx context.Context, field graphql.Col
 		Object:     "User",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().Friends(rctx, obj)
+		return obj.Friends, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4248,14 +4218,14 @@ func (ec *executionContext) _User_mute(ctx context.Context, field graphql.Collec
 		Object:     "User",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().Mute(rctx, obj)
+		return obj.Mute, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4344,14 +4314,14 @@ func (ec *executionContext) _User_post(ctx context.Context, field graphql.Collec
 		Object:     "User",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().Post(rctx, obj)
+		return obj.Post, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4376,14 +4346,14 @@ func (ec *executionContext) _User_comment(ctx context.Context, field graphql.Col
 		Object:     "User",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().Comment(rctx, obj)
+		return obj.Comment, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6006,7 +5976,7 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "post_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6016,7 +5986,7 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "uid":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6026,7 +5996,7 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "body":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6036,7 +6006,7 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "createdAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6046,7 +6016,7 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "updatedAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6056,42 +6026,22 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "post":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Comment_post(ctx, field, obj)
-				return res
+				return ec._Comment_post(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "user":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Comment_user(ctx, field, obj)
-				return res
+				return ec._Comment_user(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6152,7 +6102,7 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "post_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6162,7 +6112,7 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "title":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6172,7 +6122,7 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "lat":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6182,7 +6132,7 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "lng":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6192,7 +6142,7 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "createdAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6202,7 +6152,7 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "updatedAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6212,25 +6162,15 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "post":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Marker_post(ctx, field, obj)
-				return res
+				return ec._Marker_post(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6490,7 +6430,7 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "uid":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6500,7 +6440,7 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "title":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6510,7 +6450,7 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "body":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6520,7 +6460,7 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "img":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6530,28 +6470,18 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "liked":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Post_liked(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+				return ec._Post_liked(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createdAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Post_createdAt(ctx, field, obj)
@@ -6560,7 +6490,7 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "updatedAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6570,59 +6500,29 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "user":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Post_user(ctx, field, obj)
-				return res
+				return ec._Post_user(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "marker":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Post_marker(ctx, field, obj)
-				return res
+				return ec._Post_marker(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "comment":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Post_comment(ctx, field, obj)
-				return res
+				return ec._Post_comment(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6811,7 +6711,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "request_uid":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6821,7 +6721,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "requested_uid":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6831,7 +6731,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "status":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6841,7 +6741,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "createdAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6851,7 +6751,7 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "updatedAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6861,42 +6761,22 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "request_user":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_request_user(ctx, field, obj)
-				return res
+				return ec._Request_request_user(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "requested_user":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_requested_user(ctx, field, obj)
-				return res
+				return ec._Request_requested_user(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6926,7 +6806,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "email":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -6992,39 +6872,19 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 		case "friends":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._User_friends(ctx, field, obj)
-				return res
+				return ec._User_friends(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "mute":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._User_mute(ctx, field, obj)
-				return res
+				return ec._User_mute(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "createdAt":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._User_createdAt(ctx, field, obj)
@@ -7040,39 +6900,19 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = innerFunc(ctx)
 
 		case "post":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._User_post(ctx, field, obj)
-				return res
+				return ec._User_post(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		case "comment":
-			field := field
-
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._User_comment(ctx, field, obj)
-				return res
+				return ec._User_comment(ctx, field, obj)
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			out.Values[i] = innerFunc(ctx)
 
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

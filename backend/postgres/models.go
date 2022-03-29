@@ -1,6 +1,12 @@
 package postgres
 
-import "time"
+import (
+	"os"
+	"time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
 
 type Comment struct {
 	ID        int       `gorm:"primaryKey;type:autoIncrement"`
@@ -56,4 +62,14 @@ type User struct {
 	Mute         []int     `gorm:"not null;default:[]"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
+}
+
+func Connect() *gorm.DB {
+	dsn := os.Getenv("dsn")
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		panic("failed to connect database")
+	}
+	return db
 }

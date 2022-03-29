@@ -25,7 +25,7 @@ func main() {
 	}
 
 	// Migrate the schema
-	// db.AutoMigrate(&Product{})
+	db.AutoMigrate(&Product{})
 }
 
 // // Defining the Graphql handler

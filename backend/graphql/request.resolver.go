@@ -2,7 +2,6 @@ package graphql
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
 	"github.com/Katsushi21/traveling_alone/postgres"
@@ -45,12 +44,4 @@ func (r *mutationResolver) DeleteRequest(ctx context.Context, id int) (*models.R
 	db.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.Request{})
 
 	return &request, nil
-}
-
-func (r *requestResolver) RequestUser(ctx context.Context, obj *models.Request) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *requestResolver) RequestedUser(ctx context.Context, obj *models.Request) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
 }

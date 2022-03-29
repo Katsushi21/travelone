@@ -18,10 +18,12 @@ type User struct {
 	Gender       *Gender    `json:"gender"`
 	Avatar       *string    `json:"avatar"`
 	Introduction *string    `json:"introduction"`
-	Friends      []*int     `json:"friends"`
-	Mute         []*int     `json:"mute"`
+	Friends      []*User    `json:"friends"`
+	Mute         []*User    `json:"mute"`
 	CreatedAt    *time.Time `json:"createdAt"`
 	UpdatedAt    *time.Time `json:"updatedAt"`
+	Post         []*Post    `json:"post"`
+	Comment      []*Comment `json:"comment"`
 }
 
 type UserInput struct {
