@@ -1,14 +1,14 @@
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: ./dockerfiles/develop/Dockerfile
-    container_name: frontend
-    hostname: travel-back.com
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/src/app
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: ./dockerfiles/develop/Dockerfile
+  #   container_name: frontend
+  #   hostname: travel-back.com
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend:/src/app
 
   backend:
     build:
@@ -21,17 +21,17 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/src/app
-    depends_on:
-      - frontend
+    # depends_on:
+    #   - frontend
 
   db:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: db
     hostname: travel-db.com
-    restart: always
+    # restart: always
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
-      - ./pgdata:/var/lib/postgresql/data
+      # - ./pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -40,12 +40,11 @@ services:
       - 5432:5432
     depends_on:
       - backend
-
-  proxy:
-    build: proxy
-    container_name: proxy
-    hostname: travel-proxy.com
-    ports:
-      - 80:80
-    depends_on:
-      - backend
+  # proxy:
+  #   build: proxy
+  #   container_name: proxy
+  #   hostname: travel-proxy.com
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - backend
