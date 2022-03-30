@@ -4,28 +4,25 @@ import (
 	"context"
 
 	"github.com/Katsushi21/traveling_alone/models"
-	"github.com/Katsushi21/traveling_alone/postgres"
 	"gorm.io/gorm/clause"
 )
 
 func (r *mutationResolver) CreateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
-	db := postgres.Connect()
 	request := &models.Request{
 		RequestUID:   input.RequestUID,
 		RequestedUID: input.RequestedUID,
 		Status:       input.Status,
 	}
-	db.Create(&request)
+	r.DB.Create(&request)
 	return request, nil
 }
 
 func (r *mutationResolver) UpdateRequest(ctx context.Context, id int, input models.RequestInput) (*models.Request, error) {
-	db := postgres.Connect()
 	request := models.Request{
 		ID: id,
 	}
-	db.First(&request)
-	db.Model(&request).Where("id = ?", id).Updates( // Whereが必要か要検証
+	r.DB.First(&request)
+	r.DB.Model(&request).Where("id = ?", id).Updates( // Whereが必要か要検証
 		&models.Request{
 			RequestUID:   input.RequestUID,
 			RequestedUID: input.RequestedUID,
@@ -37,11 +34,10 @@ func (r *mutationResolver) UpdateRequest(ctx context.Context, id int, input mode
 }
 
 func (r *mutationResolver) DeleteRequest(ctx context.Context, id int) (*models.Request, error) {
-	db := postgres.Connect()
 	request := models.Request{
 		ID: id,
 	}
-	db.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.Request{})
+	r.DB.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.Request{})
 
 	return &request, nil
 }

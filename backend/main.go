@@ -4,35 +4,44 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/99designs/gqlgen/example/federation/reviews/graph"
-	"github.com/99designs/gqlgen/example/starwars/generated"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/Katsushi21/traveling_alone/database"
+	"github.com/Katsushi21/traveling_alone/graphql"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	// Setting up Gin
-	r := gin.Default()
-	r.POST("/query", graphqlHandler())
-	r.GET("/", playgroundHandler())
-	r.Run()
-	db, err := gorm.Open(postgres.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(
+		postgres.Open("test.db"),
+		&gorm.Config{},
+	)
 	if err != nil {
 		panic("failed to connect database")
 	}
+	db.AutoMigrate(
+		database.Comment{},
+		database.Marker{},
+		database.Post{},
+		database.Request{},
+		database.User{},
+	)
 
-	// Migrate the schema
-	db.AutoMigrate(&Product{})
+	r := gin.Default()
+	r.POST("/query", graphqlHandler(db))
+	r.GET("/", playgroundHandler())
+	r.Run()
 }
 
 // // Defining the Graphql handler
-func graphqlHandler() gin.HandlerFunc {
-	// NewExecutableSchema and Config are in the generated.go file
-	// Resolver is in the resolver.go file
-	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+func graphqlHandler(db *gorm.DB) gin.HandlerFunc {
+	h := handler.NewDefaultServer(
+		graphql.NewExecutableSchema(
+			graphql.Config{Resolvers: &graphql.Resolver{DB: db}},
+		),
+	)
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
