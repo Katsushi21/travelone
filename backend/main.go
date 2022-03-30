@@ -35,7 +35,7 @@ func main() {
 	r.Run()
 }
 
-// // Defining the Graphql handler
+// Defining the Graphql handler
 func graphqlHandler(db *gorm.DB) gin.HandlerFunc {
 	h := handler.NewDefaultServer(
 		graphql.NewExecutableSchema(
@@ -48,7 +48,7 @@ func graphqlHandler(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
-// // Defining the Playground handler
+// Defining the Playground handler
 func playgroundHandler() gin.HandlerFunc {
 	h := playground.Handler("GraphQL", "/query")
 
