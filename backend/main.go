@@ -25,12 +25,13 @@ func main() {
 	if err != nil {
 		panic("failed to connect database")
 	}
+
 	db.AutoMigrate(
-		database.Comment{},
-		database.Marker{},
-		database.Post{},
-		database.Request{},
-		database.User{},
+		database.Comments{},
+		database.Markers{},
+		database.Posts{},
+		database.Requests{},
+		database.Users{},
 	)
 
 	r := gin.Default()

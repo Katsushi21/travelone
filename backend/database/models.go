@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Comment struct {
+type Comments struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
 	UID       int       `gorm:"not null;default:0"`
@@ -13,7 +13,7 @@ type Comment struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-type Marker struct {
+type Markers struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
 	Title     string    `gorm:"not null;default:''"`
@@ -23,7 +23,7 @@ type Marker struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-type Post struct {
+type Posts struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	UID       int       `gorm:"not null;default:0"`
 	Title     string    `gorm:"not null;default:''"`
@@ -34,7 +34,7 @@ type Post struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
-type Request struct {
+type Requests struct {
 	ID           int       `gorm:"primaryKey;autoIncrement"`
 	RequestUID   int       `gorm:"not null;default:0"`
 	RequestedUID int       `gorm:"not null;default:0"`
@@ -43,9 +43,9 @@ type Request struct {
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
-type User struct {
+type Users struct {
 	ID           int       `gorm:"primaryKey;autoIncrement"`
-	Email        string    `gorm:"unique;"`
+	Email        string    `gorm:"unique;not null;default:''"`
 	Password     string    `gorm:"not null;default:''"`
 	Type         string    `gorm:"not null;default:''"`
 	Session      string    `gorm:"not null;default:''"`
