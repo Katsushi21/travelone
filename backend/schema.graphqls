@@ -70,11 +70,11 @@ input SessionInput {
 }
 
 input FriendInput {
-  friends: Int!
+  uid: Int!
 }
 
 input MuteInput {
-  mute: Int!
+  uid: Int!
 }
 
 input LoginInput {
@@ -197,6 +197,11 @@ type Mutation {
   deleteMarker(id: ID!): Marker!
   deleteComment(id: ID!): Comment!
   deleteRequest(id: ID!): Request!
+
+  deleteLiked(id: ID!, input: LikedInput!): Post!
+
+  deleteFriend(id: ID!, input: FriendInput!): User!
+  deleteMute(id: ID!, input: MuteInput): User!
 
   # OTHER
   login(input: LoginInput!): User!
