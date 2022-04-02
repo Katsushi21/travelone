@@ -54,11 +54,25 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User
 }
 
 func (r *mutationResolver) UpdateSession(ctx context.Context, id int, input models.SessionInput) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	user := models.User{
+		ID: id,
+	}
+	r.DB.First(&user)
+	r.DB.Model(&user).Where("id = ?", id).Updates( // Whereが必要か要検証
+		&models.User{
+			Session: &input.Session,
+		},
+	)
+
+	return &user, nil
 }
 
 func (r *mutationResolver) UpdateFriend(ctx context.Context, id int, input models.FriendInput) (*models.User, error) {
-	panic(fmt.Errorf("not implemented"))
+	user := models.User{
+		ID: id,
+	}
+
+	return &user, nil
 }
 
 func (r *mutationResolver) UpdateMute(ctx context.Context, id int, input *models.MuteInput) (*models.User, error) {
