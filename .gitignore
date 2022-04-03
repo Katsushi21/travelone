@@ -1,4 +1,4 @@
 .DS_Store
-frontend/node_modules
-frontend/.next
+client/node_modules
+client/.next
 *.env
