@@ -9,8 +9,8 @@ events {
 
 http {
   upstream traveling_alone {
-    server frontend:3000;
-    server backend:8000;
+    server client:3000;
+    server server:8000;
   }
 
   server {

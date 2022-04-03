@@ -1,0 +1,208 @@
+# scalar
+scalar Upload
+scalar Time
+
+# Post
+type Post {
+  id: ID!
+  uid: Int!
+  title: String!
+  body: String!
+  img: String!
+  liked: [User]!
+  createdAt: Time!
+  updatedAt: Time!
+  user: User
+  marker: Marker
+  comment: [Comment]
+}
+
+input PostInput {
+  uid: Int!
+  title: String!
+  body: String!
+  img: String!
+}
+
+input LikedInput {
+  uid: Int!
+}
+
+# User
+type User {
+  id: ID!
+  email: String
+  password: String
+  type: UserType
+  session: String
+  name: String
+  age: Int
+  gender: Gender
+  avatar: String
+  introduction: String
+  friends: [User]
+  mute: [User]
+  createdAt: Time
+  updatedAt: Time
+  post: [Post]
+  comment: [Comment]
+}
+
+enum UserType {
+  active
+  inactive
+  admin
+}
+
+input UserInput {
+  email: String!
+  password: String!
+  type: UserType!
+  name: String!
+  age: Int!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+}
+
+input SessionInput {
+  session: String!
+}
+
+input FriendInput {
+  uid: Int!
+}
+
+input MuteInput {
+  uid: Int!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+enum Gender {
+  male
+  female
+  none
+}
+
+# Marker
+type Marker {
+  id: ID!
+  post_id: Int!
+  title: String!
+  lat: String!
+  lng: String!
+  createdAt: Time!
+  updatedAt: Time!
+  post: Post
+}
+
+input MarkerInput {
+  post_id: Int!
+  title: String!
+  lat: String!
+  lng: String!
+}
+
+# Comment
+type Comment {
+  id: ID!
+  post_id: Int!
+  uid: Int!
+  body: String!
+  createdAt: Time!
+  updatedAt: Time!
+  post: Post
+  user: User
+}
+
+input CommentInput {
+  post_id: Int!
+  uid: Int!
+  body: String!
+}
+
+# File
+type File {
+  path: String!
+}
+
+input UploadFile {
+  content: Upload!
+}
+
+# Request
+type Request {
+  id: ID!
+  request_uid: Int!
+  requested_uid: Int!
+  status: RequestStatus!
+  createdAt: Time!
+  updatedAt: Time!
+  request_user: User
+  requested_user: User
+}
+
+enum RequestStatus {
+  in_process
+  accept
+  deny
+  break_in_process
+  break_accept
+  break_deny
+  cancel
+}
+
+input RequestInput {
+  request_uid: Int!
+  requested_uid: Int!
+  status: RequestStatus!
+}
+
+type Query {
+  Post: [Post]!
+  User: [User]!
+  Comment: [Comment]!
+  Marker: [Marker]!
+  Request: [Request]!
+}
+
+type Mutation {
+  # CREATE
+  createPost(input: PostInput!): Post!
+  createUser(input: UserInput!): User!
+  createMarker(input: MarkerInput!): Marker!
+  createComment(input: CommentInput!): Comment!
+  createRequest(input: RequestInput!): Request!
+
+  # UPDATE
+  updatePost(id: ID!, input: PostInput!): Post!
+  updateLiked(id: ID!, input: LikedInput!): Post!
+
+  updateUser(id: ID!, input: UserInput!): User!
+  updateSession(id: ID!, input: SessionInput!): User!
+  updateFriend(id: ID!, input: FriendInput!): User!
+  updateMute(id: ID!, input: MuteInput): User!
+
+  updateMarker(id: ID!, input: MarkerInput!): Marker!
+  uploadFile(input: UploadFile!): File!
+  updateRequest(id: ID!, input: RequestInput!): Request!
+
+  # DELETE
+  deletePost(id: ID!): Post!
+  deleteUser(id: ID!): User!
+  deleteMarker(id: ID!): Marker!
+  deleteComment(id: ID!): Comment!
+  deleteRequest(id: ID!): Request!
+
+  deleteLiked(id: ID!, input: LikedInput!): Post!
+
+  deleteFriend(id: ID!, input: FriendInput!): User!
+  deleteMute(id: ID!, input: MuteInput): User!
+
+  # OTHER
+  login(input: LoginInput!): User!
+}

@@ -1,0 +1,32 @@
+schema:
+  - schema.graphqls
+
+exec:
+  filename: graphql/generated.go
+  package: graphql
+
+model:
+  filename: models/models_gen.go
+  package: models
+
+resolver:
+  layout: follow-schema
+  dir: graphql
+  package: graphql
+  filename_template: "{name}.resolvers.go"
+
+autobind:
+  - "github.com/Katsushi21/traveling_alone/models"
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.IntID
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
