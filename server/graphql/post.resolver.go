@@ -56,3 +56,15 @@ func (r *mutationResolver) UpdateLiked(ctx context.Context, id int, input models
 
 	return &post, nil
 }
+
+func (r *mutationResolver) DeleteLiked(ctx context.Context, id int, input models.LikedInput) (*models.Post, error) {
+	post := models.Post{
+		ID: id,
+	}
+	r.DB.First(&post)
+	r.DB.Model(&post).Where("id = ?", id).Update( // Whereが必要か要検証
+		"liked", gorm.Expr("array_remove(?, ?)", "liked", input.UID),
+	)
+
+	return &post, nil
+}

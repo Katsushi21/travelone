@@ -42,11 +42,11 @@ type SessionInput struct {
 }
 
 type FriendInput struct {
-	Friends int `json:"friends"`
+	UID int `json:"friends"`
 }
 
 type MuteInput struct {
-	Mute int `json:"mute"`
+	UID int `json:"mute"`
 }
 
 type LoginInput struct {

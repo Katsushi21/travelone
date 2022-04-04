@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -10,38 +11,20 @@ import (
 	"github.com/Katsushi21/traveling_alone/database"
 	"github.com/Katsushi21/traveling_alone/graphql"
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
-	user := os.Getenv("POSTGRES_USER")
-	password := os.Getenv("POSTGRES_PASSWORD")
-	dbname := os.Getenv("POSTGRES_DBNAME")
-	dsn := fmt.Sprintf(
-		"host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
-		"travel-db.com", 5432, user, dbname, password,
-	)
-	db, err := gorm.Open(
-		postgres.Open(dsn),
-		&gorm.Config{},
-	)
-	if err != nil {
-		panic("failed to connect database")
-	}
+	db := database.Connect()
 
-	db.AutoMigrate(
-		database.Comments{},
-		database.Markers{},
-		database.Posts{},
-		database.Requests{},
-		database.Users{},
-	)
+	log, _ := os.Create(os.Getenv("SERVER_LOG"))
+	gin.DefaultWriter = io.MultiWriter(log, os.Stdout)
 
 	r := gin.Default()
+
 	r.POST("/query", graphqlHandler(db))
 	r.GET("/", playgroundHandler())
-	r.Run()
+	r.Run(":8000")
 }
 
 // Defining the Graphql handler
