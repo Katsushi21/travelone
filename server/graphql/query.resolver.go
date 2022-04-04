@@ -8,30 +8,30 @@ import (
 
 func (r *queryResolver) Post(ctx context.Context) ([]*models.Post, error) {
 	var posts []*models.Post
-	r.DB.Find(&posts)
+	r.DB.Preload("User").Preload("Marker").Preload("Comment").Find(&posts)
 	return posts, nil
 }
 
 func (r *queryResolver) User(ctx context.Context) ([]*models.User, error) {
 	var users []*models.User
-	r.DB.Find(&users)
+	r.DB.Preload("Post").Preload("Comment").Find(&users)
 	return users, nil
 }
 
 func (r *queryResolver) Comment(ctx context.Context) ([]*models.Comment, error) {
 	var comments []*models.Comment
-	r.DB.Find(&comments)
+	r.DB.Preload("Post").Preload("User").Find(&comments)
 	return comments, nil
 }
 
 func (r *queryResolver) Marker(ctx context.Context) ([]*models.Marker, error) {
 	var markers []*models.Marker
-	r.DB.Find(&markers)
+	r.DB.Preload("Post").Find(&markers)
 	return markers, nil
 }
 
 func (r *queryResolver) Request(ctx context.Context) ([]*models.Request, error) {
 	var requests []*models.Request
-	r.DB.Find(&requests)
+	r.DB.Preload("User").Find(&requests)
 	return requests, nil
 }
