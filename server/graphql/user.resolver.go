@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -14,7 +13,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 		Email:        &input.Email,
 		Password:     &input.Password,
 		Type:         &input.Type,
-		Name:         &input.Name,
+		Name:         input.Name,
 		Age:          &input.Age,
 		Gender:       &input.Gender,
 		Avatar:       &input.Avatar,
@@ -34,7 +33,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.
 			Email:        &input.Email,
 			Password:     &input.Password,
 			Type:         &input.Type,
-			Name:         &input.Name,
+			Name:         input.Name,
 			Age:          &input.Age,
 			Gender:       &input.Gender,
 			Avatar:       &input.Avatar,
@@ -62,54 +61,6 @@ func (r *mutationResolver) UpdateSession(ctx context.Context, id int, input mode
 	r.DB.Model(&user).Where("id = ?", id).Update( // Whereが必要か要検証
 		"session",
 		input.Session,
-	)
-
-	return &user, nil
-}
-
-func (r *mutationResolver) UpdateFriend(ctx context.Context, id int, input models.FriendInput) (*models.User, error) {
-	user := models.User{
-		ID: id,
-	}
-	r.DB.First(&user)
-	r.DB.Model(&user).Where("id = ?", id).Update( // Whereが必要か要検証
-		"friends", gorm.Expr("array_append(?, ?)", "friends", input.UID),
-	)
-
-	return &user, nil
-}
-
-func (r *mutationResolver) UpdateMute(ctx context.Context, id int, input *models.MuteInput) (*models.User, error) {
-	user := models.User{
-		ID: id,
-	}
-	r.DB.First(&user)
-	r.DB.Model(&user).Where("id = ?", id).Update( // Whereが必要か要検証
-		"mute", gorm.Expr("array_append(?, ?)", "mute", input.UID),
-	)
-
-	return &user, nil
-}
-
-func (r *mutationResolver) DeleteFriend(ctx context.Context, id int, input models.FriendInput) (*models.User, error) {
-	user := models.User{
-		ID: id,
-	}
-	r.DB.First(&user)
-	r.DB.Model(&user).Where("id = ?", id).Update( // Whereが必要か要検証
-		"friends", gorm.Expr("array_remove(?, ?)", "friends", input.UID),
-	)
-
-	return &user, nil
-}
-
-func (r *mutationResolver) DeleteMute(ctx context.Context, id int, input *models.MuteInput) (*models.User, error) {
-	user := models.User{
-		ID: id,
-	}
-	r.DB.First(&user)
-	r.DB.Model(&user).Where("id = ?", id).Update( // Whereが必要か要検証
-		"mute", gorm.Expr("array_remove(?, ?)", "mute", input.UID),
 	)
 
 	return &user, nil

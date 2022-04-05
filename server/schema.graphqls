@@ -5,15 +5,15 @@ scalar Time
 # Post
 type Post {
   id: ID!
-  uid: Int!
-  title: String!
-  body: String!
-  img: String!
-  liked: [User]!
-  createdAt: Time!
-  updatedAt: Time!
-  user: User
+  uid: Int
+  title: String
+  body: String
+  img: String
+  createdAt: Time
+  updatedAt: Time
+  user: User!
   marker: Marker
+  like: [Like]
   comment: [Comment]
 }
 
@@ -24,7 +24,15 @@ input PostInput {
   img: String!
 }
 
-input LikedInput {
+type Like {
+  post_id: Int
+  uid: Int
+  post: Post!
+  user: User!
+}
+
+input LikeInput {
+  post_id: Int!
   uid: Int!
 }
 
@@ -35,16 +43,17 @@ type User {
   password: String
   type: UserType
   session: String
-  name: String
+  name: String!
   age: Int
   gender: Gender
   avatar: String
   introduction: String
-  friends: [User]
-  mute: [User]
   createdAt: Time
   updatedAt: Time
+  friend: [Friend]
+  mute: [Mute]
   post: [Post]
+  like: [Like]
   comment: [Comment]
 }
 
@@ -66,15 +75,8 @@ input UserInput {
 }
 
 input SessionInput {
+  uid: Int!
   session: String!
-}
-
-input FriendInput {
-  uid: Int!
-}
-
-input MuteInput {
-  uid: Int!
 }
 
 input LoginInput {
@@ -88,16 +90,40 @@ enum Gender {
   none
 }
 
+type Friend {
+  uid: Int
+  target_uid: Int
+  user: User!
+  target_user: User!
+}
+
+input FriendInput {
+  uid: Int!
+  target_uid: Int!
+}
+
+type Mute {
+  uid: Int
+  target_uid: Int
+  user: User!
+  target_user: User!
+}
+
+input MuteInput {
+  uid: Int!
+  target_uid: Int!
+}
+
 # Marker
 type Marker {
   id: ID!
-  post_id: Int!
+  post_id: Int
   title: String!
   lat: String!
   lng: String!
-  createdAt: Time!
-  updatedAt: Time!
-  post: Post
+  createdAt: Time
+  updatedAt: Time
+  post: Post!
 }
 
 input MarkerInput {
@@ -110,13 +136,13 @@ input MarkerInput {
 # Comment
 type Comment {
   id: ID!
-  post_id: Int!
-  uid: Int!
+  post_id: Int
+  uid: Int
   body: String!
-  createdAt: Time!
-  updatedAt: Time!
-  post: Post
-  user: User
+  createdAt: Time
+  updatedAt: Time
+  post: Post!
+  user: User!
 }
 
 input CommentInput {
@@ -136,14 +162,13 @@ input UploadFile {
 
 # Request
 type Request {
-  id: ID!
-  request_uid: Int!
-  requested_uid: Int!
+  request_uid: Int
+  requested_uid: Int
   status: RequestStatus!
-  createdAt: Time!
-  updatedAt: Time!
-  request_user: User
-  requested_user: User
+  createdAt: Time
+  updatedAt: Time
+  request_user: User!
+  requested_user: User!
 }
 
 enum RequestStatus {
@@ -168,6 +193,9 @@ type Query {
   Comment: [Comment]!
   Marker: [Marker]!
   Request: [Request]!
+  Like: [Like]!
+  Friend: [Friend]!
+  Mute: [Mute]!
 }
 
 type Mutation {
@@ -177,31 +205,31 @@ type Mutation {
   createMarker(input: MarkerInput!): Marker!
   createComment(input: CommentInput!): Comment!
   createRequest(input: RequestInput!): Request!
+  createLike(input: LikeInput!): Like!
+  createFriend(input: FriendInput!): Friend!
+  createMute(input: MuteInput!): Mute!
 
   # UPDATE
   updatePost(id: ID!, input: PostInput!): Post!
-  updateLiked(id: ID!, input: LikedInput!): Post!
 
   updateUser(id: ID!, input: UserInput!): User!
   updateSession(id: ID!, input: SessionInput!): User!
-  updateFriend(id: ID!, input: FriendInput!): User!
-  updateMute(id: ID!, input: MuteInput): User!
 
   updateMarker(id: ID!, input: MarkerInput!): Marker!
   uploadFile(input: UploadFile!): File!
-  updateRequest(id: ID!, input: RequestInput!): Request!
+  updateRequest(input: RequestInput!): Request!
 
   # DELETE
   deletePost(id: ID!): Post!
+  deleteLike(input: LikeInput!): Like!
+
   deleteUser(id: ID!): User!
+  deleteFriend(input: FriendInput!): Friend!
+  deleteMute(input: MuteInput): Mute!
+
   deleteMarker(id: ID!): Marker!
   deleteComment(id: ID!): Comment!
-  deleteRequest(id: ID!): Request!
-
-  deleteLiked(id: ID!, input: LikedInput!): Post!
-
-  deleteFriend(id: ID!, input: FriendInput!): User!
-  deleteMute(id: ID!, input: MuteInput): User!
+  deleteRequest(input: RequestInput!): Request!
 
   # OTHER
   login(input: LoginInput!): User!

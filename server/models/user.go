@@ -13,16 +13,17 @@ type User struct {
 	Password     *string    `json:"password"`
 	Type         *UserType  `json:"type"`
 	Session      *string    `json:"session"`
-	Name         *string    `json:"name"`
+	Name         string     `json:"name"`
 	Age          *int       `json:"age"`
 	Gender       *Gender    `json:"gender"`
 	Avatar       *string    `json:"avatar"`
 	Introduction *string    `json:"introduction"`
-	Friends      []*User    `json:"friends"`
-	Mute         []*User    `json:"mute"`
 	CreatedAt    *time.Time `json:"createdAt"`
 	UpdatedAt    *time.Time `json:"updatedAt"`
+	Friend       []*Friend  `json:"friend"`
+	Mute         []*Mute    `json:"mute"`
 	Post         []*Post    `json:"post"`
+	Like         []*Like    `json:"like"`
 	Comment      []*Comment `json:"comment"`
 }
 
@@ -38,15 +39,8 @@ type UserInput struct {
 }
 
 type SessionInput struct {
+	UID     int    `json:"uid"`
 	Session string `json:"session"`
-}
-
-type FriendInput struct {
-	UID int `json:"friends"`
-}
-
-type MuteInput struct {
-	UID int `json:"mute"`
 }
 
 type LoginInput struct {

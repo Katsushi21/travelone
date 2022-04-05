@@ -8,12 +8,11 @@ import (
 )
 
 type Request struct {
-	ID            int           `json:"id"`
-	RequestUID    int           `json:"request_uid"`
-	RequestedUID  int           `json:"requested_uid"`
+	RequestUID    *int          `json:"request_uid"`
+	RequestedUID  *int          `json:"requested_uid"`
 	Status        RequestStatus `json:"status"`
-	CreatedAt     time.Time     `json:"createdAt"`
-	UpdatedAt     time.Time     `json:"updatedAt"`
+	CreatedAt     *time.Time    `json:"createdAt"`
+	UpdatedAt     *time.Time    `json:"updatedAt"`
 	RequestUser   *User         `json:"request_user"`
 	RequestedUser *User         `json:"requested_user"`
 }

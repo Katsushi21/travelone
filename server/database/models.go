@@ -29,15 +29,20 @@ type Posts struct {
 	Title     string    `gorm:"not null;default:''"`
 	Body      string    `gorm:"not null;default:''"`
 	Img       string    `gorm:"not null;default:''"`
-	Liked     int       `gorm:"type:integer [] NOT NULL DEFAULT '{}'"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
+
+type Likes struct {
+	PostID    int       `gorm:"primaryKey"`
+	UID       int       `gorm:"primaryKey"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
 type Requests struct {
-	ID           int       `gorm:"primaryKey;autoIncrement"`
-	RequestUID   int       `gorm:"not null;default:0"`
-	RequestedUID int       `gorm:"not null;default:0"`
+	RequestUID   int       `gorm:"primaryKey"`
+	RequestedUID int       `gorm:"primaryKey"`
 	Status       string    `gorm:"not null;default:''"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
@@ -54,8 +59,20 @@ type Users struct {
 	Gender       string    `gorm:"not null;default:''"`
 	Avatar       string    `gorm:"not null;default:''"`
 	Introduction string    `gorm:"not null;default:''"`
-	Friends      int       `gorm:"type:integer [] NOT NULL DEFAULT '{}'"`
-	Mute         int       `gorm:"type:integer [] NOT NULL DEFAULT '{}'"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
+}
+
+type Friends struct {
+	UID       int       `gorm:"primaryKey"`
+	TargetUID int       `gorm:"primaryKey"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
+
+type Mutes struct {
+	UID       int       `gorm:"primaryKey"`
+	TargetUID int       `gorm:"primaryKey"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }

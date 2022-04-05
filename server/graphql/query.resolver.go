@@ -2,6 +2,7 @@ package graphql
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
 )
@@ -34,4 +35,16 @@ func (r *queryResolver) Request(ctx context.Context) ([]*models.Request, error) 
 	var requests []*models.Request
 	r.DB.Preload("User").Find(&requests)
 	return requests, nil
+}
+
+func (r *queryResolver) Like(ctx context.Context) ([]*models.Like, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Friend(ctx context.Context) ([]*models.Friend, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Mute(ctx context.Context) ([]*models.Mute, error) {
+	panic(fmt.Errorf("not implemented"))
 }

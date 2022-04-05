@@ -4,15 +4,15 @@ import "time"
 
 type Post struct {
 	ID        int        `json:"id"`
-	UID       int        `json:"uid"`
-	Title     string     `json:"title"`
-	Body      string     `json:"body"`
-	Img       string     `json:"img"`
-	Liked     []*User    `json:"liked"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
+	UID       *int       `json:"uid"`
+	Title     *string    `json:"title"`
+	Body      *string    `json:"body"`
+	Img       *string    `json:"img"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
 	User      *User      `json:"user"`
 	Marker    *Marker    `json:"marker"`
+	Like      []*Like    `json:"like"`
 	Comment   []*Comment `json:"comment"`
 }
 
@@ -21,8 +21,4 @@ type PostInput struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
 	Img   string `json:"img"`
-}
-
-type LikedInput struct {
-	UID int `json:"uid"`
 }
