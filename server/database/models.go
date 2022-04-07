@@ -71,8 +71,8 @@ type Friends struct {
 }
 
 type Mutes struct {
-	UID       int       `gorm:"primaryKey;foreignKey:User"`
-	TargetUID int       `gorm:"primaryKey;foreignKey:User"`
+	UID       int       `gorm:"primaryKey;foreignKey:Users"`
+	TargetUID int       `gorm:"primaryKey;foreignKey:Users"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
