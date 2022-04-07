@@ -7,7 +7,7 @@ import (
 type Comments struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
-	UID       int       `gorm:"not null;default:0;foreignKey:User"`
+	UID       int       `gorm:"not null;default:0;foreignKey:Users"`
 	Body      string    `gorm:"not null;default:''"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
@@ -25,7 +25,7 @@ type Markers struct {
 
 type Posts struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
-	UID       int       `gorm:"not null;default:0;foreignKey:User"`
+	UID       int       `gorm:"not null;default:0;foreignKey:Users"`
 	Title     string    `gorm:"not null;default:''"`
 	Body      string    `gorm:"not null;default:''"`
 	Img       string    `gorm:"not null;default:''"`
@@ -35,7 +35,7 @@ type Posts struct {
 
 type Likes struct {
 	PostID    int       `gorm:"primaryKey"`
-	UID       int       `gorm:"primaryKey;foreignKey:User"`
+	UID       int       `gorm:"primaryKey;foreignKey:Users"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
@@ -64,8 +64,8 @@ type Users struct {
 }
 
 type Friends struct {
-	UID       int       `gorm:"primaryKey;foreignKey:User"`
-	TargetUID int       `gorm:"primaryKey;foreignKey:User"`
+	UID       int       `gorm:"primaryKey;foreignKey:Users"`
+	TargetUID int       `gorm:"primaryKey;foreignKey:Users"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
