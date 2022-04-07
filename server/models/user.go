@@ -39,7 +39,6 @@ type UserInput struct {
 }
 
 type SessionInput struct {
-	UID     int    `json:"uid"`
 	Session string `json:"session"`
 }
 

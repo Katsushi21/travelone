@@ -2,7 +2,6 @@ package graphql
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
 	"gorm.io/gorm/clause"
@@ -21,15 +20,7 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*models.C
 	comment := models.Comment{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.Comment{})
+	r.DB.Clauses(clause.Returning{}).Delete(&models.Comment{})
 
 	return &comment, nil
-}
-
-func (r *commentResolver) PostID(ctx context.Context, obj *models.Comment) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *commentResolver) UID(ctx context.Context, obj *models.Comment) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
 }

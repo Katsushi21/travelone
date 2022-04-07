@@ -30,6 +30,9 @@ func Connect() *gorm.DB {
 		Posts{},
 		Requests{},
 		Users{},
+		Likes{},
+		Friends{},
+		Mutes{},
 	)
 
 	return db

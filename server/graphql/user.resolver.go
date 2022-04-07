@@ -58,7 +58,7 @@ func (r *mutationResolver) UpdateSession(ctx context.Context, id int, input mode
 		ID: id,
 	}
 	r.DB.First(&user)
-	r.DB.Model(&user).Where("id = ?", id).Update( // Whereが必要か要検証
+	r.DB.Model(&user).Update( // Whereが必要か要検証
 		"session",
 		input.Session,
 	)

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
-	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func (r *mutationResolver) CreateMute(ctx context.Context, input models.MuteInput) (*models.Mute, error) {
@@ -17,10 +17,7 @@ func (r *mutationResolver) DeleteMute(ctx context.Context, input *models.MuteInp
 		UID:       &input.UID,
 		TargetUID: &input.TargetUID,
 	}
-	r.DB.First(&mute)
-	r.DB.Model(&mute).Update( // Whereが必要か要検証
-		"mute", gorm.Expr("array_remove(?, ?)", "mute", input.UID),
-	)
+	r.DB.Clauses(clause.Returning{}).Delete(&mute)
 
 	return &mute, nil
 }

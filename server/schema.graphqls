@@ -75,7 +75,6 @@ input UserInput {
 }
 
 input SessionInput {
-  uid: Int!
   session: String!
 }
 
@@ -93,8 +92,7 @@ enum Gender {
 type Friend {
   uid: Int
   target_uid: Int
-  user: User!
-  target_user: User!
+  user: [User!]!
 }
 
 input FriendInput {
@@ -105,8 +103,7 @@ input FriendInput {
 type Mute {
   uid: Int
   target_uid: Int
-  user: User!
-  target_user: User!
+  user: [User!]!
 }
 
 input MuteInput {

@@ -2,23 +2,27 @@ package graphql
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
+	"gorm.io/gorm/clause"
 )
 
 func (r *mutationResolver) CreateLike(ctx context.Context, input models.LikeInput) (*models.Like, error) {
-	panic(fmt.Errorf("not implemented"))
+	like := models.Like{
+		PostID: &input.PostID,
+		UID:    &input.UID,
+	}
+	r.DB.Create(&like)
+
+	return &like, nil
 }
 
 func (r *mutationResolver) DeleteLike(ctx context.Context, input models.LikeInput) (*models.Like, error) {
-	panic(fmt.Errorf("not implemented"))
-}
+	like := models.Like{
+		PostID: &input.PostID,
+		UID:    &input.UID,
+	}
+	r.DB.Clauses(clause.Returning{}).Delete(&like)
 
-func (r *likeResolver) PostID(ctx context.Context, obj *models.Like) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *likeResolver) UID(ctx context.Context, obj *models.Like) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
+	return &like, nil
 }
