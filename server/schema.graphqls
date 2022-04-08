@@ -5,7 +5,7 @@ scalar Time
 # Post
 type Post {
   id: ID!
-  uid: Int
+  user_id: Int
   title: String
   body: String
   img: String
@@ -18,7 +18,7 @@ type Post {
 }
 
 input PostInput {
-  uid: Int!
+  user_id: Int!
   title: String!
   body: String!
   img: String!
@@ -26,14 +26,14 @@ input PostInput {
 
 type Like {
   post_id: Int
-  uid: Int
+  user_id: Int
   post: Post!
   user: User!
 }
 
 input LikeInput {
   post_id: Int!
-  uid: Int!
+  user_id: Int!
 }
 
 # User
@@ -42,7 +42,6 @@ type User {
   email: String
   password: String
   type: UserType
-  session: String
   name: String!
   age: Int
   gender: Gender
@@ -74,10 +73,6 @@ input UserInput {
   introduction: String!
 }
 
-input SessionInput {
-  session: String!
-}
-
 input LoginInput {
   email: String!
   password: String!
@@ -89,26 +84,37 @@ enum Gender {
   none
 }
 
+type Session {
+  user_id: Int!
+  session: String!
+  updatedAt: Time!
+}
+
+input SessionInput {
+  user_id: Int!
+  session: String!
+}
+
 type Friend {
-  uid: Int
-  target_uid: Int
-  user: [User!]!
+  user_id: Int!
+  friend_id: Int!
+  friend: User!
 }
 
 input FriendInput {
-  uid: Int!
-  target_uid: Int!
+  user_id: Int!
+  friend_id: Int!
 }
 
 type Mute {
-  uid: Int
-  target_uid: Int
-  user: [User!]!
+  user_id: Int!
+  mute_id: Int!
+  mute: User!
 }
 
 input MuteInput {
-  uid: Int!
-  target_uid: Int!
+  user_id: Int!
+  mute_id: Int!
 }
 
 # Marker
@@ -134,7 +140,7 @@ input MarkerInput {
 type Comment {
   id: ID!
   post_id: Int
-  uid: Int
+  user_id: Int
   body: String!
   createdAt: Time
   updatedAt: Time
@@ -144,7 +150,7 @@ type Comment {
 
 input CommentInput {
   post_id: Int!
-  uid: Int!
+  user_id: Int!
   body: String!
 }
 
@@ -164,8 +170,7 @@ type Request {
   status: RequestStatus!
   createdAt: Time
   updatedAt: Time
-  request_user: User!
-  requested_user: User!
+  user: User!
 }
 
 enum RequestStatus {
@@ -193,6 +198,7 @@ type Query {
   Like: [Like]!
   Friend: [Friend]!
   Mute: [Mute]!
+  Session: [Session]!
 }
 
 type Mutation {
@@ -210,7 +216,7 @@ type Mutation {
   updatePost(id: ID!, input: PostInput!): Post!
 
   updateUser(id: ID!, input: UserInput!): User!
-  updateSession(id: ID!, input: SessionInput!): User!
+  updateSession(input: SessionInput!): Session!
 
   updateMarker(id: ID!, input: MarkerInput!): Marker!
   uploadFile(input: UploadFile!): File!

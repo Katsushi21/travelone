@@ -48,3 +48,7 @@ func (r *queryResolver) Friend(ctx context.Context) ([]*models.Friend, error) {
 func (r *queryResolver) Mute(ctx context.Context) ([]*models.Mute, error) {
 	panic(fmt.Errorf("not implemented"))
 }
+
+func (r *queryResolver) Session(ctx context.Context) ([]*models.Session, error) {
+	panic(fmt.Errorf("not implemented"))
+}

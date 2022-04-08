@@ -25,14 +25,13 @@ func Connect() *gorm.DB {
 	}
 
 	db.AutoMigrate(
-		Comments{},
-		Markers{},
-		Posts{},
-		Requests{},
-		Users{},
-		Likes{},
-		Friends{},
-		Mutes{},
+		Comment{},
+		Marker{},
+		Post{},
+		Request{},
+		User{},
+		Like{},
+		Session{},
 	)
 
 	return db

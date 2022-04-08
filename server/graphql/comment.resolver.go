@@ -10,7 +10,7 @@ import (
 func (r *mutationResolver) CreateComment(ctx context.Context, input models.CommentInput) (*models.Comment, error) {
 	comment := &models.Comment{
 		PostID: &input.PostID,
-		UID:    &input.UID,
+		UserID: &input.UserID,
 		Body:   input.Body,
 	}
 	r.DB.Create(&comment)

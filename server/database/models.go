@@ -4,16 +4,18 @@ import (
 	"time"
 )
 
-type Comments struct {
+type Comment struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
-	UID       int       `gorm:"not null;default:0;foreignKey:Users"`
+	User_ID   int       `gorm:"not null;default:0"`
 	Body      string    `gorm:"not null;default:''"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	Post      Post
+	User      User `gorm:"foreignKey:User_ID"`
 }
 
-type Markers struct {
+type Marker struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
 	Title     string    `gorm:"not null;default:''"`
@@ -21,26 +23,30 @@ type Markers struct {
 	Lng       string    `gorm:"not null;default:''"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	Post      Post
 }
 
-type Posts struct {
+type Post struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
-	UID       int       `gorm:"not null;default:0;foreignKey:Users"`
+	User_ID   int       `gorm:"not null;default:0"`
 	Title     string    `gorm:"not null;default:''"`
 	Body      string    `gorm:"not null;default:''"`
 	Img       string    `gorm:"not null;default:''"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	User      User      `gorm:"foreignKey:User_ID"`
 }
 
-type Likes struct {
+type Like struct {
 	PostID    int       `gorm:"primaryKey"`
-	UID       int       `gorm:"primaryKey;foreignKey:Users"`
+	User_ID   int       `gorm:"primaryKey"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	Post      Post
+	User      User `gorm:"foreignKey:User_ID"`
 }
 
-type Requests struct {
+type Request struct {
 	RequestUID   int       `gorm:"primaryKey"`
 	RequestedUID int       `gorm:"primaryKey"`
 	Status       string    `gorm:"not null;default:''"`
@@ -48,12 +54,11 @@ type Requests struct {
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
-type Users struct {
+type User struct {
 	ID           int       `gorm:"primaryKey;autoIncrement"`
 	Email        string    `gorm:"unique;not null;default:''"`
 	Password     string    `gorm:"not null;default:''"`
 	Type         string    `gorm:"not null;default:''"`
-	Session      string    `gorm:"not null;default:''"`
 	Name         string    `gorm:"not null;default:''"`
 	Age          int       `gorm:"not null;default:0"`
 	Gender       string    `gorm:"not null;default:''"`
@@ -61,18 +66,13 @@ type Users struct {
 	Introduction string    `gorm:"not null;default:''"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
+	Friends      []*User   `gorm:"many2many:friends"`
+	Mutes        []*User   `gorm:"many2many:mutes"`
 }
 
-type Friends struct {
-	UID       int       `gorm:"primaryKey;foreignKey:Users"`
-	TargetUID int       `gorm:"primaryKey;foreignKey:Users"`
-	CreatedAt time.Time `gorm:"autoCreateTime"`
+type Session struct {
+	User_ID   int       `gorm:"primaryKey"`
+	Session   string    `gorm:"not null;default:''"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-}
-
-type Mutes struct {
-	UID       int       `gorm:"primaryKey;foreignKey:Users"`
-	TargetUID int       `gorm:"primaryKey;foreignKey:Users"`
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	User      User      `gorm:"foreignKey:User_ID"`
 }

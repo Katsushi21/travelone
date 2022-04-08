@@ -26,7 +26,7 @@ export type accountsSchema = {
 
 export type articleSchema = {
   id: number;
-  uid: number;
+  user_id: number;
   title: string;
   thumbnail: string;
   address: string;

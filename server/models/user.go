@@ -12,7 +12,6 @@ type User struct {
 	Email        *string    `json:"email"`
 	Password     *string    `json:"password"`
 	Type         *UserType  `json:"type"`
-	Session      *string    `json:"session"`
 	Name         string     `json:"name"`
 	Age          *int       `json:"age"`
 	Gender       *Gender    `json:"gender"`
@@ -36,10 +35,6 @@ type UserInput struct {
 	Gender       Gender   `json:"gender"`
 	Avatar       string   `json:"avatar"`
 	Introduction string   `json:"introduction"`
-}
-
-type SessionInput struct {
-	Session string `json:"session"`
 }
 
 type LoginInput struct {

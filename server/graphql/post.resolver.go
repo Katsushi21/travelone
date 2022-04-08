@@ -9,10 +9,10 @@ import (
 
 func (r *mutationResolver) CreatePost(ctx context.Context, input models.PostInput) (*models.Post, error) {
 	post := models.Post{
-		UID:   &input.UID,
-		Title: &input.Title,
-		Body:  &input.Body,
-		Img:   &input.Img,
+		UserID: &input.UserID,
+		Title:  &input.Title,
+		Body:   &input.Body,
+		Img:    &input.Img,
 	}
 	r.DB.Create(&post)
 

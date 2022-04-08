@@ -14,12 +14,12 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input models.Friend
 
 func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
 	friend := models.Friend{
-		UID:       &input.UID,
-		TargetUID: &input.TargetUID,
+		UserID:   input.UserID,
+		FriendID: input.FriendID,
 	}
 	r.DB.First(&friend)
 	r.DB.Model(&friend).Update( // Whereが必要か要検証
-		"friends", gorm.Expr("array_remove(?, ?)", "friends", input.UID),
+		"friends", gorm.Expr("array_remove(?, ?)", "friends", input.UserID),
 	)
 
 	return &friend, nil

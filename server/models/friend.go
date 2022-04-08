@@ -1,12 +1,12 @@
 package models
 
 type Friend struct {
-	UID       *int    `json:"uid"`
-	TargetUID *int    `json:"target_uid"`
-	User      []*User `json:"user"`
+	UserID   int   `json:"user_id"`
+	FriendID int   `json:"friend_id"`
+	Friend   *User `json:"friend"`
 }
 
 type FriendInput struct {
-	UID       int `json:"uid"`
-	TargetUID int `json:"target_uid"`
+	UserID   int `json:"user_id"`
+	FriendID int `json:"friend_id"`
 }

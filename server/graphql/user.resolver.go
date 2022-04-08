@@ -53,19 +53,6 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User
 	return &user, nil
 }
 
-func (r *mutationResolver) UpdateSession(ctx context.Context, id int, input models.SessionInput) (*models.User, error) {
-	user := models.User{
-		ID: id,
-	}
-	r.DB.First(&user)
-	r.DB.Model(&user).Update( // Whereが必要か要検証
-		"session",
-		input.Session,
-	)
-
-	return &user, nil
-}
-
 func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.User, error) {
 	panic(fmt.Errorf("not implemented"))
 }

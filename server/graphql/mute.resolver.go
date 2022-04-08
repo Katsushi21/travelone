@@ -14,8 +14,8 @@ func (r *mutationResolver) CreateMute(ctx context.Context, input models.MuteInpu
 
 func (r *mutationResolver) DeleteMute(ctx context.Context, input *models.MuteInput) (*models.Mute, error) {
 	mute := models.Mute{
-		UID:       &input.UID,
-		TargetUID: &input.TargetUID,
+		UserID: input.UserID,
+		MuteID: input.MuteID,
 	}
 	r.DB.Clauses(clause.Returning{}).Delete(&mute)
 

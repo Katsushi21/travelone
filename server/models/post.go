@@ -4,7 +4,7 @@ import "time"
 
 type Post struct {
 	ID        int        `json:"id"`
-	UID       *int       `json:"uid"`
+	UserID    *int       `json:"user_id"`
 	Title     *string    `json:"title"`
 	Body      *string    `json:"body"`
 	Img       *string    `json:"img"`
@@ -17,8 +17,8 @@ type Post struct {
 }
 
 type PostInput struct {
-	UID   int    `json:"uid"`
-	Title string `json:"title"`
-	Body  string `json:"body"`
-	Img   string `json:"img"`
+	UserID int    `json:"user_id"`
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+	Img    string `json:"img"`
 }
