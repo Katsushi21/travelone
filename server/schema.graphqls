@@ -5,7 +5,7 @@ scalar Time
 # Post
 type Post {
   id: ID!
-  user_id: Int!
+  user_id: ID!
   title: String!
   body: String!
   img: String!
@@ -18,22 +18,22 @@ type Post {
 }
 
 input PostInput {
-  user_id: Int!
+  user_id: ID!
   title: String!
   body: String!
   img: String!
 }
 
 type Like {
-  post_id: Int!
-  user_id: Int!
+  post_id: ID!
+  user_id: ID!
   post: Post!
   user: User!
 }
 
 input LikeInput {
-  post_id: Int!
-  user_id: Int!
+  post_id: ID!
+  user_id: ID!
 }
 
 # User
@@ -85,42 +85,42 @@ enum Gender {
 }
 
 type Session {
-  user_id: Int!
+  user_id: ID!
   session: String
   updatedAt: Time!
 }
 
 input SessionInput {
-  user_id: Int!
+  user_id: ID!
   session: String!
 }
 
 type Friend {
-  user_id: Int!
-  friend_id: Int!
+  user_id: ID!
+  friend_id: ID!
   friend: User!
 }
 
 input FriendInput {
-  user_id: Int!
-  friend_id: Int!
+  user_id: ID!
+  friend_id: ID!
 }
 
 type Mute {
-  user_id: Int!
-  mute_id: Int!
+  user_id: ID!
+  mute_id: ID!
   mute: User!
 }
 
 input MuteInput {
-  user_id: Int!
-  mute_id: Int!
+  user_id: ID!
+  mute_id: ID!
 }
 
 # Marker
 type Marker {
   id: ID!
-  post_id: Int!
+  post_id: ID!
   title: String!
   lat: String!
   lng: String!
@@ -130,7 +130,7 @@ type Marker {
 }
 
 input MarkerInput {
-  post_id: Int!
+  post_id: ID!
   title: String!
   lat: String!
   lng: String!
@@ -139,8 +139,8 @@ input MarkerInput {
 # Comment
 type Comment {
   id: ID!
-  post_id: Int!
-  user_id: Int!
+  post_id: ID!
+  user_id: ID!
   body: String!
   createdAt: Time!
   updatedAt: Time!
@@ -149,8 +149,8 @@ type Comment {
 }
 
 input CommentInput {
-  post_id: Int!
-  user_id: Int!
+  post_id: ID!
+  user_id: ID!
   body: String!
 }
 
@@ -165,12 +165,10 @@ input UploadFile {
 
 # Request
 type Request {
-  request_uid: Int
-  requested_uid: Int
+  user_id: ID
+  target_uid: ID
   status: RequestStatus!
-  createdAt: Time!
-  updatedAt: Time!
-  requested: User!
+  target: User!
 }
 
 enum RequestStatus {
@@ -184,23 +182,12 @@ enum RequestStatus {
 }
 
 input RequestInput {
-  request_uid: Int!
-  requested_uid: Int!
+  request_uid: ID!
+  requested_uid: ID!
   status: RequestStatus!
 }
 
 type Query {
-  # one
-  Post(id: ID!): Post!
-  User(id: ID!): User!
-  Comment(id: ID!): Comment!
-  Marker(id: ID!): Marker!
-  Request(id: ID!): Request!
-  Like(id: ID!): Like!
-  Friend(id: ID!): Friend!
-  Mute(id: ID!): Mute!
-  Session(id: ID!): Session!
-
   # all
   allPosts: [Post]!
   allUsers: [User]!
@@ -210,6 +197,20 @@ type Query {
   allLikes: [Like]!
   allFriends: [Friend]!
   allMutes: [Mute]!
+
+  # primary key
+  Post(id: ID!): Post!
+  User(id: ID!): User!
+  Comment(id: ID!): Comment!
+  Marker(id: ID!): Marker!
+
+  # foreign key
+  Post(user_id: ID!): Post!
+  Like(user_id: ID!): Like!
+  Friend(user_id: ID!): Friend!
+  Mute(user_id: ID!): Mute!
+  Request(user_id: ID!): Request!
+  Session(user_id: ID!): Session!
 }
 
 type Mutation {

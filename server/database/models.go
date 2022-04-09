@@ -7,12 +7,12 @@ import (
 type Comment struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
-	User_ID   int       `gorm:"not null;default:0"`
+	UserID    int       `gorm:"not null;default:0"`
 	Body      string    `gorm:"not null;default:''"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	Post      Post
-	User      User `gorm:"foreignKey:User_ID"`
+	User      User
 }
 
 type Marker struct {
@@ -28,22 +28,22 @@ type Marker struct {
 
 type Post struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
-	User_ID   int       `gorm:"not null;default:0"`
+	UserID    int       `gorm:"not null;default:0"`
 	Title     string    `gorm:"not null;default:''"`
 	Body      string    `gorm:"not null;default:''"`
 	Img       string    `gorm:"not null;default:''"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	User      User      `gorm:"foreignKey:User_ID"`
+	User      User
 }
 
 type Like struct {
 	PostID    int       `gorm:"primaryKey"`
-	User_ID   int       `gorm:"primaryKey"`
+	UserID    int       `gorm:"primaryKey"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	Post      Post
-	User      User `gorm:"foreignKey:User_ID"`
+	User      User
 }
 
 type Request struct {
@@ -71,8 +71,8 @@ type User struct {
 }
 
 type Session struct {
-	User_ID   int       `gorm:"primaryKey"`
+	UserID    int       `gorm:"primaryKey"`
 	Session   string    `gorm:"unique"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	User      User      `gorm:"foreignKey:User_ID"`
+	User      User
 }

@@ -9,8 +9,8 @@ import (
 
 func (r *mutationResolver) CreateLike(ctx context.Context, input models.LikeInput) (*models.Like, error) {
 	like := models.Like{
-		PostID: &input.PostID,
-		UserID: &input.UserID,
+		PostID: input.PostID,
+		UserID: input.UserID,
 	}
 	r.DB.Create(&like)
 
@@ -19,8 +19,8 @@ func (r *mutationResolver) CreateLike(ctx context.Context, input models.LikeInpu
 
 func (r *mutationResolver) DeleteLike(ctx context.Context, input models.LikeInput) (*models.Like, error) {
 	like := models.Like{
-		PostID: &input.PostID,
-		UserID: &input.UserID,
+		PostID: input.PostID,
+		UserID: input.UserID,
 	}
 	r.DB.Clauses(clause.Returning{}).Delete(&like)
 

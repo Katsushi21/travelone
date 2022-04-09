@@ -9,10 +9,10 @@ import (
 
 func (r *mutationResolver) CreatePost(ctx context.Context, input models.PostInput) (*models.Post, error) {
 	post := models.Post{
-		UserID: &input.UserID,
-		Title:  &input.Title,
-		Body:   &input.Body,
-		Img:    &input.Img,
+		UserID: input.UserID,
+		Title:  input.Title,
+		Body:   input.Body,
+		Img:    input.Img,
 	}
 	r.DB.Create(&post)
 
@@ -26,9 +26,9 @@ func (r *mutationResolver) UpdatePost(ctx context.Context, id int, input models.
 	r.DB.First(&post)
 	r.DB.Model(&post).Updates(
 		&models.Post{
-			Title: &input.Title,
-			Body:  &input.Body,
-			Img:   &input.Img,
+			Title: input.Title,
+			Body:  input.Body,
+			Img:   input.Img,
 		},
 	)
 

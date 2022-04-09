@@ -10,14 +10,14 @@ import (
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInput) (*models.User, error) {
 	user := &models.User{
-		Email:        &input.Email,
-		Password:     &input.Password,
-		Type:         &input.Type,
+		Email:        input.Email,
+		Password:     input.Password,
+		Type:         input.Type,
 		Name:         input.Name,
-		Age:          &input.Age,
-		Gender:       &input.Gender,
-		Avatar:       &input.Avatar,
-		Introduction: &input.Introduction,
+		Age:          input.Age,
+		Gender:       input.Gender,
+		Avatar:       input.Avatar,
+		Introduction: input.Introduction,
 	}
 	r.DB.Create(&user)
 
@@ -31,14 +31,14 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.
 	r.DB.First(&user)
 	r.DB.Model(&user).Updates(
 		&models.User{
-			Email:        &input.Email,
-			Password:     &input.Password,
-			Type:         &input.Type,
+			Email:        input.Email,
+			Password:     input.Password,
+			Type:         input.Type,
 			Name:         input.Name,
-			Age:          &input.Age,
-			Gender:       &input.Gender,
-			Avatar:       &input.Avatar,
-			Introduction: &input.Introduction,
+			Age:          input.Age,
+			Gender:       input.Gender,
+			Avatar:       input.Avatar,
+			Introduction: input.Introduction,
 		},
 	)
 

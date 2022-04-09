@@ -9,7 +9,7 @@ import (
 
 func (r *mutationResolver) CreateMarker(ctx context.Context, input models.MarkerInput) (*models.Marker, error) {
 	marker := &models.Marker{
-		PostID: &input.PostID,
+		PostID: input.PostID,
 		Title:  input.Title,
 		Lat:    input.Lat,
 		Lng:    input.Lng,
@@ -25,7 +25,7 @@ func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input model
 	r.DB.First(&marker)
 	r.DB.Model(&marker).Updates(
 		&models.Marker{
-			PostID: &input.PostID,
+			PostID: input.PostID,
 			Title:  input.Title,
 			Lat:    input.Lat,
 			Lng:    input.Lng,
