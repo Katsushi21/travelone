@@ -20,6 +20,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 		Introduction: &input.Introduction,
 	}
 	r.DB.Create(&user)
+
 	return user, nil
 }
 
@@ -28,7 +29,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.
 		ID: id,
 	}
 	r.DB.First(&user)
-	r.DB.Model(&user).Where("id = ?", id).Updates( // Whereが必要か要検証
+	r.DB.Model(&user).Updates(
 		&models.User{
 			Email:        &input.Email,
 			Password:     &input.Password,
@@ -48,7 +49,7 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User
 	user := models.User{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.User{})
+	r.DB.Clauses(clause.Returning{}).Delete(&user)
 
 	return &user, nil
 }

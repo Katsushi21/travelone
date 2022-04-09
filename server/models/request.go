@@ -11,9 +11,9 @@ type Request struct {
 	RequestUID   *int          `json:"request_uid"`
 	RequestedUID *int          `json:"requested_uid"`
 	Status       RequestStatus `json:"status"`
-	CreatedAt    *time.Time    `json:"createdAt"`
-	UpdatedAt    *time.Time    `json:"updatedAt"`
-	User         *User         `json:"user"`
+	CreatedAt    time.Time     `json:"createdAt"`
+	UpdatedAt    time.Time     `json:"updatedAt"`
+	Requested    *User         `json:"requested"`
 }
 
 type RequestInput struct {
@@ -21,7 +21,6 @@ type RequestInput struct {
 	RequestedUID int           `json:"requested_uid"`
 	Status       RequestStatus `json:"status"`
 }
-
 type RequestStatus string
 
 const (

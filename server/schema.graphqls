@@ -5,12 +5,12 @@ scalar Time
 # Post
 type Post {
   id: ID!
-  user_id: Int
-  title: String
-  body: String
-  img: String
-  createdAt: Time
-  updatedAt: Time
+  user_id: Int!
+  title: String!
+  body: String!
+  img: String!
+  createdAt: Time!
+  updatedAt: Time!
   user: User!
   marker: Marker
   like: [Like]
@@ -25,8 +25,8 @@ input PostInput {
 }
 
 type Like {
-  post_id: Int
-  user_id: Int
+  post_id: Int!
+  user_id: Int!
   post: Post!
   user: User!
 }
@@ -39,16 +39,16 @@ input LikeInput {
 # User
 type User {
   id: ID!
-  email: String
-  password: String
-  type: UserType
+  email: String!
+  password: String!
+  type: UserType!
   name: String!
-  age: Int
-  gender: Gender
-  avatar: String
-  introduction: String
-  createdAt: Time
-  updatedAt: Time
+  age: Int!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+  createdAt: Time!
+  updatedAt: Time!
   friend: [Friend]
   mute: [Mute]
   post: [Post]
@@ -86,7 +86,7 @@ enum Gender {
 
 type Session {
   user_id: Int!
-  session: String!
+  session: String
   updatedAt: Time!
 }
 
@@ -120,12 +120,12 @@ input MuteInput {
 # Marker
 type Marker {
   id: ID!
-  post_id: Int
+  post_id: Int!
   title: String!
   lat: String!
   lng: String!
-  createdAt: Time
-  updatedAt: Time
+  createdAt: Time!
+  updatedAt: Time!
   post: Post!
 }
 
@@ -139,11 +139,11 @@ input MarkerInput {
 # Comment
 type Comment {
   id: ID!
-  post_id: Int
-  user_id: Int
+  post_id: Int!
+  user_id: Int!
   body: String!
-  createdAt: Time
-  updatedAt: Time
+  createdAt: Time!
+  updatedAt: Time!
   post: Post!
   user: User!
 }
@@ -168,9 +168,9 @@ type Request {
   request_uid: Int
   requested_uid: Int
   status: RequestStatus!
-  createdAt: Time
-  updatedAt: Time
-  user: User!
+  createdAt: Time!
+  updatedAt: Time!
+  requested: User!
 }
 
 enum RequestStatus {
@@ -190,21 +190,33 @@ input RequestInput {
 }
 
 type Query {
-  Post: [Post]!
-  User: [User]!
-  Comment: [Comment]!
-  Marker: [Marker]!
-  Request: [Request]!
-  Like: [Like]!
-  Friend: [Friend]!
-  Mute: [Mute]!
-  Session: [Session]!
+  # one
+  Post(id: ID!): Post!
+  User(id: ID!): User!
+  Comment(id: ID!): Comment!
+  Marker(id: ID!): Marker!
+  Request(id: ID!): Request!
+  Like(id: ID!): Like!
+  Friend(id: ID!): Friend!
+  Mute(id: ID!): Mute!
+  Session(id: ID!): Session!
+
+  # all
+  allPosts: [Post]!
+  allUsers: [User]!
+  allComments: [Comment]!
+  allMarkers: [Marker]!
+  allRequests: [Request]!
+  allLikes: [Like]!
+  allFriends: [Friend]!
+  allMutes: [Mute]!
 }
 
 type Mutation {
   # CREATE
   createPost(input: PostInput!): Post!
   createUser(input: UserInput!): User!
+  createSession(input: SessionInput!): Session!
   createMarker(input: MarkerInput!): Marker!
   createComment(input: CommentInput!): Comment!
   createRequest(input: RequestInput!): Request!
@@ -227,6 +239,7 @@ type Mutation {
   deleteLike(input: LikeInput!): Like!
 
   deleteUser(id: ID!): User!
+  deleteSession(id: ID!): Session!
   deleteFriend(input: FriendInput!): Friend!
   deleteMute(input: MuteInput): Mute!
 

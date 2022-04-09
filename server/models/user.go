@@ -9,16 +9,16 @@ import (
 
 type User struct {
 	ID           int        `json:"id"`
-	Email        *string    `json:"email"`
-	Password     *string    `json:"password"`
-	Type         *UserType  `json:"type"`
+	Email        string     `json:"email"`
+	Password     string     `json:"password"`
+	Type         UserType   `json:"type"`
 	Name         string     `json:"name"`
-	Age          *int       `json:"age"`
-	Gender       *Gender    `json:"gender"`
-	Avatar       *string    `json:"avatar"`
-	Introduction *string    `json:"introduction"`
-	CreatedAt    *time.Time `json:"createdAt"`
-	UpdatedAt    *time.Time `json:"updatedAt"`
+	Age          int        `json:"age"`
+	Gender       Gender     `json:"gender"`
+	Avatar       string     `json:"avatar"`
+	Introduction string     `json:"introduction"`
+	CreatedAt    time.Time  `json:"createdAt"`
+	UpdatedAt    time.Time  `json:"updatedAt"`
 	Friend       []*Friend  `json:"friend"`
 	Mute         []*Mute    `json:"mute"`
 	Post         []*Post    `json:"post"`
