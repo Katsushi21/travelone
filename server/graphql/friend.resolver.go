@@ -2,14 +2,19 @@ package graphql
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Katsushi21/traveling_alone/models"
-	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func (r *mutationResolver) CreateFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
-	panic(fmt.Errorf("not implemented"))
+	friend := &models.Friend{
+		UserID:   input.UserID,
+		FriendID: input.FriendID,
+	}
+	r.DB.Create(&friend)
+
+	return friend, nil
 }
 
 func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
@@ -18,9 +23,7 @@ func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.Friend
 		FriendID: input.FriendID,
 	}
 	r.DB.First(&friend)
-	r.DB.Model(&friend).Update( // Whereが必要か要検証
-		"friends", gorm.Expr("array_remove(?, ?)", "friends", input.UserID),
-	)
+	r.DB.Clauses(clause.Returning{}).Delete(&friend)
 
 	return &friend, nil
 }

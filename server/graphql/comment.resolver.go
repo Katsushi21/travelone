@@ -16,11 +16,12 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input models.Comme
 	r.DB.Create(&comment)
 	return comment, nil
 }
+
 func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*models.Comment, error) {
 	comment := models.Comment{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Delete(&models.Comment{})
+	r.DB.Clauses(clause.Returning{}).Delete(&comment)
 
 	return &comment, nil
 }

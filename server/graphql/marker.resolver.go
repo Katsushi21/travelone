@@ -23,7 +23,7 @@ func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input model
 		ID: id,
 	}
 	r.DB.First(&marker)
-	r.DB.Model(&marker).Where("id = ?", id).Updates( // Whereが必要か要検証
+	r.DB.Model(&marker).Updates(
 		&models.Marker{
 			PostID: &input.PostID,
 			Title:  input.Title,
@@ -39,7 +39,7 @@ func (r *mutationResolver) DeleteMarker(ctx context.Context, id int) (*models.Ma
 	marker := models.Marker{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.Marker{})
+	r.DB.Clauses(clause.Returning{}).Delete(&marker)
 
 	return &marker, nil
 }

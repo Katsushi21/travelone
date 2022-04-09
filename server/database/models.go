@@ -72,7 +72,7 @@ type User struct {
 
 type Session struct {
 	User_ID   int       `gorm:"primaryKey"`
-	Session   string    `gorm:"not null;default:''"`
+	Session   string    `gorm:"unique"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	User      User      `gorm:"foreignKey:User_ID"`
 }

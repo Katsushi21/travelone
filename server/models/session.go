@@ -4,7 +4,7 @@ import "time"
 
 type Session struct {
 	UserID    int       `json:"user_id"`
-	Session   string    `json:"session"`
+	Session   *string   `json:"session"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 

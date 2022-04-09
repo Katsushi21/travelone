@@ -24,7 +24,7 @@ func (r *mutationResolver) UpdatePost(ctx context.Context, id int, input models.
 		ID: id,
 	}
 	r.DB.First(&post)
-	r.DB.Model(&post).Where("id = ?", id).Updates( // Whereが必要か要検証
+	r.DB.Model(&post).Updates(
 		&models.Post{
 			Title: &input.Title,
 			Body:  &input.Body,
@@ -39,7 +39,7 @@ func (r *mutationResolver) DeletePost(ctx context.Context, id int) (*models.Post
 	post := models.Post{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&models.Post{})
+	r.DB.Clauses(clause.Returning{}).Delete(&post)
 
 	return &post, nil
 }

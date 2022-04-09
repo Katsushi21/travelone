@@ -23,7 +23,7 @@ func (r *mutationResolver) UpdateRequest(ctx context.Context, input models.Reque
 		RequestedUID: &input.RequestedUID,
 	}
 	r.DB.First(&request)
-	r.DB.Model(&request).Updates( // Whereが必要か要検証
+	r.DB.Model(&request).Updates(
 		&models.Request{
 			RequestUID:   &input.RequestUID,
 			RequestedUID: &input.RequestedUID,
@@ -39,7 +39,7 @@ func (r *mutationResolver) DeleteRequest(ctx context.Context, input models.Reque
 		RequestUID:   &input.RequestUID,
 		RequestedUID: &input.RequestedUID,
 	}
-	r.DB.Clauses(clause.Returning{}).Delete(&models.Request{})
+	r.DB.Clauses(clause.Returning{}).Delete(&request)
 
 	return &request, nil
 }
