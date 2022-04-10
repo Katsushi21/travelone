@@ -25,7 +25,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.UserInput) (*models.User, error) {
-	user := models.User{
+	user := &models.User{
 		ID: id,
 	}
 	r.DB.First(&user)
@@ -42,16 +42,16 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.
 		},
 	)
 
-	return &user, nil
+	return user, nil
 }
 
 func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User, error) {
-	user := models.User{
+	user := &models.User{
 		ID: id,
 	}
 	r.DB.Clauses(clause.Returning{}).Delete(&user)
 
-	return &user, nil
+	return user, nil
 }
 
 func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.User, error) {

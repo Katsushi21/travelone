@@ -19,7 +19,7 @@ func (r *mutationResolver) CreateMarker(ctx context.Context, input models.Marker
 }
 
 func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input models.MarkerInput) (*models.Marker, error) {
-	marker := models.Marker{
+	marker := &models.Marker{
 		ID: id,
 	}
 	r.DB.First(&marker)
@@ -32,14 +32,14 @@ func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input model
 		},
 	)
 
-	return &marker, nil
+	return marker, nil
 }
 
 func (r *mutationResolver) DeleteMarker(ctx context.Context, id int) (*models.Marker, error) {
-	marker := models.Marker{
+	marker := &models.Marker{
 		ID: id,
 	}
 	r.DB.Clauses(clause.Returning{}).Delete(&marker)
 
-	return &marker, nil
+	return marker, nil
 }

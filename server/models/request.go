@@ -4,23 +4,21 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 )
 
 type Request struct {
-	RequestUID   *int          `json:"request_uid"`
-	RequestedUID *int          `json:"requested_uid"`
-	Status       RequestStatus `json:"status"`
-	CreatedAt    time.Time     `json:"createdAt"`
-	UpdatedAt    time.Time     `json:"updatedAt"`
-	Requested    *User         `json:"requested"`
+	UserID    int           `json:"user_id"`
+	TargetUID int           `json:"target_uid"`
+	Status    RequestStatus `json:"status"`
+	Target    *User         `json:"target"`
 }
 
 type RequestInput struct {
-	RequestUID   int           `json:"request_uid"`
-	RequestedUID int           `json:"requested_uid"`
-	Status       RequestStatus `json:"status"`
+	UserID    int           `json:"user_id"`
+	TargetUID int           `json:"target_uid"`
+	Status    RequestStatus `json:"status"`
 }
+
 type RequestStatus string
 
 const (

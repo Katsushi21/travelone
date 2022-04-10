@@ -18,10 +18,10 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input models.Comme
 }
 
 func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*models.Comment, error) {
-	comment := models.Comment{
+	comment := &models.Comment{
 		ID: id,
 	}
 	r.DB.Clauses(clause.Returning{}).Delete(&comment)
 
-	return &comment, nil
+	return comment, nil
 }
