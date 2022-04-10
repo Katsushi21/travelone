@@ -18,12 +18,12 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input models.Friend
 }
 
 func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
-	friend := models.Friend{
+	friend := &models.Friend{
 		UserID:   input.UserID,
 		FriendID: input.FriendID,
 	}
 	r.DB.First(&friend)
 	r.DB.Clauses(clause.Returning{}).Delete(&friend)
 
-	return &friend, nil
+	return friend, nil
 }

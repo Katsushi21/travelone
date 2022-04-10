@@ -9,37 +9,35 @@ import (
 
 func (r *mutationResolver) CreateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
 	request := &models.Request{
-		RequestUID:   &input.RequestUID,
-		RequestedUID: &input.RequestedUID,
-		Status:       input.Status,
+		UserID:    input.UserID,
+		TargetUID: input.TargetUID,
+		Status:    input.Status,
 	}
 	r.DB.Create(&request)
+
 	return request, nil
 }
 
 func (r *mutationResolver) UpdateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
-	request := models.Request{
-		RequestUID:   &input.RequestUID,
-		RequestedUID: &input.RequestedUID,
+	request := &models.Request{
+		UserID:    input.UserID,
+		TargetUID: input.TargetUID,
 	}
 	r.DB.First(&request)
-	r.DB.Model(&request).Updates(
-		&models.Request{
-			RequestUID:   &input.RequestUID,
-			RequestedUID: &input.RequestedUID,
-			Status:       input.Status,
-		},
+	r.DB.Model(&request).Update(
+		"status",
+		&input.Status,
 	)
 
-	return &request, nil
+	return request, nil
 }
 
 func (r *mutationResolver) DeleteRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
-	request := models.Request{
-		RequestUID:   &input.RequestUID,
-		RequestedUID: &input.RequestedUID,
+	request := &models.Request{
+		UserID:    input.UserID,
+		TargetUID: input.TargetUID,
 	}
 	r.DB.Clauses(clause.Returning{}).Delete(&request)
 
-	return &request, nil
+	return request, nil
 }

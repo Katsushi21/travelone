@@ -165,8 +165,8 @@ input UploadFile {
 
 # Request
 type Request {
-  user_id: ID
-  target_uid: ID
+  user_id: ID!
+  target_uid: ID!
   status: RequestStatus!
   target: User!
 }
@@ -182,35 +182,35 @@ enum RequestStatus {
 }
 
 input RequestInput {
-  request_uid: ID!
-  requested_uid: ID!
+  user_id: ID!
+  target_uid: ID!
   status: RequestStatus!
 }
 
 type Query {
-  # all
-  allPosts: [Post]!
-  allUsers: [User]!
-  allComments: [Comment]!
-  allMarkers: [Marker]!
-  allRequests: [Request]!
-  allLikes: [Like]!
-  allFriends: [Friend]!
-  allMutes: [Mute]!
+  # getAll
+  getAllPosts: [Post]!
+  getAllUsers: [User]!
+  getAllComments: [Comment]!
+  getAllMarkers: [Marker]!
+  getAllRequests: [Request]!
+  getAllLikes: [Like]!
+  getAllFriends: [Friend]!
+  getAllMutes: [Mute]!
 
   # primary key
-  Post(id: ID!): Post!
-  User(id: ID!): User!
-  Comment(id: ID!): Comment!
-  Marker(id: ID!): Marker!
+  getPost(id: ID!): Post!
+  getUser(id: ID!): User!
+  getComment(id: ID!): Comment!
+  getMarker(id: ID!): Marker!
 
   # foreign key
-  Post(user_id: ID!): Post!
-  Like(user_id: ID!): Like!
-  Friend(user_id: ID!): Friend!
-  Mute(user_id: ID!): Mute!
-  Request(user_id: ID!): Request!
-  Session(user_id: ID!): Session!
+  getPostPerUser(user_id: ID!): [Post]!
+  getLikePerUser(user_id: ID!): [Like]!
+  getFriendPerUser(user_id: ID!): [Friend]!
+  getMutePerUser(user_id: ID!): [Mute]!
+  getRequestPerUser(user_id: ID!): [Request]!
+  getSessionPerUser(user_id: ID!): Session!
 }
 
 type Mutation {
@@ -240,7 +240,7 @@ type Mutation {
   deleteLike(input: LikeInput!): Like!
 
   deleteUser(id: ID!): User!
-  deleteSession(id: ID!): Session!
+  deleteSession(user_id: ID!): Session!
   deleteFriend(input: FriendInput!): Friend!
   deleteMute(input: MuteInput): Mute!
 
