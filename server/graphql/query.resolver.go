@@ -8,19 +8,26 @@ import (
 
 func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error) {
 	var posts []*models.Post
-	r.DB.Preload("User").Preload("Marker").Preload("Comment").Find(&posts)
+	r.DB.Preload("User").
+		Preload("Marker").
+		Preload("Comment").
+		Find(&posts)
 	return posts, nil
 }
 
 func (r *queryResolver) GetAllUsers(ctx context.Context) ([]*models.User, error) {
 	var users []*models.User
-	r.DB.Preload("Post").Preload("Comment").Find(&users)
+	r.DB.Preload("Post").
+		Preload("Comment").
+		Find(&users)
 	return users, nil
 }
 
 func (r *queryResolver) GetAllComments(ctx context.Context) ([]*models.Comment, error) {
 	var comments []*models.Comment
-	r.DB.Preload("Post").Preload("User").Find(&comments)
+	r.DB.Preload("Post").
+		Preload("User").
+		Find(&comments)
 	return comments, nil
 }
 
@@ -38,7 +45,9 @@ func (r *queryResolver) GetAllRequests(ctx context.Context) ([]*models.Request, 
 
 func (r *queryResolver) GetAllLikes(ctx context.Context) ([]*models.Like, error) {
 	var likes []*models.Like
-	r.DB.Preload("Post").Preload("User").Find(&likes)
+	r.DB.Preload("Post").
+		Preload("User").
+		Find(&likes)
 	return likes, nil
 }
 
@@ -56,25 +65,33 @@ func (r *queryResolver) GetAllMutes(ctx context.Context) ([]*models.Mute, error)
 
 func (r *queryResolver) GetPost(ctx context.Context, id int) (*models.Post, error) {
 	var post *models.Post
-	r.DB.Preload("User").Preload("Marker").Preload("Comment").First(&post, id)
+	r.DB.Preload("User").
+		Preload("Marker").
+		Preload("Comment").
+		First(&post, id)
 	return post, nil
 }
 
 func (r *queryResolver) GetUser(ctx context.Context, id int) (*models.User, error) {
 	var user *models.User
-	r.DB.Preload("Post").Preload("Comment").First(&user, id)
+	r.DB.Preload("Post").
+		Preload("Comment").
+		First(&user, id)
 	return user, nil
 }
 
 func (r *queryResolver) GetComment(ctx context.Context, id int) (*models.Comment, error) {
 	var comment *models.Comment
-	r.DB.Preload("Post").Preload("User").First(&comment, id)
+	r.DB.Preload("Post").
+		Preload("User").
+		First(&comment, id)
 	return comment, nil
 }
 
 func (r *queryResolver) GetMarker(ctx context.Context, id int) (*models.Marker, error) {
 	var marker *models.Marker
-	r.DB.Preload("Post").First(&marker, id)
+	r.DB.Preload("Post").
+		First(&marker, id)
 	return marker, nil
 }
 
@@ -128,7 +145,8 @@ func (r *queryResolver) GetRequestPerUser(ctx context.Context, userID int) ([]*m
 
 func (r *queryResolver) GetSessionPerUser(ctx context.Context, userID int) (*models.Session, error) {
 	var session *models.Session
-	r.DB.Where(&models.Session{UserID: userID}).First(&session)
+	r.DB.Where(&models.Session{UserID: userID}).
+		First(&session)
 
 	return session, nil
 }
