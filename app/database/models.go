@@ -52,6 +52,8 @@ type Request struct {
 	Status       string    `gorm:"not null;default:''"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
+	User         User
+	TargetUser   User
 }
 
 type User struct {

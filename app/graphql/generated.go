@@ -154,8 +154,9 @@ type ComplexityRoot struct {
 
 	Request struct {
 		Status       func(childComplexity int) int
-		Target       func(childComplexity int) int
+		TargetUser   func(childComplexity int) int
 		TargetUserID func(childComplexity int) int
+		User         func(childComplexity int) int
 		UserID       func(childComplexity int) int
 	}
 
@@ -997,12 +998,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Request.Status(childComplexity), true
 
-	case "Request.target":
-		if e.complexity.Request.Target == nil {
+	case "Request.target_user":
+		if e.complexity.Request.TargetUser == nil {
 			break
 		}
 
-		return e.complexity.Request.Target(childComplexity), true
+		return e.complexity.Request.TargetUser(childComplexity), true
 
 	case "Request.target_user_id":
 		if e.complexity.Request.TargetUserID == nil {
@@ -1010,6 +1011,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Request.TargetUserID(childComplexity), true
+
+	case "Request.user":
+		if e.complexity.Request.User == nil {
+			break
+		}
+
+		return e.complexity.Request.User(childComplexity), true
 
 	case "Request.user_id":
 		if e.complexity.Request.UserID == nil {
@@ -1215,11 +1223,15 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "schema.graphqls", Input: `# scalar
+	{Name: "schema.graphqls", Input: `###############
+# scalar
+###############
 scalar Upload
 scalar Time
 
+###############
 # Post
+###############
 type Post {
   id: ID!
   user_id: ID!
@@ -1241,6 +1253,9 @@ input PostInput {
   img: String!
 }
 
+###############
+# Like
+###############
 type Like {
   post_id: ID!
   user_id: ID!
@@ -1253,7 +1268,9 @@ input LikeInput {
   user_id: ID!
 }
 
+###############
 # User
+###############
 type User {
   id: ID!
   email: String!
@@ -1273,12 +1290,6 @@ type User {
   comment: [Comment]
 }
 
-enum UserType {
-  active
-  inactive
-  admin
-}
-
 input UserInput {
   email: String!
   password: String!
@@ -1295,12 +1306,21 @@ input LoginInput {
   password: String!
 }
 
+enum UserType {
+  active
+  inactive
+  admin
+}
+
 enum Gender {
   male
   female
   none
 }
 
+###############
+# Session
+###############
 type Session {
   user_id: ID!
   session: String
@@ -1312,6 +1332,9 @@ input SessionInput {
   session: String!
 }
 
+###############
+# Friend
+###############
 type Friend {
   user_id: ID!
   friend_id: ID!
@@ -1323,6 +1346,9 @@ input FriendInput {
   friend_id: ID!
 }
 
+###############
+# Mute
+###############
 type Mute {
   user_id: ID!
   mute_id: ID!
@@ -1334,7 +1360,9 @@ input MuteInput {
   mute_id: ID!
 }
 
+###############
 # Marker
+###############
 type Marker {
   id: ID!
   post_id: ID!
@@ -1353,7 +1381,9 @@ input MarkerInput {
   lng: String!
 }
 
+###############
 # Comment
+###############
 type Comment {
   id: ID!
   post_id: ID!
@@ -1371,21 +1401,15 @@ input CommentInput {
   body: String!
 }
 
-# File
-type File {
-  path: String!
-}
-
-input UploadFile {
-  content: Upload!
-}
-
+###############
 # Request
+###############
 type Request {
   user_id: ID!
   target_user_id: ID!
   status: RequestStatus!
-  target: User!
+  user: User!
+  target_user: User!
 }
 
 enum RequestStatus {
@@ -1404,6 +1428,20 @@ input RequestInput {
   status: RequestStatus!
 }
 
+###############
+# File
+###############
+type File {
+  path: String!
+}
+
+input UploadFile {
+  content: Upload!
+}
+
+###############
+# Query
+###############
 type Query {
   # All
   getAllPosts: [Post]!
@@ -1430,6 +1468,9 @@ type Query {
   getSessionByUserID(user_id: ID!): Session!
 }
 
+###############
+# Mutation
+###############
 type Mutation {
   # CREATE
   createPost(input: PostInput!): Post!
@@ -5328,7 +5369,7 @@ func (ec *executionContext) _Request_status(ctx context.Context, field graphql.C
 	return ec.marshalNRequestStatus2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐRequestStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Request_target(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
+func (ec *executionContext) _Request_user(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5346,7 +5387,42 @@ func (ec *executionContext) _Request_target(ctx context.Context, field graphql.C
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Target, nil
+		return obj.User, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Request_target_user(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Request",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TargetUser, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8929,9 +9005,19 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "target":
+		case "user":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Request_target(ctx, field, obj)
+				return ec._Request_user(ctx, field, obj)
+			}
+
+			out.Values[i] = innerFunc(ctx)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "target_user":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Request_target_user(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

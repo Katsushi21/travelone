@@ -10,7 +10,8 @@ type Request struct {
 	UserID       int           `json:"user_id"`
 	TargetUserID int           `json:"target_user_id"`
 	Status       RequestStatus `json:"status"`
-	Target       *User         `json:"target"`
+	User         *User         `json:"user"`
+	TargetUser   *User         `json:"target_user"`
 }
 
 type RequestInput struct {
@@ -18,7 +19,6 @@ type RequestInput struct {
 	TargetUserID int           `json:"target_user_id"`
 	Status       RequestStatus `json:"status"`
 }
-
 type RequestStatus string
 
 const (

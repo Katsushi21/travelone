@@ -183,7 +183,8 @@ type Request {
   user_id: ID!
   target_user_id: ID!
   status: RequestStatus!
-  target: User!
+  user: User!
+  target_user: User!
 }
 
 enum RequestStatus {
