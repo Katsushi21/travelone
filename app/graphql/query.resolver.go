@@ -63,7 +63,7 @@ func (r *queryResolver) GetAllMutes(ctx context.Context) ([]*models.Mute, error)
 	return mutes, nil
 }
 
-func (r *queryResolver) GetPost(ctx context.Context, id int) (*models.Post, error) {
+func (r *queryResolver) GetPostByID(ctx context.Context, id int) (*models.Post, error) {
 	var post *models.Post
 	r.DB.Preload("User").
 		Preload("Marker").
@@ -72,7 +72,7 @@ func (r *queryResolver) GetPost(ctx context.Context, id int) (*models.Post, erro
 	return post, nil
 }
 
-func (r *queryResolver) GetUser(ctx context.Context, id int) (*models.User, error) {
+func (r *queryResolver) GetUserByID(ctx context.Context, id int) (*models.User, error) {
 	var user *models.User
 	r.DB.Preload("Post").
 		Preload("Comment").
@@ -80,7 +80,7 @@ func (r *queryResolver) GetUser(ctx context.Context, id int) (*models.User, erro
 	return user, nil
 }
 
-func (r *queryResolver) GetComment(ctx context.Context, id int) (*models.Comment, error) {
+func (r *queryResolver) GetCommentByID(ctx context.Context, id int) (*models.Comment, error) {
 	var comment *models.Comment
 	r.DB.Preload("Post").
 		Preload("User").
@@ -88,14 +88,14 @@ func (r *queryResolver) GetComment(ctx context.Context, id int) (*models.Comment
 	return comment, nil
 }
 
-func (r *queryResolver) GetMarker(ctx context.Context, id int) (*models.Marker, error) {
+func (r *queryResolver) GetMarkerByID(ctx context.Context, id int) (*models.Marker, error) {
 	var marker *models.Marker
 	r.DB.Preload("Post").
 		First(&marker, id)
 	return marker, nil
 }
 
-func (r *queryResolver) GetPostPerUser(ctx context.Context, userID int) ([]*models.Post, error) {
+func (r *queryResolver) GetPostByUserID(ctx context.Context, userID int) ([]*models.Post, error) {
 	var posts []*models.Post
 	r.DB.Preload("User").
 		Preload("Marker").
@@ -106,7 +106,7 @@ func (r *queryResolver) GetPostPerUser(ctx context.Context, userID int) ([]*mode
 	return posts, nil
 }
 
-func (r *queryResolver) GetLikePerUser(ctx context.Context, userID int) ([]*models.Like, error) {
+func (r *queryResolver) GetLikeByUserID(ctx context.Context, userID int) ([]*models.Like, error) {
 	var likes []*models.Like
 	r.DB.Preload("Post").
 		Preload("User").
@@ -116,7 +116,7 @@ func (r *queryResolver) GetLikePerUser(ctx context.Context, userID int) ([]*mode
 	return likes, nil
 }
 
-func (r *queryResolver) GetFriendPerUser(ctx context.Context, userID int) ([]*models.Friend, error) {
+func (r *queryResolver) GetFriendByUserID(ctx context.Context, userID int) ([]*models.Friend, error) {
 	var friends []*models.Friend
 	r.DB.Preload("User").
 		Where(&models.Friend{UserID: userID}).
@@ -125,7 +125,7 @@ func (r *queryResolver) GetFriendPerUser(ctx context.Context, userID int) ([]*mo
 	return friends, nil
 }
 
-func (r *queryResolver) GetMutePerUser(ctx context.Context, userID int) ([]*models.Mute, error) {
+func (r *queryResolver) GetMuteByUserID(ctx context.Context, userID int) ([]*models.Mute, error) {
 	var mutes []*models.Mute
 	r.DB.Preload("User").
 		Where(&models.Mute{UserID: userID}).
@@ -134,7 +134,7 @@ func (r *queryResolver) GetMutePerUser(ctx context.Context, userID int) ([]*mode
 	return mutes, nil
 }
 
-func (r *queryResolver) GetRequestPerUser(ctx context.Context, userID int) ([]*models.Request, error) {
+func (r *queryResolver) GetRequestByUserID(ctx context.Context, userID int) ([]*models.Request, error) {
 	var requests []*models.Request
 	r.DB.Preload("User").
 		Where(&models.Request{UserID: userID}).
@@ -143,7 +143,7 @@ func (r *queryResolver) GetRequestPerUser(ctx context.Context, userID int) ([]*m
 	return requests, nil
 }
 
-func (r *queryResolver) GetSessionPerUser(ctx context.Context, userID int) (*models.Session, error) {
+func (r *queryResolver) GetSessionByUserID(ctx context.Context, userID int) (*models.Session, error) {
 	var session *models.Session
 	r.DB.Where(&models.Session{UserID: userID}).
 		First(&session)

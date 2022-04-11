@@ -7,16 +7,16 @@ import (
 )
 
 type Request struct {
-	UserID    int           `json:"user_id"`
-	TargetUID int           `json:"target_uid"`
-	Status    RequestStatus `json:"status"`
-	Target    *User         `json:"target"`
+	UserID       int           `json:"user_id"`
+	TargetUserID int           `json:"target_user_id"`
+	Status       RequestStatus `json:"status"`
+	Target       *User         `json:"target"`
 }
 
 type RequestInput struct {
-	UserID    int           `json:"user_id"`
-	TargetUID int           `json:"target_uid"`
-	Status    RequestStatus `json:"status"`
+	UserID       int           `json:"user_id"`
+	TargetUserID int           `json:"target_user_id"`
+	Status       RequestStatus `json:"status"`
 }
 
 type RequestStatus string

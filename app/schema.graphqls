@@ -166,7 +166,7 @@ input UploadFile {
 # Request
 type Request {
   user_id: ID!
-  target_uid: ID!
+  target_user_id: ID!
   status: RequestStatus!
   target: User!
 }
@@ -183,12 +183,12 @@ enum RequestStatus {
 
 input RequestInput {
   user_id: ID!
-  target_uid: ID!
+  target_user_id: ID!
   status: RequestStatus!
 }
 
 type Query {
-  # getAll
+  # All
   getAllPosts: [Post]!
   getAllUsers: [User]!
   getAllComments: [Comment]!
@@ -198,19 +198,19 @@ type Query {
   getAllFriends: [Friend]!
   getAllMutes: [Mute]!
 
-  # primary key
-  getPost(id: ID!): Post!
-  getUser(id: ID!): User!
-  getComment(id: ID!): Comment!
-  getMarker(id: ID!): Marker!
+  # By ID
+  getPostByID(id: ID!): Post!
+  getUserByID(id: ID!): User!
+  getCommentByID(id: ID!): Comment!
+  getMarkerByID(id: ID!): Marker!
 
-  # foreign key
-  getPostPerUser(user_id: ID!): [Post]!
-  getLikePerUser(user_id: ID!): [Like]!
-  getFriendPerUser(user_id: ID!): [Friend]!
-  getMutePerUser(user_id: ID!): [Mute]!
-  getRequestPerUser(user_id: ID!): [Request]!
-  getSessionPerUser(user_id: ID!): Session!
+  # By User ID
+  getPostByUserID(user_id: ID!): [Post]!
+  getLikeByUserID(user_id: ID!): [Like]!
+  getFriendByUserID(user_id: ID!): [Friend]!
+  getMuteByUserID(user_id: ID!): [Mute]!
+  getRequestByUserID(user_id: ID!): [Request]!
+  getSessionByUserID(user_id: ID!): Session!
 }
 
 type Mutation {

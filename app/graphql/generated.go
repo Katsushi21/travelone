@@ -132,31 +132,31 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetAllComments    func(childComplexity int) int
-		GetAllFriends     func(childComplexity int) int
-		GetAllLikes       func(childComplexity int) int
-		GetAllMarkers     func(childComplexity int) int
-		GetAllMutes       func(childComplexity int) int
-		GetAllPosts       func(childComplexity int) int
-		GetAllRequests    func(childComplexity int) int
-		GetAllUsers       func(childComplexity int) int
-		GetComment        func(childComplexity int, id int) int
-		GetFriendPerUser  func(childComplexity int, userID int) int
-		GetLikePerUser    func(childComplexity int, userID int) int
-		GetMarker         func(childComplexity int, id int) int
-		GetMutePerUser    func(childComplexity int, userID int) int
-		GetPost           func(childComplexity int, id int) int
-		GetPostPerUser    func(childComplexity int, userID int) int
-		GetRequestPerUser func(childComplexity int, userID int) int
-		GetSessionPerUser func(childComplexity int, userID int) int
-		GetUser           func(childComplexity int, id int) int
+		GetAllComments     func(childComplexity int) int
+		GetAllFriends      func(childComplexity int) int
+		GetAllLikes        func(childComplexity int) int
+		GetAllMarkers      func(childComplexity int) int
+		GetAllMutes        func(childComplexity int) int
+		GetAllPosts        func(childComplexity int) int
+		GetAllRequests     func(childComplexity int) int
+		GetAllUsers        func(childComplexity int) int
+		GetCommentByID     func(childComplexity int, id int) int
+		GetFriendByUserID  func(childComplexity int, userID int) int
+		GetLikeByUserID    func(childComplexity int, userID int) int
+		GetMarkerByID      func(childComplexity int, id int) int
+		GetMuteByUserID    func(childComplexity int, userID int) int
+		GetPostByID        func(childComplexity int, id int) int
+		GetPostByUserID    func(childComplexity int, userID int) int
+		GetRequestByUserID func(childComplexity int, userID int) int
+		GetSessionByUserID func(childComplexity int, userID int) int
+		GetUserByID        func(childComplexity int, id int) int
 	}
 
 	Request struct {
-		Status    func(childComplexity int) int
-		Target    func(childComplexity int) int
-		TargetUID func(childComplexity int) int
-		UserID    func(childComplexity int) int
+		Status       func(childComplexity int) int
+		Target       func(childComplexity int) int
+		TargetUserID func(childComplexity int) int
+		UserID       func(childComplexity int) int
 	}
 
 	Session struct {
@@ -221,16 +221,16 @@ type QueryResolver interface {
 	GetAllLikes(ctx context.Context) ([]*models.Like, error)
 	GetAllFriends(ctx context.Context) ([]*models.Friend, error)
 	GetAllMutes(ctx context.Context) ([]*models.Mute, error)
-	GetPost(ctx context.Context, id int) (*models.Post, error)
-	GetUser(ctx context.Context, id int) (*models.User, error)
-	GetComment(ctx context.Context, id int) (*models.Comment, error)
-	GetMarker(ctx context.Context, id int) (*models.Marker, error)
-	GetPostPerUser(ctx context.Context, userID int) ([]*models.Post, error)
-	GetLikePerUser(ctx context.Context, userID int) ([]*models.Like, error)
-	GetFriendPerUser(ctx context.Context, userID int) ([]*models.Friend, error)
-	GetMutePerUser(ctx context.Context, userID int) ([]*models.Mute, error)
-	GetRequestPerUser(ctx context.Context, userID int) ([]*models.Request, error)
-	GetSessionPerUser(ctx context.Context, userID int) (*models.Session, error)
+	GetPostByID(ctx context.Context, id int) (*models.Post, error)
+	GetUserByID(ctx context.Context, id int) (*models.User, error)
+	GetCommentByID(ctx context.Context, id int) (*models.Comment, error)
+	GetMarkerByID(ctx context.Context, id int) (*models.Marker, error)
+	GetPostByUserID(ctx context.Context, userID int) ([]*models.Post, error)
+	GetLikeByUserID(ctx context.Context, userID int) ([]*models.Like, error)
+	GetFriendByUserID(ctx context.Context, userID int) ([]*models.Friend, error)
+	GetMuteByUserID(ctx context.Context, userID int) ([]*models.Mute, error)
+	GetRequestByUserID(ctx context.Context, userID int) ([]*models.Request, error)
+	GetSessionByUserID(ctx context.Context, userID int) (*models.Session, error)
 }
 
 type executableSchema struct {
@@ -870,125 +870,125 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetAllUsers(childComplexity), true
 
-	case "Query.getComment":
-		if e.complexity.Query.GetComment == nil {
+	case "Query.getCommentByID":
+		if e.complexity.Query.GetCommentByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getComment_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getCommentByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetComment(childComplexity, args["id"].(int)), true
+		return e.complexity.Query.GetCommentByID(childComplexity, args["id"].(int)), true
 
-	case "Query.getFriendPerUser":
-		if e.complexity.Query.GetFriendPerUser == nil {
+	case "Query.getFriendByUserID":
+		if e.complexity.Query.GetFriendByUserID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getFriendPerUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getFriendByUserID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetFriendPerUser(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetFriendByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getLikePerUser":
-		if e.complexity.Query.GetLikePerUser == nil {
+	case "Query.getLikeByUserID":
+		if e.complexity.Query.GetLikeByUserID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getLikePerUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getLikeByUserID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetLikePerUser(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetLikeByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getMarker":
-		if e.complexity.Query.GetMarker == nil {
+	case "Query.getMarkerByID":
+		if e.complexity.Query.GetMarkerByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getMarker_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getMarkerByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetMarker(childComplexity, args["id"].(int)), true
+		return e.complexity.Query.GetMarkerByID(childComplexity, args["id"].(int)), true
 
-	case "Query.getMutePerUser":
-		if e.complexity.Query.GetMutePerUser == nil {
+	case "Query.getMuteByUserID":
+		if e.complexity.Query.GetMuteByUserID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getMutePerUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getMuteByUserID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetMutePerUser(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetMuteByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getPost":
-		if e.complexity.Query.GetPost == nil {
+	case "Query.getPostByID":
+		if e.complexity.Query.GetPostByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getPost_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getPostByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPost(childComplexity, args["id"].(int)), true
+		return e.complexity.Query.GetPostByID(childComplexity, args["id"].(int)), true
 
-	case "Query.getPostPerUser":
-		if e.complexity.Query.GetPostPerUser == nil {
+	case "Query.getPostByUserID":
+		if e.complexity.Query.GetPostByUserID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getPostPerUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getPostByUserID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPostPerUser(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetPostByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getRequestPerUser":
-		if e.complexity.Query.GetRequestPerUser == nil {
+	case "Query.getRequestByUserID":
+		if e.complexity.Query.GetRequestByUserID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getRequestPerUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getRequestByUserID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetRequestPerUser(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetRequestByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getSessionPerUser":
-		if e.complexity.Query.GetSessionPerUser == nil {
+	case "Query.getSessionByUserID":
+		if e.complexity.Query.GetSessionByUserID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getSessionPerUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getSessionByUserID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetSessionPerUser(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetSessionByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getUser":
-		if e.complexity.Query.GetUser == nil {
+	case "Query.getUserByID":
+		if e.complexity.Query.GetUserByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getUserByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetUser(childComplexity, args["id"].(int)), true
+		return e.complexity.Query.GetUserByID(childComplexity, args["id"].(int)), true
 
 	case "Request.status":
 		if e.complexity.Request.Status == nil {
@@ -1004,12 +1004,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Request.Target(childComplexity), true
 
-	case "Request.target_uid":
-		if e.complexity.Request.TargetUID == nil {
+	case "Request.target_user_id":
+		if e.complexity.Request.TargetUserID == nil {
 			break
 		}
 
-		return e.complexity.Request.TargetUID(childComplexity), true
+		return e.complexity.Request.TargetUserID(childComplexity), true
 
 	case "Request.user_id":
 		if e.complexity.Request.UserID == nil {
@@ -1383,7 +1383,7 @@ input UploadFile {
 # Request
 type Request {
   user_id: ID!
-  target_uid: ID!
+  target_user_id: ID!
   status: RequestStatus!
   target: User!
 }
@@ -1400,12 +1400,12 @@ enum RequestStatus {
 
 input RequestInput {
   user_id: ID!
-  target_uid: ID!
+  target_user_id: ID!
   status: RequestStatus!
 }
 
 type Query {
-  # getAll
+  # All
   getAllPosts: [Post]!
   getAllUsers: [User]!
   getAllComments: [Comment]!
@@ -1415,19 +1415,19 @@ type Query {
   getAllFriends: [Friend]!
   getAllMutes: [Mute]!
 
-  # primary key
-  getPost(id: ID!): Post!
-  getUser(id: ID!): User!
-  getComment(id: ID!): Comment!
-  getMarker(id: ID!): Marker!
+  # By ID
+  getPostByID(id: ID!): Post!
+  getUserByID(id: ID!): User!
+  getCommentByID(id: ID!): Comment!
+  getMarkerByID(id: ID!): Marker!
 
-  # foreign key
-  getPostPerUser(user_id: ID!): [Post]!
-  getLikePerUser(user_id: ID!): [Like]!
-  getFriendPerUser(user_id: ID!): [Friend]!
-  getMutePerUser(user_id: ID!): [Mute]!
-  getRequestPerUser(user_id: ID!): [Request]!
-  getSessionPerUser(user_id: ID!): Session!
+  # By User ID
+  getPostByUserID(user_id: ID!): [Post]!
+  getLikeByUserID(user_id: ID!): [Like]!
+  getFriendByUserID(user_id: ID!): [Friend]!
+  getMuteByUserID(user_id: ID!): [Mute]!
+  getRequestByUserID(user_id: ID!): [Request]!
+  getSessionByUserID(user_id: ID!): Session!
 }
 
 type Mutation {
@@ -1893,7 +1893,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getCommentByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1908,7 +1908,7 @@ func (ec *executionContext) field_Query_getComment_args(ctx context.Context, raw
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getFriendPerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getFriendByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1923,7 +1923,7 @@ func (ec *executionContext) field_Query_getFriendPerUser_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getLikePerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getLikeByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1938,7 +1938,7 @@ func (ec *executionContext) field_Query_getLikePerUser_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getMarkerByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1953,7 +1953,7 @@ func (ec *executionContext) field_Query_getMarker_args(ctx context.Context, rawA
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getMutePerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getMuteByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1968,22 +1968,7 @@ func (ec *executionContext) field_Query_getMutePerUser_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getPostPerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["user_id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user_id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["user_id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getPost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getPostByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1998,7 +1983,7 @@ func (ec *executionContext) field_Query_getPost_args(ctx context.Context, rawArg
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getRequestPerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getPostByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -2013,7 +1998,7 @@ func (ec *executionContext) field_Query_getRequestPerUser_args(ctx context.Conte
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getSessionPerUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getRequestByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -2028,7 +2013,22 @@ func (ec *executionContext) field_Query_getSessionPerUser_args(ctx context.Conte
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getSessionByUserID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["user_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user_id"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["user_id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getUserByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -4732,7 +4732,7 @@ func (ec *executionContext) _Query_getAllMutes(ctx context.Context, field graphq
 	return ec.marshalNMute2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐMute(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getPost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getPostByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4749,7 +4749,7 @@ func (ec *executionContext) _Query_getPost(ctx context.Context, field graphql.Co
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getPost_args(ctx, rawArgs)
+	args, err := ec.field_Query_getPostByID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4757,7 +4757,7 @@ func (ec *executionContext) _Query_getPost(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPost(rctx, args["id"].(int))
+		return ec.resolvers.Query().GetPostByID(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4774,7 +4774,7 @@ func (ec *executionContext) _Query_getPost(ctx context.Context, field graphql.Co
 	return ec.marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐPost(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getUserByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4791,7 +4791,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getUserByID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4799,7 +4799,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUser(rctx, args["id"].(int))
+		return ec.resolvers.Query().GetUserByID(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4816,7 +4816,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	return ec.marshalNUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getCommentByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4833,7 +4833,7 @@ func (ec *executionContext) _Query_getComment(ctx context.Context, field graphql
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getComment_args(ctx, rawArgs)
+	args, err := ec.field_Query_getCommentByID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4841,7 +4841,7 @@ func (ec *executionContext) _Query_getComment(ctx context.Context, field graphql
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetComment(rctx, args["id"].(int))
+		return ec.resolvers.Query().GetCommentByID(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4858,7 +4858,7 @@ func (ec *executionContext) _Query_getComment(ctx context.Context, field graphql
 	return ec.marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐComment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getMarkerByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4875,7 +4875,7 @@ func (ec *executionContext) _Query_getMarker(ctx context.Context, field graphql.
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getMarker_args(ctx, rawArgs)
+	args, err := ec.field_Query_getMarkerByID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4883,7 +4883,7 @@ func (ec *executionContext) _Query_getMarker(ctx context.Context, field graphql.
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetMarker(rctx, args["id"].(int))
+		return ec.resolvers.Query().GetMarkerByID(rctx, args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4900,7 +4900,7 @@ func (ec *executionContext) _Query_getMarker(ctx context.Context, field graphql.
 	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐMarker(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getPostPerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getPostByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4917,7 +4917,7 @@ func (ec *executionContext) _Query_getPostPerUser(ctx context.Context, field gra
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getPostPerUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getPostByUserID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4925,7 +4925,7 @@ func (ec *executionContext) _Query_getPostPerUser(ctx context.Context, field gra
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPostPerUser(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetPostByUserID(rctx, args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4942,7 +4942,7 @@ func (ec *executionContext) _Query_getPostPerUser(ctx context.Context, field gra
 	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐPost(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getLikePerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getLikeByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4959,7 +4959,7 @@ func (ec *executionContext) _Query_getLikePerUser(ctx context.Context, field gra
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getLikePerUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getLikeByUserID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -4967,7 +4967,7 @@ func (ec *executionContext) _Query_getLikePerUser(ctx context.Context, field gra
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetLikePerUser(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetLikeByUserID(rctx, args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4984,7 +4984,7 @@ func (ec *executionContext) _Query_getLikePerUser(ctx context.Context, field gra
 	return ec.marshalNLike2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐLike(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getFriendPerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getFriendByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5001,7 +5001,7 @@ func (ec *executionContext) _Query_getFriendPerUser(ctx context.Context, field g
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getFriendPerUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getFriendByUserID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -5009,7 +5009,7 @@ func (ec *executionContext) _Query_getFriendPerUser(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetFriendPerUser(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetFriendByUserID(rctx, args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5026,7 +5026,7 @@ func (ec *executionContext) _Query_getFriendPerUser(ctx context.Context, field g
 	return ec.marshalNFriend2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐFriend(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getMutePerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getMuteByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5043,7 +5043,7 @@ func (ec *executionContext) _Query_getMutePerUser(ctx context.Context, field gra
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getMutePerUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getMuteByUserID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -5051,7 +5051,7 @@ func (ec *executionContext) _Query_getMutePerUser(ctx context.Context, field gra
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetMutePerUser(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetMuteByUserID(rctx, args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5068,7 +5068,7 @@ func (ec *executionContext) _Query_getMutePerUser(ctx context.Context, field gra
 	return ec.marshalNMute2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐMute(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getRequestPerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getRequestByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5085,7 +5085,7 @@ func (ec *executionContext) _Query_getRequestPerUser(ctx context.Context, field 
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getRequestPerUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getRequestByUserID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -5093,7 +5093,7 @@ func (ec *executionContext) _Query_getRequestPerUser(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetRequestPerUser(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetRequestByUserID(rctx, args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5110,7 +5110,7 @@ func (ec *executionContext) _Query_getRequestPerUser(ctx context.Context, field 
 	return ec.marshalNRequest2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐRequest(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getSessionPerUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getSessionByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5127,7 +5127,7 @@ func (ec *executionContext) _Query_getSessionPerUser(ctx context.Context, field 
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getSessionPerUser_args(ctx, rawArgs)
+	args, err := ec.field_Query_getSessionByUserID_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -5135,7 +5135,7 @@ func (ec *executionContext) _Query_getSessionPerUser(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetSessionPerUser(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetSessionByUserID(rctx, args["user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5258,7 +5258,7 @@ func (ec *executionContext) _Request_user_id(ctx context.Context, field graphql.
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Request_target_uid(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
+func (ec *executionContext) _Request_target_user_id(ctx context.Context, field graphql.CollectedField, obj *models.Request) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5276,7 +5276,7 @@ func (ec *executionContext) _Request_target_uid(ctx context.Context, field graph
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TargetUID, nil
+		return obj.TargetUserID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7470,11 +7470,11 @@ func (ec *executionContext) unmarshalInputRequestInput(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
-		case "target_uid":
+		case "target_user_id":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("target_uid"))
-			it.TargetUID, err = ec.unmarshalNID2int(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("target_user_id"))
+			it.TargetUserID, err = ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -8634,7 +8634,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getPost":
+		case "getPostByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8643,7 +8643,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getPost(ctx, field)
+				res = ec._Query_getPostByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8657,7 +8657,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getUser":
+		case "getUserByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8666,7 +8666,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getUser(ctx, field)
+				res = ec._Query_getUserByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8680,7 +8680,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getComment":
+		case "getCommentByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8689,7 +8689,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getComment(ctx, field)
+				res = ec._Query_getCommentByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8703,7 +8703,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getMarker":
+		case "getMarkerByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8712,7 +8712,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getMarker(ctx, field)
+				res = ec._Query_getMarkerByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8726,7 +8726,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getPostPerUser":
+		case "getPostByUserID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8735,7 +8735,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getPostPerUser(ctx, field)
+				res = ec._Query_getPostByUserID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8749,7 +8749,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getLikePerUser":
+		case "getLikeByUserID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8758,7 +8758,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getLikePerUser(ctx, field)
+				res = ec._Query_getLikeByUserID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8772,7 +8772,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getFriendPerUser":
+		case "getFriendByUserID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8781,7 +8781,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getFriendPerUser(ctx, field)
+				res = ec._Query_getFriendByUserID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8795,7 +8795,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getMutePerUser":
+		case "getMuteByUserID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8804,7 +8804,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getMutePerUser(ctx, field)
+				res = ec._Query_getMuteByUserID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8818,7 +8818,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getRequestPerUser":
+		case "getRequestByUserID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8827,7 +8827,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getRequestPerUser(ctx, field)
+				res = ec._Query_getRequestByUserID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8841,7 +8841,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "getSessionPerUser":
+		case "getSessionByUserID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -8850,7 +8850,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getSessionPerUser(ctx, field)
+				res = ec._Query_getSessionByUserID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -8909,9 +8909,9 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "target_uid":
+		case "target_user_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Request_target_uid(ctx, field, obj)
+				return ec._Request_target_user_id(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

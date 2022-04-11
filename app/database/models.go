@@ -47,8 +47,8 @@ type Like struct {
 }
 
 type Request struct {
-	RequestUID   int       `gorm:"primaryKey"`
-	RequestedUID int       `gorm:"primaryKey"`
+	UserID       int       `gorm:"primaryKey"`
+	TargetUserID int       `gorm:"primaryKey"`
 	Status       string    `gorm:"not null;default:''"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
