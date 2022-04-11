@@ -1,8 +1,12 @@
+###############
 # scalar
+###############
 scalar Upload
 scalar Time
 
+###############
 # Post
+###############
 type Post {
   id: ID!
   user_id: ID!
@@ -24,6 +28,9 @@ input PostInput {
   img: String!
 }
 
+###############
+# Like
+###############
 type Like {
   post_id: ID!
   user_id: ID!
@@ -36,7 +43,9 @@ input LikeInput {
   user_id: ID!
 }
 
+###############
 # User
+###############
 type User {
   id: ID!
   email: String!
@@ -56,12 +65,6 @@ type User {
   comment: [Comment]
 }
 
-enum UserType {
-  active
-  inactive
-  admin
-}
-
 input UserInput {
   email: String!
   password: String!
@@ -78,12 +81,21 @@ input LoginInput {
   password: String!
 }
 
+enum UserType {
+  active
+  inactive
+  admin
+}
+
 enum Gender {
   male
   female
   none
 }
 
+###############
+# Session
+###############
 type Session {
   user_id: ID!
   session: String
@@ -95,6 +107,9 @@ input SessionInput {
   session: String!
 }
 
+###############
+# Friend
+###############
 type Friend {
   user_id: ID!
   friend_id: ID!
@@ -106,6 +121,9 @@ input FriendInput {
   friend_id: ID!
 }
 
+###############
+# Mute
+###############
 type Mute {
   user_id: ID!
   mute_id: ID!
@@ -117,7 +135,9 @@ input MuteInput {
   mute_id: ID!
 }
 
+###############
 # Marker
+###############
 type Marker {
   id: ID!
   post_id: ID!
@@ -136,7 +156,9 @@ input MarkerInput {
   lng: String!
 }
 
+###############
 # Comment
+###############
 type Comment {
   id: ID!
   post_id: ID!
@@ -154,16 +176,9 @@ input CommentInput {
   body: String!
 }
 
-# File
-type File {
-  path: String!
-}
-
-input UploadFile {
-  content: Upload!
-}
-
+###############
 # Request
+###############
 type Request {
   user_id: ID!
   target_user_id: ID!
@@ -187,6 +202,20 @@ input RequestInput {
   status: RequestStatus!
 }
 
+###############
+# File
+###############
+type File {
+  path: String!
+}
+
+input UploadFile {
+  content: Upload!
+}
+
+###############
+# Query
+###############
 type Query {
   # All
   getAllPosts: [Post]!
@@ -213,6 +242,9 @@ type Query {
   getSessionByUserID(user_id: ID!): Session!
 }
 
+###############
+# Mutation
+###############
 type Mutation {
   # CREATE
   createPost(input: PostInput!): Post!
