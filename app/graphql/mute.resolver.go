@@ -12,7 +12,10 @@ func (r *mutationResolver) CreateMute(ctx context.Context, input models.MuteInpu
 		UserID: input.UserID,
 		MuteID: input.MuteID,
 	}
-	r.DB.Create(&mute)
+	err := r.DB.Debug().Create(&mute).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return mute, nil
 }
@@ -22,7 +25,10 @@ func (r *mutationResolver) DeleteMute(ctx context.Context, input *models.MuteInp
 		UserID: input.UserID,
 		MuteID: input.MuteID,
 	}
-	r.DB.Clauses(clause.Returning{}).Delete(&mute)
+	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&mute).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return mute, nil
 }

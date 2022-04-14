@@ -98,7 +98,7 @@ enum Gender {
 ###############
 type Session {
   user_id: ID!
-  session: String
+  session: String!
   updatedAt: Time!
 }
 

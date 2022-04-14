@@ -12,7 +12,10 @@ func (r *mutationResolver) CreateLike(ctx context.Context, input models.LikeInpu
 		PostID: input.PostID,
 		UserID: input.UserID,
 	}
-	r.DB.Create(&like)
+	err := r.DB.Debug().Create(&like).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return like, nil
 }
@@ -22,7 +25,10 @@ func (r *mutationResolver) DeleteLike(ctx context.Context, input models.LikeInpu
 		PostID: input.PostID,
 		UserID: input.UserID,
 	}
-	r.DB.Clauses(clause.Returning{}).Delete(&like)
+	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&like).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return like, nil
 }

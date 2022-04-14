@@ -14,7 +14,10 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input models.PostInpu
 		Body:   input.Body,
 		Img:    input.Img,
 	}
-	r.DB.Create(&post)
+	err := r.DB.Debug().Create(&post).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return post, nil
 }
@@ -23,14 +26,18 @@ func (r *mutationResolver) UpdatePost(ctx context.Context, id int, input models.
 	post := &models.Post{
 		ID: id,
 	}
-	r.DB.First(&post)
-	r.DB.Model(&post).Updates(
-		&models.Post{
-			Title: input.Title,
-			Body:  input.Body,
-			Img:   input.Img,
-		},
-	)
+	r.DB.Debug().First(&post)
+	err := r.DB.Debug().Model(&post).
+		Updates(
+			&models.Post{
+				Title: input.Title,
+				Body:  input.Body,
+				Img:   input.Img,
+			},
+		).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return post, nil
 }
@@ -39,7 +46,10 @@ func (r *mutationResolver) DeletePost(ctx context.Context, id int) (*models.Post
 	post := &models.Post{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Delete(&post)
+	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&post).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return post, nil
 }

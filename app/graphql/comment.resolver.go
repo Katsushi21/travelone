@@ -13,7 +13,10 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input models.Comme
 		UserID: input.UserID,
 		Body:   input.Body,
 	}
-	r.DB.Create(&comment)
+	err := r.DB.Debug().Create(&comment).Error
+	if err != nil {
+		return nil, err
+	}
 	return comment, nil
 }
 
@@ -21,7 +24,10 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*models.C
 	comment := &models.Comment{
 		ID: id,
 	}
-	r.DB.Clauses(clause.Returning{}).Delete(&comment)
+	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&comment).Error
+	if err != nil {
+		return nil, err
+	}
 
 	return comment, nil
 }
