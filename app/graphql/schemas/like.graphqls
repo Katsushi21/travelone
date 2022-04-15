@@ -1,0 +1,17 @@
+###############
+# Like
+###############
+type Like {
+  post_id: ID!
+  user_id: ID!
+  post: Post!
+  user: User!
+}
+
+###############
+# Input
+###############
+input LikeInput {
+  post_id: ID!
+  user_id: ID!
+}

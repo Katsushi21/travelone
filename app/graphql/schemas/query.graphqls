@@ -1,0 +1,75 @@
+type Query {
+  ###############
+  # Comment
+  ###############
+  # All
+  getAllComments: [Comment]!
+  # By ID
+  getCommentByID(id: ID!): Comment!
+  # By User ID
+  getCommentByUserID(user_id: ID!): [Comment]!
+
+  ###############
+  # Friend
+  ###############
+  # All
+  getAllFriends: [Friend]!
+  # By User ID
+  getFriendsByUserID(user_id: ID!): [Friend]!
+
+  ###############
+  # Like
+  ###############
+  # All
+  getAllLikes: [Like]!
+  # By User ID
+  getLikesByUserID(user_id: ID!): [Like]!
+
+  ###############
+  # Marker
+  ###############
+  # All
+  getAllMarkers: [Marker]!
+  # By ID
+  getMarkerByID(id: ID!): Marker!
+
+  ###############
+  # Mute
+  ###############
+  # All
+  getAllMutes: [Mute]!
+  # By User ID
+  getMutesByUserID(user_id: ID!): [Mute]!
+
+  ###############
+  # Post
+  ###############
+  # All
+  getAllPosts: [Post]!
+  # By ID
+  getPostByID(id: ID!): Post!
+  # By User ID
+  getPostsByUserID(user_id: ID!): [Post]!
+
+  ###############
+  # Request
+  ###############
+  # All
+  getAllRequests: [Request]!
+  # By User ID
+  getRequestsByUserID(user_id: ID!): [Request]!
+
+  ###############
+  # Session
+  ###############
+  # By User ID
+  getSessionByUserID(user_id: ID!): Session!
+
+  ###############
+  # User
+  ###############
+  # All
+  getAllUsers: [User]!
+  # By ID
+  getUserByID(id: ID!): User!
+}

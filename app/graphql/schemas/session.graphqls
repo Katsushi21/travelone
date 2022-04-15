@@ -1,0 +1,16 @@
+###############
+# Session
+###############
+type Session {
+  user_id: ID!
+  session: String!
+  updatedAt: Time!
+}
+
+###############
+# Input
+###############
+input SessionInput {
+  user_id: ID!
+  session: String!
+}

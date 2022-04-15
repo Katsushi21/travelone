@@ -14,7 +14,7 @@ type User struct {
 	Type         UserType   `json:"type"`
 	Name         string     `json:"name"`
 	Age          int        `json:"age"`
-	Gender       Gender     `json:"gender"`
+	Gender       UserGender `json:"gender"`
 	Avatar       string     `json:"avatar"`
 	Introduction string     `json:"introduction"`
 	CreatedAt    time.Time  `json:"createdAt"`
@@ -27,14 +27,14 @@ type User struct {
 }
 
 type UserInput struct {
-	Email        string   `json:"email"`
-	Password     string   `json:"password"`
-	Type         UserType `json:"type"`
-	Name         string   `json:"name"`
-	Age          int      `json:"age"`
-	Gender       Gender   `json:"gender"`
-	Avatar       string   `json:"avatar"`
-	Introduction string   `json:"introduction"`
+	Email        string     `json:"email"`
+	Password     string     `json:"password"`
+	Type         UserType   `json:"type"`
+	Name         string     `json:"name"`
+	Age          int        `json:"age"`
+	Gender       UserGender `json:"gender"`
+	Avatar       string     `json:"avatar"`
+	Introduction string     `json:"introduction"`
 }
 
 type LoginInput struct {
@@ -42,46 +42,46 @@ type LoginInput struct {
 	Password string `json:"password"`
 }
 
-type Gender string
+type UserGender string
 
 const (
-	GenderMale   Gender = "male"
-	GenderFemale Gender = "female"
-	GenderNone   Gender = "none"
+	UserGenderMale   UserGender = "male"
+	UserGenderFemale UserGender = "female"
+	UserGenderNone   UserGender = "none"
 )
 
-var AllGender = []Gender{
-	GenderMale,
-	GenderFemale,
-	GenderNone,
+var AllUserGender = []UserGender{
+	UserGenderMale,
+	UserGenderFemale,
+	UserGenderNone,
 }
 
-func (e Gender) IsValid() bool {
+func (e UserGender) IsValid() bool {
 	switch e {
-	case GenderMale, GenderFemale, GenderNone:
+	case UserGenderMale, UserGenderFemale, UserGenderNone:
 		return true
 	}
 	return false
 }
 
-func (e Gender) String() string {
+func (e UserGender) String() string {
 	return string(e)
 }
 
-func (e *Gender) UnmarshalGQL(v interface{}) error {
+func (e *UserGender) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = Gender(str)
+	*e = UserGender(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid Gender", str)
+		return fmt.Errorf("%s is not a valid UserGender", str)
 	}
 	return nil
 }
 
-func (e Gender) MarshalGQL(w io.Writer) {
+func (e UserGender) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

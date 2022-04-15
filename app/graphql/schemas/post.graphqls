@@ -1,0 +1,26 @@
+###############
+# Post
+###############
+type Post {
+  id: ID!
+  user_id: ID!
+  title: String!
+  body: String!
+  img: String!
+  createdAt: Time!
+  updatedAt: Time!
+  user: User!
+  marker: Marker
+  like: [Like]
+  comment: [Comment]
+}
+
+###############
+# Input
+###############
+input PostInput {
+  user_id: ID!
+  title: String!
+  body: String!
+  img: String!
+}

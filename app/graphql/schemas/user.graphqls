@@ -1,0 +1,55 @@
+###############
+# User
+###############
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  type: UserType!
+  name: String!
+  age: Int!
+  gender: UserGender!
+  avatar: String!
+  introduction: String!
+  createdAt: Time!
+  updatedAt: Time!
+  friend: [Friend]
+  mute: [Mute]
+  post: [Post]
+  like: [Like]
+  comment: [Comment]
+}
+
+###############
+# Enum
+###############
+enum UserType {
+  active
+  inactive
+  admin
+}
+
+enum UserGender {
+  male
+  female
+  none
+}
+
+###############
+# Input
+###############
+input UserInput {
+  email: String!
+  password: String!
+  type: UserType!
+  name: String!
+  age: Int!
+  gender: UserGender!
+  avatar: String!
+  introduction: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}

@@ -1,0 +1,32 @@
+###############
+# Request
+###############
+type Request {
+  user_id: ID!
+  target_user_id: ID!
+  status: RequestStatus!
+  user: User!
+  target_user: User!
+}
+
+###############
+# Enum
+###############
+enum RequestStatus {
+  in_process
+  accept
+  deny
+  break_in_process
+  break_accept
+  break_deny
+  cancel
+}
+
+###############
+# Input
+###############
+input RequestInput {
+  user_id: ID!
+  target_user_id: ID!
+  status: RequestStatus!
+}

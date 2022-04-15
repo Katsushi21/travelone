@@ -1,0 +1,23 @@
+###############
+# Marker
+###############
+type Marker {
+  id: ID!
+  post_id: ID!
+  title: String!
+  lat: String!
+  lng: String!
+  createdAt: Time!
+  updatedAt: Time!
+  post: Post!
+}
+
+###############
+# Input
+###############
+input MarkerInput {
+  post_id: ID!
+  title: String!
+  lat: String!
+  lng: String!
+}

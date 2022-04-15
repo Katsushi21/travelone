@@ -19,6 +19,7 @@ type RequestInput struct {
 	TargetUserID int           `json:"target_user_id"`
 	Status       RequestStatus `json:"status"`
 }
+
 type RequestStatus string
 
 const (

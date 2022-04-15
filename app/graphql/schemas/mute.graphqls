@@ -1,0 +1,16 @@
+###############
+# Mute
+###############
+type Mute {
+  user_id: ID!
+  mute_id: ID!
+  mute: User!
+}
+
+###############
+# Input
+###############
+input MuteInput {
+  user_id: ID!
+  mute_id: ID!
+}
