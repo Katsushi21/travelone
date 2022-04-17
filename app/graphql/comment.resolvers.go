@@ -17,6 +17,7 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input models.Comme
 	if err != nil {
 		return nil, err
 	}
+
 	return comment, nil
 }
 
