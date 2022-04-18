@@ -12,7 +12,10 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input models.Friend
 		UserID:   input.UserID,
 		FriendID: input.FriendID,
 	}
-	err := r.DB.Debug().Create(&friend).Error
+	err := r.DB.
+		Debug().
+		Create(&friend).
+		Error
 	if err != nil {
 		return nil, err
 	}
