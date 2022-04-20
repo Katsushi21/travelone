@@ -138,7 +138,6 @@ type ComplexityRoot struct {
 		GetCommentByUserID    func(childComplexity int, userID int) int
 		GetFriendsByUserID    func(childComplexity int, userID int) int
 		GetLikesByUserID      func(childComplexity int, userID int) int
-		GetMarkerByID         func(childComplexity int, id int) int
 		GetMutesByUserID      func(childComplexity int, userID int) int
 		GetPostsByUserID      func(childComplexity int, userID int) int
 		GetRequestsByTargetID func(childComplexity int, targetID int) int
@@ -213,7 +212,6 @@ type QueryResolver interface {
 	GetFriendsByUserID(ctx context.Context, userID int) ([]*models.Friend, error)
 	GetLikesByUserID(ctx context.Context, userID int) ([]*models.Like, error)
 	GetAllMarkers(ctx context.Context) ([]*models.Marker, error)
-	GetMarkerByID(ctx context.Context, id int) (*models.Marker, error)
 	GetMutesByUserID(ctx context.Context, userID int) ([]*models.Mute, error)
 	GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	GetPostsByUserID(ctx context.Context, userID int) ([]*models.Post, error)
@@ -862,18 +860,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetLikesByUserID(childComplexity, args["user_id"].(int)), true
 
-	case "Query.getMarkerByID":
-		if e.complexity.Query.GetMarkerByID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getMarkerByID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetMarkerByID(childComplexity, args["id"].(int)), true
-
 	case "Query.getMutesByUserID":
 		if e.complexity.Query.GetMutesByUserID == nil {
 			break
@@ -1434,8 +1420,6 @@ input PostInput {
   ###############
   # All
   getAllMarkers: [Marker]!
-  # By ID
-  getMarkerByID(id: ID!): Marker!
 
   ###############
   # Mute
@@ -2052,21 +2036,6 @@ func (ec *executionContext) field_Query_getLikesByUserID_args(ctx context.Contex
 		}
 	}
 	args["user_id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getMarkerByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -4728,48 +4697,6 @@ func (ec *executionContext) _Query_getAllMarkers(ctx context.Context, field grap
 	res := resTmp.([]*models.Marker)
 	fc.Result = res
 	return ec.marshalNMarker2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐMarker(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getMarkerByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getMarkerByID_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetMarkerByID(rctx, args["id"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Marker)
-	fc.Result = res
-	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐMarker(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getMutesByUserID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -8509,29 +8436,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getAllMarkers(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "getMarkerByID":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getMarkerByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

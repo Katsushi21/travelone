@@ -13,7 +13,7 @@ func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*
 	var comment []*models.Comment
 	err := r.DB.
 		Debug().
-		Joins("Post").
+		Joins("Post", r.DB.Where(&models.Post{UserID: userID})).
 		Joins("User", r.DB.Where(&models.User{ID: userID})).
 		Find(&comment, userID).
 		Error
@@ -28,7 +28,7 @@ func (r *queryResolver) GetFriendsByUserID(ctx context.Context, userID int) ([]*
 	var friends []*models.Friend
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{ID: userID})).
+		Joins("User").
 		Where(&models.Friend{UserID: userID}).
 		Find(&friends).
 		Error
@@ -67,20 +67,6 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 	}
 
 	return markers, nil
-}
-
-func (r *queryResolver) GetMarkerByID(ctx context.Context, id int) (*models.Marker, error) {
-	var marker *models.Marker
-	err := r.DB.
-		Debug().
-		Joins("Post").
-		First(&marker, id).
-		Error
-	if err != nil {
-		return nil, err
-	}
-
-	return marker, nil
 }
 
 func (r *queryResolver) GetMutesByUserID(ctx context.Context, userID int) ([]*models.Mute, error) {
