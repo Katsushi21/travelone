@@ -60,8 +60,8 @@ type ComplexityRoot struct {
 	}
 
 	Friend struct {
-		Friend   func(childComplexity int) int
 		FriendID func(childComplexity int) int
+		User     func(childComplexity int) int
 		UserID   func(childComplexity int) int
 	}
 
@@ -112,8 +112,8 @@ type ComplexityRoot struct {
 	}
 
 	Mute struct {
-		Mute   func(childComplexity int) int
 		MuteID func(childComplexity int) int
+		User   func(childComplexity int) int
 		UserID func(childComplexity int) int
 	}
 
@@ -300,19 +300,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.File.Path(childComplexity), true
 
-	case "Friend.friend":
-		if e.complexity.Friend.Friend == nil {
-			break
-		}
-
-		return e.complexity.Friend.Friend(childComplexity), true
-
 	case "Friend.friend_id":
 		if e.complexity.Friend.FriendID == nil {
 			break
 		}
 
 		return e.complexity.Friend.FriendID(childComplexity), true
+
+	case "Friend.user":
+		if e.complexity.Friend.User == nil {
+			break
+		}
+
+		return e.complexity.Friend.User(childComplexity), true
 
 	case "Friend.user_id":
 		if e.complexity.Friend.UserID == nil {
@@ -705,19 +705,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UploadFile(childComplexity, args["input"].(models.UploadFile)), true
 
-	case "Mute.mute":
-		if e.complexity.Mute.Mute == nil {
-			break
-		}
-
-		return e.complexity.Mute.Mute(childComplexity), true
-
 	case "Mute.mute_id":
 		if e.complexity.Mute.MuteID == nil {
 			break
 		}
 
 		return e.complexity.Mute.MuteID(childComplexity), true
+
+	case "Mute.user":
+		if e.complexity.Mute.User == nil {
+			break
+		}
+
+		return e.complexity.Mute.User(childComplexity), true
 
 	case "Mute.user_id":
 		if e.complexity.Mute.UserID == nil {
@@ -1207,7 +1207,7 @@ input UploadFile {
 type Friend {
   user_id: ID!
   friend_id: ID!
-  friend: User!
+  user: User!
 }
 
 ###############
@@ -1358,7 +1358,7 @@ input MarkerInput {
 type Mute {
   user_id: ID!
   mute_id: ID!
-  mute: User!
+  user: User!
 }
 
 ###############
@@ -2552,7 +2552,7 @@ func (ec *executionContext) _Friend_friend_id(ctx context.Context, field graphql
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Friend_friend(ctx context.Context, field graphql.CollectedField, obj *models.Friend) (ret graphql.Marshaler) {
+func (ec *executionContext) _Friend_user(ctx context.Context, field graphql.CollectedField, obj *models.Friend) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2570,7 +2570,7 @@ func (ec *executionContext) _Friend_friend(ctx context.Context, field graphql.Co
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Friend, nil
+		return obj.User, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4127,7 +4127,7 @@ func (ec *executionContext) _Mute_mute_id(ctx context.Context, field graphql.Col
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mute_mute(ctx context.Context, field graphql.CollectedField, obj *models.Mute) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mute_user(ctx context.Context, field graphql.CollectedField, obj *models.Mute) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4145,7 +4145,7 @@ func (ec *executionContext) _Mute_mute(ctx context.Context, field graphql.Collec
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Mute, nil
+		return obj.User, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7702,9 +7702,9 @@ func (ec *executionContext) _Friend(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "friend":
+		case "user":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Friend_friend(ctx, field, obj)
+				return ec._Friend_user(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8195,9 +8195,9 @@ func (ec *executionContext) _Mute(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "mute":
+		case "user":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mute_mute(ctx, field, obj)
+				return ec._Mute_user(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

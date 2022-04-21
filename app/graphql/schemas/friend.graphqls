@@ -4,7 +4,7 @@
 type Friend {
   user_id: ID!
   friend_id: ID!
-  friend: User!
+  user: User!
 }
 
 ###############

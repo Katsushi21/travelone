@@ -3,7 +3,7 @@ package models
 type Friend struct {
 	UserID   int   `json:"user_id"`
 	FriendID int   `json:"friend_id"`
-	Friend   *User `json:"friend"`
+	User     *User `json:"user"`
 }
 
 type FriendInput struct {
