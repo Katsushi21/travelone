@@ -60,9 +60,9 @@ type ComplexityRoot struct {
 	}
 
 	Friend struct {
-		FriendID func(childComplexity int) int
-		User     func(childComplexity int) int
-		UserID   func(childComplexity int) int
+		OwnID  func(childComplexity int) int
+		User   func(childComplexity int) int
+		UserID func(childComplexity int) int
 	}
 
 	Like struct {
@@ -112,7 +112,7 @@ type ComplexityRoot struct {
 	}
 
 	Mute struct {
-		MuteID func(childComplexity int) int
+		OwnID  func(childComplexity int) int
 		User   func(childComplexity int) int
 		UserID func(childComplexity int) int
 	}
@@ -136,9 +136,9 @@ type ComplexityRoot struct {
 		GetAllPosts           func(childComplexity int) int
 		GetAllUsers           func(childComplexity int) int
 		GetCommentByUserID    func(childComplexity int, userID int) int
-		GetFriendsByUserID    func(childComplexity int, userID int) int
+		GetFriendsByUserID    func(childComplexity int, ownID int) int
 		GetLikesByUserID      func(childComplexity int, userID int) int
-		GetMutesByUserID      func(childComplexity int, userID int) int
+		GetMutesByUserID      func(childComplexity int, ownID int) int
 		GetPostsByUserID      func(childComplexity int, userID int) int
 		GetRequestsByTargetID func(childComplexity int, targetID int) int
 		GetRequestsByUserID   func(childComplexity int, userID int) int
@@ -209,10 +209,10 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	GetCommentByUserID(ctx context.Context, userID int) ([]*models.Comment, error)
-	GetFriendsByUserID(ctx context.Context, userID int) ([]*models.Friend, error)
+	GetFriendsByUserID(ctx context.Context, ownID int) ([]*models.Friend, error)
 	GetLikesByUserID(ctx context.Context, userID int) ([]*models.Like, error)
 	GetAllMarkers(ctx context.Context) ([]*models.Marker, error)
-	GetMutesByUserID(ctx context.Context, userID int) ([]*models.Mute, error)
+	GetMutesByUserID(ctx context.Context, ownID int) ([]*models.Mute, error)
 	GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	GetPostsByUserID(ctx context.Context, userID int) ([]*models.Post, error)
 	GetRequestsByUserID(ctx context.Context, userID int) ([]*models.Request, error)
@@ -300,12 +300,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.File.Path(childComplexity), true
 
-	case "Friend.friend_id":
-		if e.complexity.Friend.FriendID == nil {
+	case "Friend.own_id":
+		if e.complexity.Friend.OwnID == nil {
 			break
 		}
 
-		return e.complexity.Friend.FriendID(childComplexity), true
+		return e.complexity.Friend.OwnID(childComplexity), true
 
 	case "Friend.user":
 		if e.complexity.Friend.User == nil {
@@ -705,12 +705,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UploadFile(childComplexity, args["input"].(models.UploadFile)), true
 
-	case "Mute.mute_id":
-		if e.complexity.Mute.MuteID == nil {
+	case "Mute.own_id":
+		if e.complexity.Mute.OwnID == nil {
 			break
 		}
 
-		return e.complexity.Mute.MuteID(childComplexity), true
+		return e.complexity.Mute.OwnID(childComplexity), true
 
 	case "Mute.user":
 		if e.complexity.Mute.User == nil {
@@ -846,7 +846,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetFriendsByUserID(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetFriendsByUserID(childComplexity, args["own_id"].(int)), true
 
 	case "Query.getLikesByUserID":
 		if e.complexity.Query.GetLikesByUserID == nil {
@@ -870,7 +870,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetMutesByUserID(childComplexity, args["user_id"].(int)), true
+		return e.complexity.Query.GetMutesByUserID(childComplexity, args["own_id"].(int)), true
 
 	case "Query.getPostsByUserID":
 		if e.complexity.Query.GetPostsByUserID == nil {
@@ -1205,8 +1205,8 @@ input UploadFile {
 # Friend
 ###############
 type Friend {
+  own_id: ID!
   user_id: ID!
-  friend_id: ID!
   user: User!
 }
 
@@ -1214,8 +1214,8 @@ type Friend {
 # Input
 ###############
 input FriendInput {
+  own_id: ID!
   user_id: ID!
-  friend_id: ID!
 }
 `, BuiltIn: false},
 	{Name: "graphql/schemas/like.graphqls", Input: `###############
@@ -1356,8 +1356,8 @@ input MarkerInput {
 # Mute
 ###############
 type Mute {
+  own_id: ID!
   user_id: ID!
-  mute_id: ID!
   user: User!
 }
 
@@ -1365,8 +1365,8 @@ type Mute {
 # Input
 ###############
 input MuteInput {
+  own_id: ID!
   user_id: ID!
-  mute_id: ID!
 }
 `, BuiltIn: false},
 	{Name: "graphql/schemas/post.graphqls", Input: `###############
@@ -1407,7 +1407,7 @@ input PostInput {
   # Friend
   ###############
   # By User ID
-  getFriendsByUserID(user_id: ID!): [Friend]!
+  getFriendsByUserID(own_id: ID!): [Friend]!
 
   ###############
   # Like
@@ -1425,7 +1425,7 @@ input PostInput {
   # Mute
   ###############
   # By User ID
-  getMutesByUserID(user_id: ID!): [Mute]!
+  getMutesByUserID(own_id: ID!): [Mute]!
 
   ###############
   # Post
@@ -2013,14 +2013,14 @@ func (ec *executionContext) field_Query_getFriendsByUserID_args(ctx context.Cont
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
-	if tmp, ok := rawArgs["user_id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user_id"))
+	if tmp, ok := rawArgs["own_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("own_id"))
 		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["user_id"] = arg0
+	args["own_id"] = arg0
 	return args, nil
 }
 
@@ -2043,14 +2043,14 @@ func (ec *executionContext) field_Query_getMutesByUserID_args(ctx context.Contex
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
-	if tmp, ok := rawArgs["user_id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user_id"))
+	if tmp, ok := rawArgs["own_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("own_id"))
 		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["user_id"] = arg0
+	args["own_id"] = arg0
 	return args, nil
 }
 
@@ -2482,6 +2482,41 @@ func (ec *executionContext) _File_path(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Friend_own_id(ctx context.Context, field graphql.CollectedField, obj *models.Friend) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Friend",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OwnID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Friend_user_id(ctx context.Context, field graphql.CollectedField, obj *models.Friend) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2501,41 +2536,6 @@ func (ec *executionContext) _Friend_user_id(ctx context.Context, field graphql.C
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UserID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Friend_friend_id(ctx context.Context, field graphql.CollectedField, obj *models.Friend) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Friend",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.FriendID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4057,6 +4057,41 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 	return ec.marshalNUser2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mute_own_id(ctx context.Context, field graphql.CollectedField, obj *models.Mute) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mute",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OwnID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mute_user_id(ctx context.Context, field graphql.CollectedField, obj *models.Mute) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4076,41 +4111,6 @@ func (ec *executionContext) _Mute_user_id(ctx context.Context, field graphql.Col
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UserID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mute_mute_id(ctx context.Context, field graphql.CollectedField, obj *models.Mute) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mute",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.MuteID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4605,7 +4605,7 @@ func (ec *executionContext) _Query_getFriendsByUserID(ctx context.Context, field
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetFriendsByUserID(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetFriendsByUserID(rctx, args["own_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4724,7 +4724,7 @@ func (ec *executionContext) _Query_getMutesByUserID(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetMutesByUserID(rctx, args["user_id"].(int))
+		return ec.resolvers.Query().GetMutesByUserID(rctx, args["own_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7151,19 +7151,19 @@ func (ec *executionContext) unmarshalInputFriendInput(ctx context.Context, obj i
 
 	for k, v := range asMap {
 		switch k {
+		case "own_id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("own_id"))
+			it.OwnID, err = ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "user_id":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user_id"))
 			it.UserID, err = ec.unmarshalNID2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "friend_id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("friend_id"))
-			it.FriendID, err = ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7291,19 +7291,19 @@ func (ec *executionContext) unmarshalInputMuteInput(ctx context.Context, obj int
 
 	for k, v := range asMap {
 		switch k {
+		case "own_id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("own_id"))
+			it.OwnID, err = ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "user_id":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("user_id"))
 			it.UserID, err = ec.unmarshalNID2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "mute_id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mute_id"))
-			it.MuteID, err = ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7682,9 +7682,9 @@ func (ec *executionContext) _Friend(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Friend")
-		case "user_id":
+		case "own_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Friend_user_id(ctx, field, obj)
+				return ec._Friend_own_id(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -7692,9 +7692,9 @@ func (ec *executionContext) _Friend(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "friend_id":
+		case "user_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Friend_friend_id(ctx, field, obj)
+				return ec._Friend_user_id(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8175,9 +8175,9 @@ func (ec *executionContext) _Mute(ctx context.Context, sel ast.SelectionSet, obj
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mute")
-		case "user_id":
+		case "own_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mute_user_id(ctx, field, obj)
+				return ec._Mute_own_id(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8185,9 +8185,9 @@ func (ec *executionContext) _Mute(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "mute_id":
+		case "user_id":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mute_mute_id(ctx, field, obj)
+				return ec._Mute_user_id(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

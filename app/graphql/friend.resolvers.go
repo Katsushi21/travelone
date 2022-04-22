@@ -9,8 +9,8 @@ import (
 
 func (r *mutationResolver) CreateFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
 	friend := &models.Friend{
-		UserID:   input.UserID,
-		FriendID: input.FriendID,
+		OwnID:  input.OwnID,
+		UserID: input.UserID,
 	}
 	err := r.DB.
 		Debug().
@@ -25,8 +25,8 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input models.Friend
 
 func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
 	friend := &models.Friend{
-		UserID:   input.UserID,
-		FriendID: input.FriendID,
+		OwnID:  input.OwnID,
+		UserID: input.UserID,
 	}
 	r.DB.Debug().First(&friend)
 	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&friend).Error

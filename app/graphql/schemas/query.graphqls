@@ -9,7 +9,7 @@ type Query {
   # Friend
   ###############
   # By User ID
-  getFriendsByUserID(user_id: ID!): [Friend]!
+  getFriendsByUserID(own_id: ID!): [Friend]!
 
   ###############
   # Like
@@ -27,7 +27,7 @@ type Query {
   # Mute
   ###############
   # By User ID
-  getMutesByUserID(user_id: ID!): [Mute]!
+  getMutesByUserID(own_id: ID!): [Mute]!
 
   ###############
   # Post

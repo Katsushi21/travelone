@@ -21,12 +21,12 @@ func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*
 	return comment, nil
 }
 
-func (r *queryResolver) GetFriendsByUserID(ctx context.Context, userID int) ([]*models.Friend, error) {
+func (r *queryResolver) GetFriendsByUserID(ctx context.Context, OwnID int) ([]*models.Friend, error) {
 	var friends []*models.Friend
 	err := r.DB.
 		Debug().
 		Joins("User").
-		Where(&models.Friend{UserID: userID}).
+		Where(&models.Friend{OwnID: OwnID}).
 		Find(&friends).
 		Error
 	if err != nil {
@@ -66,12 +66,12 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 	return markers, nil
 }
 
-func (r *queryResolver) GetMutesByUserID(ctx context.Context, userID int) ([]*models.Mute, error) {
+func (r *queryResolver) GetMutesByUserID(ctx context.Context, OwnID int) ([]*models.Mute, error) {
 	var mutes []*models.Mute
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{ID: userID})).
-		Where(&models.Mute{UserID: userID}).
+		Joins("User", r.DB.Where(&models.User{ID: OwnID})).
+		Where(&models.Mute{OwnID: OwnID}).
 		First(&mutes).
 		Error
 	if err != nil {

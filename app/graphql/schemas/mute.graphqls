@@ -2,8 +2,8 @@
 # Mute
 ###############
 type Mute {
+  own_id: ID!
   user_id: ID!
-  mute_id: ID!
   user: User!
 }
 
@@ -11,6 +11,6 @@ type Mute {
 # Input
 ###############
 input MuteInput {
+  own_id: ID!
   user_id: ID!
-  mute_id: ID!
 }

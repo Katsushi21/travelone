@@ -68,8 +68,18 @@ type User struct {
 	Introduction string    `gorm:"not null;default:''"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
-	Friends      []*User   `gorm:"many2many:friends;joinForeignKey:FriendID"`
-	Mutes        []*User   `gorm:"many2many:mutes"`
+}
+
+type Friend struct {
+	OwnID  int `gorm:"primaryKey;foreignKey:ID"`
+	UserID int `gorm:"primaryKey;foreignKey:ID"`
+	User   User
+}
+
+type Mute struct {
+	OwnID  int `gorm:"primaryKey;foreignKey:ID"`
+	UserID int `gorm:"primaryKey;foreignKey:ID"`
+	User   User
 }
 
 type Session struct {

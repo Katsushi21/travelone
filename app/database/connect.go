@@ -47,6 +47,8 @@ func Connect() *gorm.DB {
 		Post{},
 		Request{},
 		User{},
+		Friend{},
+		Mute{},
 		Like{},
 		Session{},
 	)
