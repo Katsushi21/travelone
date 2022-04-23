@@ -140,7 +140,7 @@ type ComplexityRoot struct {
 		GetLikesByUserID      func(childComplexity int, userID int) int
 		GetMutesByUserID      func(childComplexity int, ownID int) int
 		GetPostsByUserID      func(childComplexity int, userID int) int
-		GetRequestsByTargetID func(childComplexity int, targetID int) int
+		GetRequestsByTargetID func(childComplexity int, targetUserID int) int
 		GetRequestsByUserID   func(childComplexity int, userID int) int
 		GetSessionByUserID    func(childComplexity int, userID int) int
 		GetUserByID           func(childComplexity int, id int) int
@@ -216,7 +216,7 @@ type QueryResolver interface {
 	GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	GetPostsByUserID(ctx context.Context, userID int) ([]*models.Post, error)
 	GetRequestsByUserID(ctx context.Context, userID int) ([]*models.Request, error)
-	GetRequestsByTargetID(ctx context.Context, targetID int) ([]*models.Request, error)
+	GetRequestsByTargetID(ctx context.Context, targetUserID int) ([]*models.Request, error)
 	GetSessionByUserID(ctx context.Context, userID int) (*models.Session, error)
 	GetAllUsers(ctx context.Context) ([]*models.User, error)
 	GetUserByID(ctx context.Context, id int) (*models.User, error)
@@ -894,7 +894,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetRequestsByTargetID(childComplexity, args["target_id"].(int)), true
+		return e.complexity.Query.GetRequestsByTargetID(childComplexity, args["target_user_id"].(int)), true
 
 	case "Query.getRequestsByUserID":
 		if e.complexity.Query.GetRequestsByUserID == nil {
@@ -1441,7 +1441,7 @@ input PostInput {
   # By User ID
   getRequestsByUserID(user_id: ID!): [Request]!
   # By User ID
-  getRequestsByTargetID(target_id: ID!): [Request]!
+  getRequestsByTargetID(target_user_id: ID!): [Request]!
 
   ###############
   # Session
@@ -2073,14 +2073,14 @@ func (ec *executionContext) field_Query_getRequestsByTargetID_args(ctx context.C
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
-	if tmp, ok := rawArgs["target_id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("target_id"))
+	if tmp, ok := rawArgs["target_user_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("target_user_id"))
 		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["target_id"] = arg0
+	args["target_user_id"] = arg0
 	return args, nil
 }
 
@@ -4885,7 +4885,7 @@ func (ec *executionContext) _Query_getRequestsByTargetID(ctx context.Context, fi
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetRequestsByTargetID(rctx, args["target_id"].(int))
+		return ec.resolvers.Query().GetRequestsByTargetID(rctx, args["target_user_id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

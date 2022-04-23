@@ -1,5 +1,8 @@
 package graphql
 
+// This file will be automatically regenerated based on the schema, any resolver implementations
+// will be copied through when generating and any unknown code will be moved to the end.
+
 import (
 	"context"
 
@@ -21,12 +24,12 @@ func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*
 	return comment, nil
 }
 
-func (r *queryResolver) GetFriendsByUserID(ctx context.Context, OwnID int) ([]*models.Friend, error) {
+func (r *queryResolver) GetFriendsByUserID(ctx context.Context, ownID int) ([]*models.Friend, error) {
 	var friends []*models.Friend
 	err := r.DB.
 		Debug().
 		Joins("User", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Friend{OwnID: OwnID}).
+		Where(&models.Friend{OwnID: ownID}).
 		Find(&friends).
 		Error
 	if err != nil {
@@ -66,12 +69,12 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 	return markers, nil
 }
 
-func (r *queryResolver) GetMutesByUserID(ctx context.Context, OwnID int) ([]*models.Mute, error) {
+func (r *queryResolver) GetMutesByUserID(ctx context.Context, ownID int) ([]*models.Mute, error) {
 	var mutes []*models.Mute
 	err := r.DB.
 		Debug().
 		Joins("User", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Mute{OwnID: OwnID}).
+		Where(&models.Mute{OwnID: ownID}).
 		Find(&mutes).
 		Error
 	if err != nil {
@@ -117,7 +120,7 @@ func (r *queryResolver) GetRequestsByUserID(ctx context.Context, userID int) ([]
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{Type: "active"})).
+		Joins("TargetUser", r.DB.Where(&models.User{Type: "active"})).
 		Where(&models.Request{UserID: userID}).
 		Find(&requests).
 		Error
@@ -128,12 +131,12 @@ func (r *queryResolver) GetRequestsByUserID(ctx context.Context, userID int) ([]
 	return requests, nil
 }
 
-func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetID int) ([]*models.Request, error) {
+func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetUserID int) ([]*models.Request, error) {
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{ID: targetID})).
-		Where(&models.Request{TargetUserID: targetID}).
+		Joins("User", r.DB.Where(&models.User{Type: "active"})).
+		Where(&models.Request{TargetUserID: targetUserID}).
 		Find(&requests).
 		Error
 	if err != nil {

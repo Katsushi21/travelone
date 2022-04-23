@@ -43,7 +43,7 @@ type Query {
   # By User ID
   getRequestsByUserID(user_id: ID!): [Request]!
   # By User ID
-  getRequestsByTargetID(target_id: ID!): [Request]!
+  getRequestsByTargetID(target_user_id: ID!): [Request]!
 
   ###############
   # Session
