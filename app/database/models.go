@@ -17,7 +17,7 @@ type Comment struct {
 
 type Marker struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
-	PostID    int       `gorm:"not null;default:0"`
+	PostID    int       `gorm:"unique;not null;default:0"`
 	Title     string    `gorm:"not null;default:''"`
 	Lat       string    `gorm:"not null;default:''"`
 	Lng       string    `gorm:"not null;default:''"`
@@ -71,15 +71,19 @@ type User struct {
 }
 
 type Friend struct {
-	OwnID  int `gorm:"primaryKey;foreignKey:ID"`
-	UserID int `gorm:"primaryKey;foreignKey:ID"`
-	User   User
+	OwnID     int       `gorm:"primaryKey;foreignKey:ID"`
+	UserID    int       `gorm:"primaryKey;foreignKey:ID"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	User      User
 }
 
 type Mute struct {
-	OwnID  int `gorm:"primaryKey;foreignKey:ID"`
-	UserID int `gorm:"primaryKey;foreignKey:ID"`
-	User   User
+	OwnID     int       `gorm:"primaryKey;foreignKey:ID"`
+	UserID    int       `gorm:"primaryKey;foreignKey:ID"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	User      User
 }
 
 type Session struct {

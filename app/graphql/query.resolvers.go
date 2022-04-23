@@ -25,7 +25,7 @@ func (r *queryResolver) GetFriendsByUserID(ctx context.Context, OwnID int) ([]*m
 	var friends []*models.Friend
 	err := r.DB.
 		Debug().
-		Joins("User").
+		Joins("User", r.DB.Where(&models.User{Type: "active"})).
 		Where(&models.Friend{OwnID: OwnID}).
 		Find(&friends).
 		Error
@@ -70,9 +70,9 @@ func (r *queryResolver) GetMutesByUserID(ctx context.Context, OwnID int) ([]*mod
 	var mutes []*models.Mute
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{ID: OwnID})).
+		Joins("User", r.DB.Where(&models.User{Type: "active"})).
 		Where(&models.Mute{OwnID: OwnID}).
-		First(&mutes).
+		Find(&mutes).
 		Error
 	if err != nil {
 		return nil, err
@@ -101,9 +101,8 @@ func (r *queryResolver) GetPostsByUserID(ctx context.Context, userID int) ([]*mo
 	var posts []*models.Post
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{ID: userID})).
-		Joins("Comment", r.DB.Where(&models.Comment{PostID: userID})).
-		Preload("Marker").
+		Joins("Marker").
+		Preload("Comment").
 		Where(&models.Post{UserID: userID}).
 		Find(&posts).
 		Error
@@ -118,7 +117,7 @@ func (r *queryResolver) GetRequestsByUserID(ctx context.Context, userID int) ([]
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{ID: userID})).
+		Joins("User", r.DB.Where(&models.User{Type: "active"})).
 		Where(&models.Request{UserID: userID}).
 		Find(&requests).
 		Error
