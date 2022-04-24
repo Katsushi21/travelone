@@ -34,22 +34,23 @@ services:
       - ./app:/src/app
     depends_on:
       - db
-  # client:
-  #   build:
-  #     context: ./client
-  #     dockerfile: ./dockerfiles/develop/Dockerfile
-  #   container_name: client
-  #   hostname: travel-client.com
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./client:/src/client
 
-  # proxy:
-  #   build: proxy
-  #   container_name: proxy
-  #   hostname: travel-proxy.com
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - client
+  client:
+    build:
+      context: ./client
+      dockerfile: ./dockerfiles/develop/Dockerfile
+    container_name: client
+    hostname: travel-client.com
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/src/client
+
+  proxy:
+    build: proxy
+    container_name: proxy
+    hostname: travel-proxy.com
+    ports:
+      - 80:80
+    depends_on:
+      - client
