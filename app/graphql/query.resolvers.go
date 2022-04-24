@@ -17,6 +17,7 @@ func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*
 		Joins("User", r.DB.Where(&models.User{ID: userID})).
 		Find(&comment, userID).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -32,6 +33,7 @@ func (r *queryResolver) GetFriendsByUserID(ctx context.Context, userID int) ([]*
 		Where(&models.Friend{UserID: userID}).
 		Find(&friends).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -48,6 +50,7 @@ func (r *queryResolver) GetLikesByUserID(ctx context.Context, userID int) ([]*mo
 		Where(&models.Like{UserID: userID}).
 		Find(&likes).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -62,6 +65,7 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 		Joins("Post").
 		Find(&markers).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +81,7 @@ func (r *queryResolver) GetMutesByUserID(ctx context.Context, userID int) ([]*mo
 		Where(&models.Mute{UserID: userID}).
 		Find(&mutes).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -93,6 +98,7 @@ func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error)
 		Preload("Comment").
 		Find(&posts).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -109,6 +115,7 @@ func (r *queryResolver) GetPostsByUserID(ctx context.Context, userID int) ([]*mo
 		Where(&models.Post{UserID: userID}).
 		Find(&posts).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -124,6 +131,7 @@ func (r *queryResolver) GetRequestsByUserID(ctx context.Context, userID int) ([]
 		Where(&models.Request{UserID: userID}).
 		Find(&requests).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -139,6 +147,7 @@ func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetUserID 
 		Where(&models.Request{TargetUserID: targetUserID}).
 		Find(&requests).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -152,6 +161,7 @@ func (r *queryResolver) GetSessionByUserID(ctx context.Context, userID int) (*mo
 		Where(&models.Session{UserID: userID}).
 		First(&session).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -170,6 +180,7 @@ func (r *queryResolver) GetAllUsers(ctx context.Context) ([]*models.User, error)
 		Preload("Mute").
 		Find(&users).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -183,8 +194,9 @@ func (r *queryResolver) GetUserByID(ctx context.Context, id int) (*models.User, 
 		Debug().
 		Joins("Post", r.DB.Where(&models.Post{UserID: id})).
 		Joins("Comment", r.DB.Where(&models.Comment{UserID: id})).
-		Find(&user, id).
+		First(&user, id).
 		Error
+
 	if err != nil {
 		return nil, err
 	}

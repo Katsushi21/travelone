@@ -19,7 +19,11 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 		Avatar:       input.Avatar,
 		Introduction: input.Introduction,
 	}
-	err := r.DB.Debug().Create(&user).Error
+	err := r.DB.
+		Debug().
+		Create(&user).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -31,19 +35,23 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.
 	user := &models.User{
 		ID: id,
 	}
-	r.DB.Debug().First(&user)
-	err := r.DB.Debug().Model(&user).Updates(
-		&models.User{
-			Email:        input.Email,
-			Password:     input.Password,
-			Type:         input.Type,
-			Name:         input.Name,
-			Age:          input.Age,
-			Gender:       input.Gender,
-			Avatar:       input.Avatar,
-			Introduction: input.Introduction,
-		},
-	).Error
+	err := r.DB.
+		Debug().
+		Model(&user).
+		Updates(
+			&models.User{
+				Email:        input.Email,
+				Password:     input.Password,
+				Type:         input.Type,
+				Name:         input.Name,
+				Age:          input.Age,
+				Gender:       input.Gender,
+				Avatar:       input.Avatar,
+				Introduction: input.Introduction,
+			},
+		).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +63,12 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User
 	user := &models.User{
 		ID: id,
 	}
-	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&user).Error
+	err := r.DB.
+		Debug().
+		Clauses(clause.Returning{}).
+		Delete(&user).
+		Error
+
 	if err != nil {
 		return nil, err
 	}

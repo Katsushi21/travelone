@@ -28,13 +28,15 @@ func (r *mutationResolver) DeleteMute(ctx context.Context, input *models.MuteInp
 		UserID: input.UserID,
 		MuteID: input.MuteID,
 	}
-	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&mute).Error
+	err := r.DB.
+		Debug().
+		Clauses(clause.Returning{}).
+		Delete(&mute).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
 
 	return mute, nil
 }
-
-type muteResolver struct{ *Resolver }
-type muteInputResolver struct{ *Resolver }

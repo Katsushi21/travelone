@@ -19,6 +19,7 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input models.Friend
 		Debug().
 		Create(&friend).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -31,14 +32,15 @@ func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.Friend
 		UserID:   input.UserID,
 		FriendID: input.FriendID,
 	}
-	r.DB.Debug().First(&friend)
-	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&friend).Error
+	err := r.DB.
+		Debug().
+		Clauses(clause.Returning{}).
+		Delete(&friend).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
 
 	return friend, nil
 }
-
-type friendResolver struct{ *Resolver }
-type friendInputResolver struct{ *Resolver }

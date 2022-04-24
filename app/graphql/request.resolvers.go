@@ -13,7 +13,11 @@ func (r *mutationResolver) CreateRequest(ctx context.Context, input models.Reque
 		TargetUserID: input.TargetUserID,
 		Status:       input.Status,
 	}
-	err := r.DB.Debug().Create(&request).Error
+	err := r.DB.
+		Debug().
+		Create(&request).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -26,13 +30,15 @@ func (r *mutationResolver) UpdateRequest(ctx context.Context, input models.Reque
 		UserID:       input.UserID,
 		TargetUserID: input.TargetUserID,
 	}
-	r.DB.Debug().First(&request)
-	err := r.DB.Debug().Model(&request).
+	err := r.DB.
+		Debug().
+		Model(&request).
 		Update(
 			"status",
 			&input.Status,
 		).
 		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -45,9 +51,12 @@ func (r *mutationResolver) DeleteRequest(ctx context.Context, input models.Reque
 		UserID:       input.UserID,
 		TargetUserID: input.TargetUserID,
 	}
-	err := r.DB.Debug().Clauses(clause.Returning{}).
+	err := r.DB.
+		Debug().
+		Clauses(clause.Returning{}).
 		Delete(&request).
 		Error
+
 	if err != nil {
 		return nil, err
 	}

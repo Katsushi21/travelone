@@ -14,7 +14,11 @@ func (r *mutationResolver) CreateMarker(ctx context.Context, input models.Marker
 		Lat:    input.Lat,
 		Lng:    input.Lng,
 	}
-	err := r.DB.Debug().Create(&marker).Error
+	err := r.DB.
+		Debug().
+		Create(&marker).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -26,15 +30,19 @@ func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input model
 	marker := &models.Marker{
 		ID: id,
 	}
-	r.DB.Debug().First(&marker)
-	err := r.DB.Debug().Model(&marker).Updates(
-		&models.Marker{
-			PostID: input.PostID,
-			Title:  input.Title,
-			Lat:    input.Lat,
-			Lng:    input.Lng,
-		},
-	).Error
+	err := r.DB.
+		Debug().
+		Model(&marker).
+		Updates(
+			&models.Marker{
+				PostID: input.PostID,
+				Title:  input.Title,
+				Lat:    input.Lat,
+				Lng:    input.Lng,
+			},
+		).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +54,12 @@ func (r *mutationResolver) DeleteMarker(ctx context.Context, id int) (*models.Ma
 	marker := &models.Marker{
 		ID: id,
 	}
-	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&marker).Error
+	err := r.DB.
+		Debug().
+		Clauses(clause.Returning{}).
+		Delete(&marker).
+		Error
+
 	if err != nil {
 		return nil, err
 	}
