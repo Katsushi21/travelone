@@ -71,19 +71,19 @@ type User struct {
 }
 
 type Friend struct {
-	OwnID     int       `gorm:"primaryKey;foreignKey:ID"`
 	UserID    int       `gorm:"primaryKey;foreignKey:ID"`
+	FriendID  int       `gorm:"primaryKey;foreignKey:ID"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	User      User
+	Friend    User
 }
 
 type Mute struct {
-	OwnID     int       `gorm:"primaryKey;foreignKey:ID"`
 	UserID    int       `gorm:"primaryKey;foreignKey:ID"`
+	MuteID    int       `gorm:"primaryKey;foreignKey:ID"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	User      User
+	Mute      User
 }
 
 type Session struct {

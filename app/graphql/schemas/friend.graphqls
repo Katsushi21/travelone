@@ -2,15 +2,15 @@
 # Friend
 ###############
 type Friend {
-  own_id: ID!
   user_id: ID!
-  user: User!
+  friend_id: ID!
+  friend: User!
 }
 
 ###############
 # Input
 ###############
 input FriendInput {
-  own_id: ID!
   user_id: ID!
+  friend_id: ID!
 }

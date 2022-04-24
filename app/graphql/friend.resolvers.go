@@ -1,5 +1,8 @@
 package graphql
 
+// This file will be automatically regenerated based on the schema, any resolver implementations
+// will be copied through when generating and any unknown code will be moved to the end.
+
 import (
 	"context"
 
@@ -9,8 +12,8 @@ import (
 
 func (r *mutationResolver) CreateFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
 	friend := &models.Friend{
-		OwnID:  input.OwnID,
-		UserID: input.UserID,
+		UserID:   input.UserID,
+		FriendID: input.FriendID,
 	}
 	err := r.DB.
 		Debug().
@@ -25,8 +28,8 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input models.Friend
 
 func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.FriendInput) (*models.Friend, error) {
 	friend := &models.Friend{
-		OwnID:  input.OwnID,
-		UserID: input.UserID,
+		UserID:   input.UserID,
+		FriendID: input.FriendID,
 	}
 	r.DB.Debug().First(&friend)
 	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&friend).Error
@@ -36,3 +39,6 @@ func (r *mutationResolver) DeleteFriend(ctx context.Context, input models.Friend
 
 	return friend, nil
 }
+
+type friendResolver struct{ *Resolver }
+type friendInputResolver struct{ *Resolver }

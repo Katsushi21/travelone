@@ -1,12 +1,12 @@
 package models
 
 type Mute struct {
-	OwnID  int   `json:"own_id"`
 	UserID int   `json:"user_id"`
-	User   *User `json:"user"`
+	MuteID int   `json:"mute_id"`
+	Mute   *User `json:"mute"`
 }
 
 type MuteInput struct {
-	OwnID  int `json:"own_id"`
 	UserID int `json:"user_id"`
+	MuteID int `json:"mute_id"`
 }

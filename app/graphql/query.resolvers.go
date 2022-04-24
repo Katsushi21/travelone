@@ -24,12 +24,12 @@ func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*
 	return comment, nil
 }
 
-func (r *queryResolver) GetFriendsByUserID(ctx context.Context, ownID int) ([]*models.Friend, error) {
+func (r *queryResolver) GetFriendsByUserID(ctx context.Context, userID int) ([]*models.Friend, error) {
 	var friends []*models.Friend
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Friend{OwnID: ownID}).
+		Joins("Friend", r.DB.Where(&models.User{Type: "active"})).
+		Where(&models.Friend{UserID: userID}).
 		Find(&friends).
 		Error
 	if err != nil {
@@ -69,12 +69,12 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 	return markers, nil
 }
 
-func (r *queryResolver) GetMutesByUserID(ctx context.Context, ownID int) ([]*models.Mute, error) {
+func (r *queryResolver) GetMutesByUserID(ctx context.Context, userID int) ([]*models.Mute, error) {
 	var mutes []*models.Mute
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Mute{OwnID: ownID}).
+		Joins("Mute", r.DB.Where(&models.User{Type: "active"})).
+		Where(&models.Mute{UserID: userID}).
 		Find(&mutes).
 		Error
 	if err != nil {

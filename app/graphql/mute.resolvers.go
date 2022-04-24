@@ -12,8 +12,8 @@ import (
 
 func (r *mutationResolver) CreateMute(ctx context.Context, input models.MuteInput) (*models.Mute, error) {
 	mute := &models.Mute{
-		OwnID:  input.OwnID,
 		UserID: input.UserID,
+		MuteID: input.MuteID,
 	}
 	err := r.DB.Debug().Create(&mute).Error
 	if err != nil {
@@ -25,8 +25,8 @@ func (r *mutationResolver) CreateMute(ctx context.Context, input models.MuteInpu
 
 func (r *mutationResolver) DeleteMute(ctx context.Context, input *models.MuteInput) (*models.Mute, error) {
 	mute := &models.Mute{
-		OwnID:  input.OwnID,
 		UserID: input.UserID,
+		MuteID: input.MuteID,
 	}
 	err := r.DB.Debug().Clauses(clause.Returning{}).Delete(&mute).Error
 	if err != nil {
@@ -35,3 +35,6 @@ func (r *mutationResolver) DeleteMute(ctx context.Context, input *models.MuteInp
 
 	return mute, nil
 }
+
+type muteResolver struct{ *Resolver }
+type muteInputResolver struct{ *Resolver }
