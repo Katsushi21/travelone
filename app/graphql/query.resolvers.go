@@ -9,13 +9,13 @@ import (
 	"github.com/Katsushi21/traveling_alone/models"
 )
 
-func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*models.Comment, error) {
+func (r *queryResolver) GetCommentByAccountID(ctx context.Context, accountID int) ([]*models.Comment, error) {
 	var comment []*models.Comment
 	err := r.DB.
 		Debug().
-		Joins("Post", r.DB.Where(&models.Post{UserID: userID})).
-		Joins("User", r.DB.Where(&models.User{ID: userID})).
-		Find(&comment, userID).
+		Joins("Post", r.DB.Where(&models.Post{AccountID: accountID})).
+		Joins("Account", r.DB.Where(&models.Account{ID: accountID})).
+		Find(&comment, accountID).
 		Error
 
 	if err != nil {
@@ -25,12 +25,12 @@ func (r *queryResolver) GetCommentByUserID(ctx context.Context, userID int) ([]*
 	return comment, nil
 }
 
-func (r *queryResolver) GetFriendsByUserID(ctx context.Context, userID int) ([]*models.Friend, error) {
+func (r *queryResolver) GetFriendsByAccountID(ctx context.Context, accountID int) ([]*models.Friend, error) {
 	var friends []*models.Friend
 	err := r.DB.
 		Debug().
-		Joins("Friend", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Friend{UserID: userID}).
+		Joins("Friend", r.DB.Where(&models.Account{Type: "active"})).
+		Where(&models.Friend{AccountID: accountID}).
 		Find(&friends).
 		Error
 
@@ -41,13 +41,13 @@ func (r *queryResolver) GetFriendsByUserID(ctx context.Context, userID int) ([]*
 	return friends, nil
 }
 
-func (r *queryResolver) GetLikesByUserID(ctx context.Context, userID int) ([]*models.Like, error) {
+func (r *queryResolver) GetLikesByAccountID(ctx context.Context, accountID int) ([]*models.Like, error) {
 	var likes []*models.Like
 	err := r.DB.
 		Debug().
 		Joins("Post").
-		Joins("User", r.DB.Where(&models.User{ID: userID})).
-		Where(&models.Like{UserID: userID}).
+		Joins("Account", r.DB.Where(&models.Account{ID: accountID})).
+		Where(&models.Like{AccountID: accountID}).
 		Find(&likes).
 		Error
 
@@ -73,12 +73,12 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 	return markers, nil
 }
 
-func (r *queryResolver) GetMutesByUserID(ctx context.Context, userID int) ([]*models.Mute, error) {
+func (r *queryResolver) GetMutesByAccountID(ctx context.Context, accountID int) ([]*models.Mute, error) {
 	var mutes []*models.Mute
 	err := r.DB.
 		Debug().
-		Joins("Mute", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Mute{UserID: userID}).
+		Joins("Mute", r.DB.Where(&models.Account{Type: "active"})).
+		Where(&models.Mute{AccountID: accountID}).
 		Find(&mutes).
 		Error
 
@@ -93,7 +93,7 @@ func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	var posts []*models.Post
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{Type: "active"})).
+		Joins("Account", r.DB.Where(&models.Account{Type: "active"})).
 		Joins("Marker").
 		Preload("Comment").
 		Find(&posts).
@@ -106,13 +106,13 @@ func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	return posts, nil
 }
 
-func (r *queryResolver) GetPostsByUserID(ctx context.Context, userID int) ([]*models.Post, error) {
+func (r *queryResolver) GetPostsByAccountID(ctx context.Context, accountID int) ([]*models.Post, error) {
 	var posts []*models.Post
 	err := r.DB.
 		Debug().
 		Joins("Marker").
 		Preload("Comment").
-		Where(&models.Post{UserID: userID}).
+		Where(&models.Post{AccountID: accountID}).
 		Find(&posts).
 		Error
 
@@ -123,12 +123,12 @@ func (r *queryResolver) GetPostsByUserID(ctx context.Context, userID int) ([]*mo
 	return posts, nil
 }
 
-func (r *queryResolver) GetRequestsByUserID(ctx context.Context, userID int) ([]*models.Request, error) {
+func (r *queryResolver) GetRequestsByAccountID(ctx context.Context, accountID int) ([]*models.Request, error) {
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("TargetUser", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Request{UserID: userID}).
+		Joins("TargetAccount", r.DB.Where(&models.Account{Type: "active"})).
+		Where(&models.Request{AccountID: accountID}).
 		Find(&requests).
 		Error
 
@@ -139,12 +139,12 @@ func (r *queryResolver) GetRequestsByUserID(ctx context.Context, userID int) ([]
 	return requests, nil
 }
 
-func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetUserID int) ([]*models.Request, error) {
+func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetAccountID int) ([]*models.Request, error) {
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("User", r.DB.Where(&models.User{Type: "active"})).
-		Where(&models.Request{TargetUserID: targetUserID}).
+		Joins("Account", r.DB.Where(&models.Account{Type: "active"})).
+		Where(&models.Request{TargetAccountID: targetAccountID}).
 		Find(&requests).
 		Error
 
@@ -155,10 +155,10 @@ func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetUserID 
 	return requests, nil
 }
 
-func (r *queryResolver) GetSessionByUserID(ctx context.Context, userID int) (*models.Session, error) {
+func (r *queryResolver) GetSessionByAccountID(ctx context.Context, accountID int) (*models.Session, error) {
 	var session *models.Session
 	err := r.DB.
-		Where(&models.Session{UserID: userID}).
+		Where(&models.Session{AccountID: accountID}).
 		First(&session).
 		Error
 
@@ -169,8 +169,8 @@ func (r *queryResolver) GetSessionByUserID(ctx context.Context, userID int) (*mo
 	return session, nil
 }
 
-func (r *queryResolver) GetAllUsers(ctx context.Context) ([]*models.User, error) {
-	var users []*models.User
+func (r *queryResolver) GetAllAccounts(ctx context.Context) ([]*models.Account, error) {
+	var accounts []*models.Account
 	err := r.DB.
 		Debug().
 		Preload("Post").
@@ -178,30 +178,30 @@ func (r *queryResolver) GetAllUsers(ctx context.Context) ([]*models.User, error)
 		Preload("Comment").
 		Preload("Friend").
 		Preload("Mute").
-		Find(&users).
+		Find(&accounts).
 		Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return users, nil
+	return accounts, nil
 }
 
-func (r *queryResolver) GetUserByID(ctx context.Context, id int) (*models.User, error) {
-	var user *models.User
+func (r *queryResolver) GetAccountByID(ctx context.Context, id int) (*models.Account, error) {
+	var account *models.Account
 	err := r.DB.
 		Debug().
-		Joins("Post", r.DB.Where(&models.Post{UserID: id})).
-		Joins("Comment", r.DB.Where(&models.Comment{UserID: id})).
-		First(&user, id).
+		Joins("Post", r.DB.Where(&models.Post{AccountID: id})).
+		Joins("Comment", r.DB.Where(&models.Comment{AccountID: id})).
+		First(&account, id).
 		Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return account, nil
 }
 
 // Query returns QueryResolver implementation.

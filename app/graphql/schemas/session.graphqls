@@ -2,7 +2,7 @@
 # Session
 ###############
 type Session {
-  user_id: ID!
+  account_id: ID!
   session: String!
   updatedAt: Time!
 }
@@ -11,6 +11,6 @@ type Session {
 # Input
 ###############
 input SessionInput {
-  user_id: ID!
+  account_id: ID!
   session: String!
 }

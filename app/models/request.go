@@ -7,17 +7,17 @@ import (
 )
 
 type Request struct {
-	UserID       int           `json:"user_id"`
-	TargetUserID int           `json:"target_user_id"`
-	Status       RequestStatus `json:"status"`
-	User         *User         `json:"user"`
-	TargetUser   *User         `json:"target_user"`
+	AccountID       int           `json:"account_id"`
+	TargetAccountID int           `json:"target_account_id"`
+	Status          RequestStatus `json:"status"`
+	Account         *Account      `json:"account"`
+	TargetAccount   *Account      `json:"target_account"`
 }
 
 type RequestInput struct {
-	UserID       int           `json:"user_id"`
-	TargetUserID int           `json:"target_user_id"`
-	Status       RequestStatus `json:"status"`
+	AccountID       int           `json:"account_id"`
+	TargetAccountID int           `json:"target_account_id"`
+	Status          RequestStatus `json:"status"`
 }
 
 type RequestStatus string

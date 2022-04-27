@@ -1,14 +1,14 @@
 ###############
-# User
+# Account
 ###############
-type User {
+type Account {
   id: ID!
   email: String!
   password: String!
-  type: UserType!
+  type: AccountType!
   name: String!
   age: Int!
-  gender: UserGender!
+  gender: AccountGender!
   avatar: String!
   introduction: String!
   createdAt: Time!
@@ -23,13 +23,13 @@ type User {
 ###############
 # Enum
 ###############
-enum UserType {
+enum AccountType {
   active
   inactive
   admin
 }
 
-enum UserGender {
+enum AccountGender {
   male
   female
   none
@@ -38,13 +38,13 @@ enum UserGender {
 ###############
 # Input
 ###############
-input UserInput {
+input AccountInput {
   email: String!
   password: String!
-  type: UserType!
+  type: AccountType!
   name: String!
   age: Int!
-  gender: UserGender!
+  gender: AccountGender!
   avatar: String!
   introduction: String!
 }

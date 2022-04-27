@@ -8,8 +8,8 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInput) (*models.User, error) {
-	user := &models.User{
+func (r *mutationResolver) CreateAccount(ctx context.Context, input models.AccountInput) (*models.Account, error) {
+	account := &models.Account{
 		Email:        input.Email,
 		Password:     input.Password,
 		Type:         input.Type,
@@ -21,25 +21,25 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.UserInpu
 	}
 	err := r.DB.
 		Debug().
-		Create(&user).
+		Create(&account).
 		Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return account, nil
 }
 
-func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.UserInput) (*models.User, error) {
-	user := &models.User{
+func (r *mutationResolver) UpdateAccount(ctx context.Context, id int, input models.AccountInput) (*models.Account, error) {
+	account := &models.Account{
 		ID: id,
 	}
 	err := r.DB.
 		Debug().
-		Model(&user).
+		Model(&account).
 		Updates(
-			&models.User{
+			&models.Account{
 				Email:        input.Email,
 				Password:     input.Password,
 				Type:         input.Type,
@@ -56,26 +56,26 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, input models.
 		return nil, err
 	}
 
-	return user, nil
+	return account, nil
 }
 
-func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*models.User, error) {
-	user := &models.User{
+func (r *mutationResolver) DeleteAccount(ctx context.Context, id int) (*models.Account, error) {
+	account := &models.Account{
 		ID: id,
 	}
 	err := r.DB.
 		Debug().
 		Clauses(clause.Returning{}).
-		Delete(&user).
+		Delete(&account).
 		Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return account, nil
 }
 
-func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.User, error) {
+func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.Account, error) {
 	panic(fmt.Errorf("not implemented"))
 }

@@ -75,17 +75,17 @@ type Mutation {
   # UPDATE
   updateSession(input: SessionInput!): Session!
   # DELETE
-  deleteSession(user_id: ID!): Session!
+  deleteSession(account_id: ID!): Session!
 
   ###############
-  # User
+  # Account
   ###############
   # CREATE
-  createUser(input: UserInput!): User!
+  createAccount(input: AccountInput!): Account!
   # UPDATE
-  updateUser(id: ID!, input: UserInput!): User!
+  updateAccount(id: ID!, input: AccountInput!): Account!
   # DELETE
-  deleteUser(id: ID!): User!
+  deleteAccount(id: ID!): Account!
   # OTHER
-  login(input: LoginInput!): User!
+  login(input: LoginInput!): Account!
 }

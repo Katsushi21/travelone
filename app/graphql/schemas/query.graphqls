@@ -2,20 +2,20 @@ type Query {
   ###############
   # Comment
   ###############
-  # By User ID
-  getCommentByUserID(user_id: ID!): [Comment]!
+  # By Account ID
+  getCommentByAccountID(account_id: ID!): [Comment]!
 
   ###############
   # Friend
   ###############
-  # By User ID
-  getFriendsByUserID(user_id: ID!): [Friend]!
+  # By Account ID
+  getFriendsByAccountID(account_id: ID!): [Friend]!
 
   ###############
   # Like
   ###############
-  # By User ID
-  getLikesByUserID(user_id: ID!): [Like]!
+  # By Account ID
+  getLikesByAccountID(account_id: ID!): [Like]!
 
   ###############
   # Marker
@@ -26,36 +26,36 @@ type Query {
   ###############
   # Mute
   ###############
-  # By User ID
-  getMutesByUserID(user_id: ID!): [Mute]!
+  # By Account ID
+  getMutesByAccountID(account_id: ID!): [Mute]!
 
   ###############
   # Post
   ###############
   # All
   getAllPosts: [Post]!
-  # By User ID
-  getPostsByUserID(user_id: ID!): [Post]!
+  # By Account ID
+  getPostsByAccountID(account_id: ID!): [Post]!
 
   ###############
   # Request
   ###############
-  # By User ID
-  getRequestsByUserID(user_id: ID!): [Request]!
-  # By User ID
-  getRequestsByTargetID(target_user_id: ID!): [Request]!
+  # By Account ID
+  getRequestsByAccountID(account_id: ID!): [Request]!
+  # By Account ID
+  getRequestsByTargetID(target_account_id: ID!): [Request]!
 
   ###############
   # Session
   ###############
-  # By User ID
-  getSessionByUserID(user_id: ID!): Session!
+  # By Account ID
+  getSessionByAccountID(account_id: ID!): Session!
 
   ###############
-  # User
+  # Account
   ###############
   # All
-  getAllUsers: [User]!
+  getAllAccounts: [Account]!
   # By ID
-  getUserByID(id: ID!): User!
+  getAccountByID(id: ID!): Account!
 }

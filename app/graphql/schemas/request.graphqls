@@ -2,11 +2,11 @@
 # Request
 ###############
 type Request {
-  user_id: ID!
-  target_user_id: ID!
+  account_id: ID!
+  target_account_id: ID!
   status: RequestStatus!
-  user: User!
-  target_user: User!
+  account: Account!
+  target_account: Account!
 }
 
 ###############
@@ -26,7 +26,7 @@ enum RequestStatus {
 # Input
 ###############
 input RequestInput {
-  user_id: ID!
-  target_user_id: ID!
+  account_id: ID!
+  target_account_id: ID!
   status: RequestStatus!
 }

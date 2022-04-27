@@ -9,7 +9,7 @@ import (
 
 func (r *mutationResolver) CreateSession(ctx context.Context, input models.SessionInput) (*models.Session, error) {
 	session := &models.Session{
-		UserID: input.UserID,
+		AccountID: input.AccountID,
 	}
 	err := r.DB.
 		Debug().
@@ -25,7 +25,7 @@ func (r *mutationResolver) CreateSession(ctx context.Context, input models.Sessi
 
 func (r *mutationResolver) UpdateSession(ctx context.Context, input models.SessionInput) (*models.Session, error) {
 	session := &models.Session{
-		UserID: input.UserID,
+		AccountID: input.AccountID,
 	}
 	err := r.DB.
 		Debug().
@@ -43,9 +43,9 @@ func (r *mutationResolver) UpdateSession(ctx context.Context, input models.Sessi
 	return session, nil
 }
 
-func (r *mutationResolver) DeleteSession(ctx context.Context, userID int) (*models.Session, error) {
+func (r *mutationResolver) DeleteSession(ctx context.Context, accountID int) (*models.Session, error) {
 	session := &models.Session{
-		UserID: userID,
+		AccountID: accountID,
 	}
 	err := r.DB.
 		Debug().

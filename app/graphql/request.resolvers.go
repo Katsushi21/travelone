@@ -9,9 +9,9 @@ import (
 
 func (r *mutationResolver) CreateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
 	request := &models.Request{
-		UserID:       input.UserID,
-		TargetUserID: input.TargetUserID,
-		Status:       input.Status,
+		AccountID:       input.AccountID,
+		TargetAccountID: input.TargetAccountID,
+		Status:          input.Status,
 	}
 	err := r.DB.
 		Debug().
@@ -27,8 +27,8 @@ func (r *mutationResolver) CreateRequest(ctx context.Context, input models.Reque
 
 func (r *mutationResolver) UpdateRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
 	request := &models.Request{
-		UserID:       input.UserID,
-		TargetUserID: input.TargetUserID,
+		AccountID:       input.AccountID,
+		TargetAccountID: input.TargetAccountID,
 	}
 	err := r.DB.
 		Debug().
@@ -48,8 +48,8 @@ func (r *mutationResolver) UpdateRequest(ctx context.Context, input models.Reque
 
 func (r *mutationResolver) DeleteRequest(ctx context.Context, input models.RequestInput) (*models.Request, error) {
 	request := &models.Request{
-		UserID:       input.UserID,
-		TargetUserID: input.TargetUserID,
+		AccountID:       input.AccountID,
+		TargetAccountID: input.TargetAccountID,
 	}
 	err := r.DB.
 		Debug().
