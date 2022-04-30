@@ -1,16 +1,9 @@
-import { IntrospectionQuery } from "graphql";
-
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -23,122 +16,122 @@ export type Scalars = {
 };
 
 export type Account = {
-  __typename?: "Account";
-  age: Scalars["Int"];
-  avatar: Scalars["String"];
-  comment?: Maybe<Array<Maybe<Comment>>>;
-  createdAt: Scalars["Time"];
-  email: Scalars["String"];
-  friend?: Maybe<Array<Maybe<Friend>>>;
+  __typename?: 'Account';
+  age: Scalars['Int'];
+  avatar: Scalars['String'];
+  comment?: Maybe<Array<Comment>>;
+  createdAt: Scalars['Time'];
+  email: Scalars['String'];
+  friend?: Maybe<Array<Friend>>;
   gender: AccountGender;
-  id: Scalars["ID"];
-  introduction: Scalars["String"];
-  like?: Maybe<Array<Maybe<Like>>>;
-  mute?: Maybe<Array<Maybe<Mute>>>;
-  name: Scalars["String"];
-  password: Scalars["String"];
-  post?: Maybe<Array<Maybe<Post>>>;
+  id: Scalars['ID'];
+  introduction: Scalars['String'];
+  like?: Maybe<Array<Like>>;
+  mute?: Maybe<Array<Mute>>;
+  name: Scalars['String'];
+  password: Scalars['String'];
+  post?: Maybe<Array<Post>>;
   type: AccountType;
-  updatedAt: Scalars["Time"];
+  updatedAt: Scalars['Time'];
 };
 
 export enum AccountGender {
-  Female = "female",
-  Male = "male",
-  None = "none",
+  Female = 'female',
+  Male = 'male',
+  None = 'none'
 }
 
 export type AccountInput = {
-  age: Scalars["Int"];
-  avatar: Scalars["String"];
-  email: Scalars["String"];
+  age: Scalars['Int'];
+  avatar: Scalars['String'];
+  email: Scalars['String'];
   gender: AccountGender;
-  introduction: Scalars["String"];
-  name: Scalars["String"];
-  password: Scalars["String"];
+  introduction: Scalars['String'];
+  name: Scalars['String'];
+  password: Scalars['String'];
   type: AccountType;
 };
 
 export enum AccountType {
-  Active = "active",
-  Admin = "admin",
-  Inactive = "inactive",
+  Active = 'active',
+  Admin = 'admin',
+  Inactive = 'inactive'
 }
 
 export type Comment = {
-  __typename?: "Comment";
+  __typename?: 'Comment';
   account: Account;
-  account_id: Scalars["ID"];
-  body: Scalars["String"];
-  createdAt: Scalars["Time"];
-  id: Scalars["ID"];
+  account_id: Scalars['ID'];
+  body: Scalars['String'];
+  createdAt: Scalars['Time'];
+  id: Scalars['ID'];
   post: Post;
-  post_id: Scalars["ID"];
-  updatedAt: Scalars["Time"];
+  post_id: Scalars['ID'];
+  updatedAt: Scalars['Time'];
 };
 
 export type CommentInput = {
-  account_id: Scalars["ID"];
-  body: Scalars["String"];
-  post_id: Scalars["ID"];
+  account_id: Scalars['ID'];
+  body: Scalars['String'];
+  post_id: Scalars['ID'];
 };
 
 export type File = {
-  __typename?: "File";
-  path: Scalars["String"];
+  __typename?: 'File';
+  path: Scalars['String'];
 };
 
 export type Friend = {
-  __typename?: "Friend";
-  account_id: Scalars["ID"];
+  __typename?: 'Friend';
+  account_id: Scalars['ID'];
   friend: Account;
-  friend_id: Scalars["ID"];
+  friend_id: Scalars['ID'];
 };
 
 export type FriendInput = {
-  account_id: Scalars["ID"];
-  friend_id: Scalars["ID"];
+  account_id: Scalars['ID'];
+  friend_id: Scalars['ID'];
 };
 
 export type Like = {
-  __typename?: "Like";
+  __typename?: 'Like';
   account: Account;
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
   post: Post;
-  post_id: Scalars["ID"];
+  post_id: Scalars['ID'];
 };
 
 export type LikeInput = {
-  account_id: Scalars["ID"];
-  post_id: Scalars["ID"];
+  account_id: Scalars['ID'];
+  post_id: Scalars['ID'];
 };
 
 export type LoginInput = {
-  email: Scalars["String"];
-  password: Scalars["String"];
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type Marker = {
-  __typename?: "Marker";
-  createdAt: Scalars["Time"];
-  id: Scalars["ID"];
-  lat: Scalars["String"];
-  lng: Scalars["String"];
+  __typename?: 'Marker';
+  createdAt: Scalars['Time'];
+  id: Scalars['ID'];
+  lat: Scalars['String'];
+  lng: Scalars['String'];
   post: Post;
-  post_id: Scalars["ID"];
-  title: Scalars["String"];
-  updatedAt: Scalars["Time"];
+  post_id: Scalars['ID'];
+  title: Scalars['String'];
+  updatedAt: Scalars['Time'];
 };
 
 export type MarkerInput = {
-  lat: Scalars["String"];
-  lng: Scalars["String"];
-  post_id: Scalars["ID"];
-  title: Scalars["String"];
+  lat: Scalars['String'];
+  lng: Scalars['String'];
+  post_id: Scalars['ID'];
+  title: Scalars['String'];
 };
 
 export type Mutation = {
-  __typename?: "Mutation";
+  __typename?: 'Mutation';
   createAccount: Account;
   createComment: Comment;
   createFriend: Friend;
@@ -166,1907 +159,1966 @@ export type Mutation = {
   uploadFile: File;
 };
 
+
 export type MutationCreateAccountArgs = {
   input: AccountInput;
 };
+
 
 export type MutationCreateCommentArgs = {
   input: CommentInput;
 };
 
+
 export type MutationCreateFriendArgs = {
   input: FriendInput;
 };
+
 
 export type MutationCreateLikeArgs = {
   input: LikeInput;
 };
 
+
 export type MutationCreateMarkerArgs = {
   input: MarkerInput;
 };
+
 
 export type MutationCreateMuteArgs = {
   input: MuteInput;
 };
 
+
 export type MutationCreatePostArgs = {
   input: PostInput;
 };
+
 
 export type MutationCreateRequestArgs = {
   input: RequestInput;
 };
 
+
 export type MutationCreateSessionArgs = {
   input: SessionInput;
 };
 
+
 export type MutationDeleteAccountArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
 };
 
+
 export type MutationDeleteCommentArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
 };
+
 
 export type MutationDeleteFriendArgs = {
   input: FriendInput;
 };
 
+
 export type MutationDeleteLikeArgs = {
   input: LikeInput;
 };
 
+
 export type MutationDeleteMarkerArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
 };
+
 
 export type MutationDeleteMuteArgs = {
   input?: InputMaybe<MuteInput>;
 };
 
+
 export type MutationDeletePostArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
 };
+
 
 export type MutationDeleteRequestArgs = {
   input: RequestInput;
 };
 
+
 export type MutationDeleteSessionArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type MutationLoginArgs = {
   input: LoginInput;
 };
 
+
 export type MutationUpdateAccountArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
   input: AccountInput;
 };
 
+
 export type MutationUpdateMarkerArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
   input: MarkerInput;
 };
 
+
 export type MutationUpdatePostArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
   input: PostInput;
 };
+
 
 export type MutationUpdateRequestArgs = {
   input: RequestInput;
 };
 
+
 export type MutationUpdateSessionArgs = {
   input: SessionInput;
 };
+
 
 export type MutationUploadFileArgs = {
   input: UploadFile;
 };
 
 export type Mute = {
-  __typename?: "Mute";
-  account_id: Scalars["ID"];
+  __typename?: 'Mute';
+  account_id: Scalars['ID'];
   mute: Account;
-  mute_id: Scalars["ID"];
+  mute_id: Scalars['ID'];
 };
 
 export type MuteInput = {
-  account_id: Scalars["ID"];
-  mute_id: Scalars["ID"];
+  account_id: Scalars['ID'];
+  mute_id: Scalars['ID'];
 };
 
 export type Post = {
-  __typename?: "Post";
+  __typename?: 'Post';
   account: Account;
-  account_id: Scalars["ID"];
-  body: Scalars["String"];
-  comment?: Maybe<Array<Maybe<Comment>>>;
-  createdAt: Scalars["Time"];
-  id: Scalars["ID"];
-  img: Scalars["String"];
-  like?: Maybe<Array<Maybe<Like>>>;
+  account_id: Scalars['ID'];
+  body: Scalars['String'];
+  comment?: Maybe<Array<Comment>>;
+  createdAt: Scalars['Time'];
+  id: Scalars['ID'];
+  img: Scalars['String'];
+  like?: Maybe<Array<Like>>;
   marker?: Maybe<Marker>;
-  title: Scalars["String"];
-  updatedAt: Scalars["Time"];
+  title: Scalars['String'];
+  updatedAt: Scalars['Time'];
 };
 
 export type PostInput = {
-  account_id: Scalars["ID"];
-  body: Scalars["String"];
-  img: Scalars["String"];
-  title: Scalars["String"];
+  account_id: Scalars['ID'];
+  body: Scalars['String'];
+  img: Scalars['String'];
+  title: Scalars['String'];
 };
 
 export type Query = {
-  __typename?: "Query";
+  __typename?: 'Query';
   getAccountByID: Account;
-  getAllAccounts: Array<Maybe<Account>>;
-  getAllMarkers: Array<Maybe<Marker>>;
-  getAllPosts: Array<Maybe<Post>>;
-  getCommentByAccountID: Array<Maybe<Comment>>;
-  getFriendsByAccountID: Array<Maybe<Friend>>;
-  getLikesByAccountID: Array<Maybe<Like>>;
-  getMutesByAccountID: Array<Maybe<Mute>>;
-  getPostsByAccountID: Array<Maybe<Post>>;
-  getRequestsByAccountID: Array<Maybe<Request>>;
-  getRequestsByTargetID: Array<Maybe<Request>>;
+  getAllAccounts?: Maybe<Array<Account>>;
+  getAllMarkers?: Maybe<Array<Marker>>;
+  getAllPosts: Array<Post>;
+  getCommentByAccountID?: Maybe<Array<Comment>>;
+  getFriendsByAccountID?: Maybe<Array<Friend>>;
+  getLikesByAccountID?: Maybe<Array<Like>>;
+  getMutesByAccountID?: Maybe<Array<Mute>>;
+  getPostsByAccountID?: Maybe<Array<Post>>;
+  getRequestsByAccountID?: Maybe<Array<Request>>;
+  getRequestsByTargetID?: Maybe<Array<Request>>;
   getSessionByAccountID: Session;
 };
 
+
 export type QueryGetAccountByIdArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID'];
 };
+
 
 export type QueryGetCommentByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type QueryGetFriendsByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type QueryGetLikesByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type QueryGetMutesByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type QueryGetPostsByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type QueryGetRequestsByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
+
 
 export type QueryGetRequestsByTargetIdArgs = {
-  target_account_id: Scalars["ID"];
+  target_account_id: Scalars['ID'];
 };
 
+
 export type QueryGetSessionByAccountIdArgs = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
 };
 
 export type Request = {
-  __typename?: "Request";
+  __typename?: 'Request';
   account: Account;
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
   status: RequestStatus;
   target_account: Account;
-  target_account_id: Scalars["ID"];
+  target_account_id: Scalars['ID'];
 };
 
 export type RequestInput = {
-  account_id: Scalars["ID"];
+  account_id: Scalars['ID'];
   status: RequestStatus;
-  target_account_id: Scalars["ID"];
+  target_account_id: Scalars['ID'];
 };
 
 export enum RequestStatus {
-  Accept = "accept",
-  BreakAccept = "break_accept",
-  BreakDeny = "break_deny",
-  BreakInProcess = "break_in_process",
-  Cancel = "cancel",
-  Deny = "deny",
-  InProcess = "in_process",
+  Accept = 'accept',
+  BreakAccept = 'break_accept',
+  BreakDeny = 'break_deny',
+  BreakInProcess = 'break_in_process',
+  Cancel = 'cancel',
+  Deny = 'deny',
+  InProcess = 'in_process'
 }
 
 export type Session = {
-  __typename?: "Session";
-  account_id: Scalars["ID"];
-  session: Scalars["String"];
-  updatedAt: Scalars["Time"];
+  __typename?: 'Session';
+  account_id: Scalars['ID'];
+  session: Scalars['String'];
+  updatedAt: Scalars['Time'];
 };
 
 export type SessionInput = {
-  account_id: Scalars["ID"];
-  session: Scalars["String"];
+  account_id: Scalars['ID'];
+  session: Scalars['String'];
 };
 
 export type UploadFile = {
-  content: Scalars["Upload"];
+  content: Scalars['Upload'];
 };
 
+import { IntrospectionQuery } from 'graphql';
 export default {
-  __schema: {
-    queryType: {
-      name: "Query",
+  "__schema": {
+    "queryType": {
+      "name": "Query"
     },
-    mutationType: {
-      name: "Mutation",
+    "mutationType": {
+      "name": "Mutation"
     },
-    subscriptionType: null,
-    types: [
+    "subscriptionType": null,
+    "types": [
       {
-        kind: "OBJECT",
-        name: "Account",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Account",
+        "fields": [
           {
-            name: "age",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "age",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "avatar",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "avatar",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "comment",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Comment",
-                ofType: null,
-              },
+            "name": "comment",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Comment",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "createdAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "email",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "email",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "friend",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Friend",
-                ofType: null,
-              },
+            "name": "friend",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Friend",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "gender",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "gender",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "introduction",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "introduction",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "like",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Like",
-                ofType: null,
-              },
+            "name": "like",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Like",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "mute",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Mute",
-                ofType: null,
-              },
+            "name": "mute",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Mute",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "name",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "name",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "password",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "password",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "post",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Post",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "type",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "type",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "updatedAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "updatedAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Comment",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Comment",
+        "fields": [
           {
-            name: "account",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "body",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "body",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "createdAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "post",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Post",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "post_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "updatedAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "updatedAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "File",
-        fields: [
+        "kind": "OBJECT",
+        "name": "File",
+        "fields": [
           {
-            name: "path",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "path",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Friend",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Friend",
+        "fields": [
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "friend",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "friend",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "friend_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "friend_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Like",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Like",
+        "fields": [
           {
-            name: "account",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "post",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Post",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "post_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Marker",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Marker",
+        "fields": [
           {
-            name: "createdAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "lat",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "lat",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "lng",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "lng",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "post",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Post",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "post_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "post_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "title",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "title",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "updatedAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "updatedAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Mutation",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Mutation",
+        "fields": [
           {
-            name: "createAccount",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "createAccount",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createComment",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Comment",
-                ofType: null,
-              },
+            "name": "createComment",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Comment",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createFriend",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Friend",
-                ofType: null,
-              },
+            "name": "createFriend",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Friend",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createLike",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Like",
-                ofType: null,
-              },
+            "name": "createLike",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Like",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createMarker",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Marker",
-                ofType: null,
-              },
+            "name": "createMarker",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Marker",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createMute",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Mute",
-                ofType: null,
-              },
+            "name": "createMute",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Mute",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createPost",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "createPost",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Post",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createRequest",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Request",
-                ofType: null,
-              },
+            "name": "createRequest",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Request",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "createSession",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Session",
-                ofType: null,
-              },
+            "name": "createSession",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Session",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteAccount",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "deleteAccount",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteComment",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Comment",
-                ofType: null,
-              },
+            "name": "deleteComment",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Comment",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteFriend",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Friend",
-                ofType: null,
-              },
+            "name": "deleteFriend",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Friend",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteLike",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Like",
-                ofType: null,
-              },
+            "name": "deleteLike",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Like",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteMarker",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Marker",
-                ofType: null,
-              },
+            "name": "deleteMarker",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Marker",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteMute",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Mute",
-                ofType: null,
-              },
+            "name": "deleteMute",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Mute",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "SCALAR",
-                  name: "Any",
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
           },
           {
-            name: "deletePost",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "deletePost",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Post",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteRequest",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Request",
-                ofType: null,
-              },
+            "name": "deleteRequest",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Request",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "deleteSession",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Session",
-                ofType: null,
-              },
+            "name": "deleteSession",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Session",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "login",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "login",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "updateAccount",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "updateAccount",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
               },
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "updateMarker",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Marker",
-                ofType: null,
-              },
+            "name": "updateMarker",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Marker",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
               },
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "updatePost",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Post",
-                ofType: null,
-              },
+            "name": "updatePost",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Post",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
               },
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "updateRequest",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Request",
-                ofType: null,
-              },
+            "name": "updateRequest",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Request",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "updateSession",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Session",
-                ofType: null,
-              },
+            "name": "updateSession",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Session",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "uploadFile",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "File",
-                ofType: null,
-              },
+            "name": "uploadFile",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "File",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "input",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
-          },
+                "name": "input",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Mute",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Mute",
+        "fields": [
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "mute",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "mute",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "mute_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "mute_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Post",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Post",
+        "fields": [
           {
-            name: "account",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "body",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "body",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "comment",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Comment",
-                ofType: null,
-              },
+            "name": "comment",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Comment",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "createdAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "createdAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "img",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "img",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "like",
-            type: {
-              kind: "LIST",
-              ofType: {
-                kind: "OBJECT",
-                name: "Like",
-                ofType: null,
-              },
+            "name": "like",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Like",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "marker",
-            type: {
-              kind: "OBJECT",
-              name: "Marker",
-              ofType: null,
+            "name": "marker",
+            "type": {
+              "kind": "OBJECT",
+              "name": "Marker",
+              "ofType": null
             },
-            args: [],
+            "args": []
           },
           {
-            name: "title",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "title",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "updatedAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "updatedAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Query",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Query",
+        "fields": [
           {
-            name: "getAccountByID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "getAccountByID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getAllAccounts",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Account",
-                  ofType: null,
-                },
-              },
+            "name": "getAllAccounts",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Account",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "getAllMarkers",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Marker",
-                  ofType: null,
-                },
-              },
+            "name": "getAllMarkers",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Marker",
+                  "ofType": null
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "getAllPosts",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Post",
-                  ofType: null,
-                },
-              },
+            "name": "getAllPosts",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Post",
+                    "ofType": null
+                  }
+                }
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "getCommentByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Comment",
-                  ofType: null,
-                },
-              },
+            "name": "getCommentByAccountID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Comment",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getFriendsByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Friend",
-                  ofType: null,
-                },
-              },
+            "name": "getFriendsByAccountID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Friend",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getLikesByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Like",
-                  ofType: null,
-                },
-              },
+            "name": "getLikesByAccountID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Like",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getMutesByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Mute",
-                  ofType: null,
-                },
-              },
+            "name": "getMutesByAccountID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Mute",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getPostsByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Post",
-                  ofType: null,
-                },
-              },
+            "name": "getPostsByAccountID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Post",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getRequestsByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Request",
-                  ofType: null,
-                },
-              },
+            "name": "getRequestsByAccountID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Request",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getRequestsByTargetID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "LIST",
-                ofType: {
-                  kind: "OBJECT",
-                  name: "Request",
-                  ofType: null,
-                },
-              },
+            "name": "getRequestsByTargetID",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Request",
+                  "ofType": null
+                }
+              }
             },
-            args: [
+            "args": [
               {
-                name: "target_account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
+                "name": "target_account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
           },
           {
-            name: "getSessionByAccountID",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Session",
-                ofType: null,
-              },
+            "name": "getSessionByAccountID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Session",
+                "ofType": null
+              }
             },
-            args: [
+            "args": [
               {
-                name: "account_id",
-                type: {
-                  kind: "NON_NULL",
-                  ofType: {
-                    kind: "SCALAR",
-                    name: "Any",
-                  },
-                },
-              },
-            ],
-          },
+                "name": "account_id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Request",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Request",
+        "fields": [
           {
-            name: "account",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "account",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "status",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "status",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "target_account",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "OBJECT",
-                name: "Account",
-                ofType: null,
-              },
+            "name": "target_account",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "target_account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "target_account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "OBJECT",
-        name: "Session",
-        fields: [
+        "kind": "OBJECT",
+        "name": "Session",
+        "fields": [
           {
-            name: "account_id",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "account_id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "session",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "session",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
+            "args": []
           },
           {
-            name: "updatedAt",
-            type: {
-              kind: "NON_NULL",
-              ofType: {
-                kind: "SCALAR",
-                name: "Any",
-              },
+            "name": "updatedAt",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
-            args: [],
-          },
+            "args": []
+          }
         ],
-        interfaces: [],
+        "interfaces": []
       },
       {
-        kind: "SCALAR",
-        name: "Any",
-      },
+        "kind": "SCALAR",
+        "name": "Any"
+      }
     ],
-    directives: [],
-  },
+    "directives": []
+  }
 } as unknown as IntrospectionQuery;
