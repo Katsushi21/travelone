@@ -13,11 +13,11 @@ type Account {
   introduction: String!
   createdAt: Time!
   updatedAt: Time!
-  friend: [Friend]
-  mute: [Mute]
-  post: [Post]
-  like: [Like]
-  comment: [Comment]
+  friend: [Friend!]
+  mute: [Mute!]
+  post: [Post!]
+  like: [Like!]
+  comment: [Comment!]
 }
 
 ###############

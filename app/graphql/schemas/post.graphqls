@@ -11,8 +11,8 @@ type Post {
   updatedAt: Time!
   account: Account!
   marker: Marker
-  like: [Like]
-  comment: [Comment]
+  like: [Like!]
+  comment: [Comment!]
 }
 
 ###############
