@@ -8,8 +8,8 @@ type Post struct {
 	Title     string     `json:"title"`
 	Body      string     `json:"body"`
 	Img       string     `json:"img"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
 	Account   *Account   `json:"account"`
 	Marker    *Marker    `json:"marker"`
 	Like      []*Like    `json:"like"`

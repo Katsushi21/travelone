@@ -42,11 +42,11 @@ func Connect() *gorm.DB {
 	}
 
 	db.AutoMigrate(
+		Account{},
 		Comment{},
 		Marker{},
 		Post{},
 		Request{},
-		Account{},
 		Friend{},
 		Mute{},
 		Like{},

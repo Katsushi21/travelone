@@ -94,6 +94,7 @@ func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	err := r.DB.
 		Debug().
 		Joins("Account", r.DB.Where(&models.Account{Type: "active"})).
+		Joins("Like", r.DB.Where(&models.Like{Account: &models.Account{Type: "active"}})).
 		Joins("Marker").
 		Preload("Comment").
 		Find(&posts).

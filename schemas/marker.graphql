@@ -7,8 +7,8 @@ type Marker {
   title: String!
   lat: String!
   lng: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   post: Post!
 }
 

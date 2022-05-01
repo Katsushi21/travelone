@@ -4,6 +4,20 @@ import (
 	"time"
 )
 
+type Account struct {
+	ID           int       `gorm:"primaryKey;autoIncrement"`
+	Email        string    `gorm:"unique;not null;default:''"`
+	Password     string    `gorm:"not null;default:''"`
+	Type         string    `gorm:"not null;default:''"`
+	Name         string    `gorm:"not null;default:''"`
+	Age          int       `gorm:"not null;default:0"`
+	Gender       string    `gorm:"not null;default:''"`
+	Avatar       string    `gorm:"not null;default:''"`
+	Introduction string    `gorm:"not null;default:''"`
+	CreatedAt    time.Time `gorm:"autoCreateTime"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
+}
+
 type Comment struct {
 	ID        int       `gorm:"primaryKey;autoIncrement"`
 	PostID    int       `gorm:"not null;default:0"`
@@ -54,20 +68,6 @@ type Request struct {
 	UpdatedAt       time.Time `gorm:"autoUpdateTime"`
 	Account         Account
 	TargetAccount   Account
-}
-
-type Account struct {
-	ID           int       `gorm:"primaryKey;autoIncrement"`
-	Email        string    `gorm:"unique;not null;default:''"`
-	Password     string    `gorm:"not null;default:''"`
-	Type         string    `gorm:"not null;default:''"`
-	Name         string    `gorm:"not null;default:''"`
-	Age          int       `gorm:"not null;default:0"`
-	Gender       string    `gorm:"not null;default:''"`
-	Avatar       string    `gorm:"not null;default:''"`
-	Introduction string    `gorm:"not null;default:''"`
-	CreatedAt    time.Time `gorm:"autoCreateTime"`
-	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }
 
 type Friend struct {

@@ -6,8 +6,8 @@ type Comment {
   post_id: ID!
   account_id: ID!
   body: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   post: Post!
   account: Account!
 }

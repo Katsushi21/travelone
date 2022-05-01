@@ -258,7 +258,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Comment(childComplexity), true
 
-	case "Account.createdAt":
+	case "Account.created_at":
 		if e.complexity.Account.CreatedAt == nil {
 			break
 		}
@@ -342,7 +342,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Type(childComplexity), true
 
-	case "Account.updatedAt":
+	case "Account.updated_at":
 		if e.complexity.Account.UpdatedAt == nil {
 			break
 		}
@@ -370,7 +370,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Comment.Body(childComplexity), true
 
-	case "Comment.createdAt":
+	case "Comment.created_at":
 		if e.complexity.Comment.CreatedAt == nil {
 			break
 		}
@@ -398,7 +398,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Comment.PostID(childComplexity), true
 
-	case "Comment.updatedAt":
+	case "Comment.updated_at":
 		if e.complexity.Comment.UpdatedAt == nil {
 			break
 		}
@@ -461,7 +461,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Like.PostID(childComplexity), true
 
-	case "Marker.createdAt":
+	case "Marker.created_at":
 		if e.complexity.Marker.CreatedAt == nil {
 			break
 		}
@@ -510,7 +510,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Marker.Title(childComplexity), true
 
-	case "Marker.updatedAt":
+	case "Marker.updated_at":
 		if e.complexity.Marker.UpdatedAt == nil {
 			break
 		}
@@ -866,7 +866,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Post.Comment(childComplexity), true
 
-	case "Post.createdAt":
+	case "Post.created_at":
 		if e.complexity.Post.CreatedAt == nil {
 			break
 		}
@@ -908,7 +908,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Post.Title(childComplexity), true
 
-	case "Post.updatedAt":
+	case "Post.updated_at":
 		if e.complexity.Post.UpdatedAt == nil {
 			break
 		}
@@ -1093,7 +1093,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Session.Session(childComplexity), true
 
-	case "Session.updatedAt":
+	case "Session.updated_at":
 		if e.complexity.Session.UpdatedAt == nil {
 			break
 		}
@@ -1164,7 +1164,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graphql/schemas/account.graphqls", Input: `###############
+	{Name: "../schemas/account.graphql", Input: `###############
 # Account
 ###############
 type Account {
@@ -1177,8 +1177,8 @@ type Account {
   gender: AccountGender!
   avatar: String!
   introduction: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   friend: [Friend!]
   mute: [Mute!]
   post: [Post!]
@@ -1220,7 +1220,7 @@ input LoginInput {
   password: String!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/commnet.graphqls", Input: `###############
+	{Name: "../schemas/commnet.graphql", Input: `###############
 # Comment
 ###############
 type Comment {
@@ -1228,8 +1228,8 @@ type Comment {
   post_id: ID!
   account_id: ID!
   body: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   post: Post!
   account: Account!
 }
@@ -1243,7 +1243,7 @@ input CommentInput {
   body: String!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/file.graphqls", Input: `###############
+	{Name: "../schemas/file.graphql", Input: `###############
 # File
 ###############
 type File {
@@ -1257,7 +1257,7 @@ input UploadFile {
   content: Upload!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/friend.graphqls", Input: `###############
+	{Name: "../schemas/friend.graphql", Input: `###############
 # Friend
 ###############
 type Friend {
@@ -1274,7 +1274,7 @@ input FriendInput {
   friend_id: ID!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/like.graphqls", Input: `###############
+	{Name: "../schemas/like.graphql", Input: `###############
 # Like
 ###############
 type Like {
@@ -1292,7 +1292,7 @@ input LikeInput {
   account_id: ID!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/marker.graphqls", Input: `###############
+	{Name: "../schemas/marker.graphql", Input: `###############
 # Marker
 ###############
 type Marker {
@@ -1301,8 +1301,8 @@ type Marker {
   title: String!
   lat: String!
   lng: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   post: Post!
 }
 
@@ -1316,7 +1316,7 @@ input MarkerInput {
   lng: String!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/mutation.graphqls", Input: `type Mutation {
+	{Name: "../schemas/mutation.graphql", Input: `type Mutation {
   ###############
   # Comment
   ###############
@@ -1408,7 +1408,7 @@ input MarkerInput {
   login(input: LoginInput!): Account!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/mute.graphqls", Input: `###############
+	{Name: "../schemas/mute.graphql", Input: `###############
 # Mute
 ###############
 type Mute {
@@ -1425,7 +1425,7 @@ input MuteInput {
   mute_id: ID!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/post.graphqls", Input: `###############
+	{Name: "../schemas/post.graphql", Input: `###############
 # Post
 ###############
 type Post {
@@ -1434,8 +1434,8 @@ type Post {
   title: String!
   body: String!
   img: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   account: Account!
   marker: Marker
   like: [Like!]
@@ -1452,7 +1452,7 @@ input PostInput {
   img: String!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/query.graphqls", Input: `type Query {
+	{Name: "../schemas/query.graphql", Input: `type Query {
   ###############
   # Comment
   ###############
@@ -1514,7 +1514,7 @@ input PostInput {
   getAccountByID(id: ID!): Account!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/request.graphqls", Input: `###############
+	{Name: "../schemas/request.graphql", Input: `###############
 # Request
 ###############
 type Request {
@@ -1547,19 +1547,19 @@ input RequestInput {
   status: RequestStatus!
 }
 `, BuiltIn: false},
-	{Name: "graphql/schemas/scalar.graphqls", Input: `###############
+	{Name: "../schemas/scalar.graphql", Input: `###############
 # scalar
 ###############
 scalar Time
 scalar Upload
 `, BuiltIn: false},
-	{Name: "graphql/schemas/session.graphqls", Input: `###############
+	{Name: "../schemas/session.graphql", Input: `###############
 # Session
 ###############
 type Session {
   account_id: ID!
   session: String!
-  updatedAt: Time!
+  updated_at: Time!
 }
 
 ###############
@@ -2482,7 +2482,7 @@ func (ec *executionContext) _Account_introduction(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_created_at(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2517,7 +2517,7 @@ func (ec *executionContext) _Account_createdAt(ctx context.Context, field graphq
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_updated_at(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2852,7 +2852,7 @@ func (ec *executionContext) _Comment_body(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Comment_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.Comment) (ret graphql.Marshaler) {
+func (ec *executionContext) _Comment_created_at(ctx context.Context, field graphql.CollectedField, obj *models.Comment) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2887,7 +2887,7 @@ func (ec *executionContext) _Comment_createdAt(ctx context.Context, field graphq
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Comment_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Comment) (ret graphql.Marshaler) {
+func (ec *executionContext) _Comment_updated_at(ctx context.Context, field graphql.CollectedField, obj *models.Comment) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3447,7 +3447,7 @@ func (ec *executionContext) _Marker_lng(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Marker_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.Marker) (ret graphql.Marshaler) {
+func (ec *executionContext) _Marker_created_at(ctx context.Context, field graphql.CollectedField, obj *models.Marker) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3482,7 +3482,7 @@ func (ec *executionContext) _Marker_createdAt(ctx context.Context, field graphql
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Marker_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Marker) (ret graphql.Marshaler) {
+func (ec *executionContext) _Marker_updated_at(ctx context.Context, field graphql.CollectedField, obj *models.Marker) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4882,7 +4882,7 @@ func (ec *executionContext) _Post_img(ctx context.Context, field graphql.Collect
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Post_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.Post) (ret graphql.Marshaler) {
+func (ec *executionContext) _Post_created_at(ctx context.Context, field graphql.CollectedField, obj *models.Post) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4917,7 +4917,7 @@ func (ec *executionContext) _Post_createdAt(ctx context.Context, field graphql.C
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Post_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Post) (ret graphql.Marshaler) {
+func (ec *executionContext) _Post_updated_at(ctx context.Context, field graphql.CollectedField, obj *models.Post) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5855,7 +5855,7 @@ func (ec *executionContext) _Session_session(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Session_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Session) (ret graphql.Marshaler) {
+func (ec *executionContext) _Session_updated_at(ctx context.Context, field graphql.CollectedField, obj *models.Session) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7613,9 +7613,9 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createdAt":
+		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Account_createdAt(ctx, field, obj)
+				return ec._Account_created_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -7623,9 +7623,9 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatedAt":
+		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Account_updatedAt(ctx, field, obj)
+				return ec._Account_updated_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -7729,9 +7729,9 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createdAt":
+		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Comment_createdAt(ctx, field, obj)
+				return ec._Comment_created_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -7739,9 +7739,9 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatedAt":
+		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Comment_updatedAt(ctx, field, obj)
+				return ec._Comment_updated_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -7983,9 +7983,9 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createdAt":
+		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Marker_createdAt(ctx, field, obj)
+				return ec._Marker_created_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -7993,9 +7993,9 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatedAt":
+		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Marker_updatedAt(ctx, field, obj)
+				return ec._Marker_updated_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8415,9 +8415,9 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createdAt":
+		case "created_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Post_createdAt(ctx, field, obj)
+				return ec._Post_created_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8425,9 +8425,9 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatedAt":
+		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Post_updatedAt(ctx, field, obj)
+				return ec._Post_updated_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)
@@ -8871,9 +8871,9 @@ func (ec *executionContext) _Session(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatedAt":
+		case "updated_at":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Session_updatedAt(ctx, field, obj)
+				return ec._Session_updated_at(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

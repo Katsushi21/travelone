@@ -7,8 +7,8 @@ type Post {
   title: String!
   body: String!
   img: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   account: Account!
   marker: Marker
   like: [Like!]

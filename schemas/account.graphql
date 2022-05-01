@@ -11,8 +11,8 @@ type Account {
   gender: AccountGender!
   avatar: String!
   introduction: String!
-  createdAt: Time!
-  updatedAt: Time!
+  created_at: Time!
+  updated_at: Time!
   friend: [Friend!]
   mute: [Mute!]
   post: [Post!]
