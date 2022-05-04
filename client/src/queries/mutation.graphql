@@ -1,9 +1,64 @@
 type Mutation {
   ###############
+  # Account
+  ###############
+  # CREATE
+  mutation createAccount(
+    $email: String!,
+    $password: String!,
+    $type: AccountType!,
+    $name: String!,
+    $age: Int!,
+    $gender: AccountGender!,
+    $avatar: String!,
+    $introduction: String!,
+  ) {
+    createAccount (input: {
+      email: $email,
+      password: $password,
+      type: $type,
+      name: $name,
+      age: $age,
+      gender: $gender,
+      avatar: $avatar,
+      introduction: $introduction,
+    }) {
+      account {
+        name
+      }
+    }
+  }
+  # UPDATE
+  updateAccount(id: ID!, input: AccountInput!): Account!
+  # DELETE
+  deleteAccount(id: ID!): Account!
+  # OTHER
+  login(input: LoginInput!): Account!
+
+  ###############
   # Comment
   ###############
   # CREATE
-  createComment(input: CommentInput!): Comment!
+  mutation createComment(
+    $post_id: ID!,
+    $account_id: ID!,
+    $body: String!,
+  ) {
+    createComment (input: {
+      post_id: $post_id,
+      account_id: $account_id,
+      body: $body,
+    }) {
+      comment {
+        post {
+          account {
+            name
+          }
+          title
+        }
+      }
+    }
+  }
   # DELETE
   deleteComment(id: ID!): Comment!
 
@@ -17,7 +72,21 @@ type Mutation {
   # Friend
   ###############
   # CREATE
-  createFriend(input: FriendInput!): Friend!
+  mutation createFriend(
+    $account_id: ID!,
+    $friend_id: ID!,
+  ) {
+    createFriend (input: {
+      account_id: $account_id,
+      friend_id: $friend_id,
+    }) {
+      friend {
+        friend {
+          name
+        }
+      }
+    }
+  }
   # DELETE
   deleteFriend(input: FriendInput!): Friend!
 
@@ -25,7 +94,24 @@ type Mutation {
   # Like
   ###############
   # CREATE
-  createLike(input: LikeInput!): Like!
+  mutation createLike(
+    $post_id: ID!,
+    $account_id: ID!,
+  ) {
+    createLike (input: {
+      post_id: $post_id,
+      account_id: $account_id,
+    }) {
+      like {
+        post {
+          title
+        }
+        account {
+          name
+        }
+      }
+    }
+  }
   # DELETE
   deleteLike(input: LikeInput!): Like!
 
@@ -43,7 +129,22 @@ type Mutation {
   # Mute
   ###############
   # CREATE
-  createMute(input: MuteInput!): Mute!
+  # createMute(input: MuteInput!): Mute!
+  mutation createMute(
+    $account_id: ID!,
+    $mute_id: ID!,
+  ) {
+    createMute (input: {
+      account_id: $account_id,
+      mute_id: $mute_id,
+    }) {
+      mute {
+        mute {
+          name
+        }
+      }
+    }
+  }
   # DELETE
   deleteMute(input: MuteInput): Mute!
 
@@ -51,7 +152,24 @@ type Mutation {
   # Post
   ###############
   # CREATE
-  createPost(input: PostInput!): Post!
+  mutation createPost(
+    $account_id: ID!,
+    $title: String!,
+    $body: String!,
+    $img: String!,
+  ) {
+    createPost (input: {
+      account_id: $account_id,
+      title: $title,
+      body: $body,
+      img: $img,
+    }) {
+      post {
+        id
+        title
+      }
+    }
+  }
   # UPDATE
   updatePost(id: ID!, input: PostInput!): Post!
   # DELETE
@@ -61,7 +179,25 @@ type Mutation {
   # Request
   ###############
   # CREATE
-  createRequest(input: RequestInput!): Request!
+  # createRequest(input: RequestInput!): Request!
+  mutation createRequest(
+    $account_id: ID!,
+    $target_account_id: ID!,
+    $status: RequestStatus!,
+  ) {
+    createRequest (input: {
+      account_id: $account_id,
+      target_account_id: $target_account_id,
+      status: $status,
+    }) {
+      request {
+        target_account {
+          name
+        }
+        status
+      }
+    }
+  }
   # UPDATE
   updateRequest(input: RequestInput!): Request!
   # DELETE
@@ -71,21 +207,22 @@ type Mutation {
   # Session
   ###############
   # CREATE
-  createSession(input: SessionInput!): Session!
+  # createSession(input: SessionInput!): Session!
+  mutation createSession(
+    $account_id: ID!,
+    $session: String!,
+  ) {
+    createSession (input: {
+      account_id: $account_id,
+      session: $session,
+    }) {
+      session {
+        session
+      }
+    }
+  }
   # UPDATE
   updateSession(input: SessionInput!): Session!
   # DELETE
   deleteSession(account_id: ID!): Session!
-
-  ###############
-  # Account
-  ###############
-  # CREATE
-  createAccount(input: AccountInput!): Account!
-  # UPDATE
-  updateAccount(id: ID!, input: AccountInput!): Account!
-  # DELETE
-  deleteAccount(id: ID!): Account!
-  # OTHER
-  login(input: LoginInput!): Account!
 }
