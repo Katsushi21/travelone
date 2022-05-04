@@ -66,7 +66,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -274,7 +274,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {
@@ -556,7 +556,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -620,7 +620,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {
@@ -1016,7 +1016,7 @@
         "description": null,
         "fields": [
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -1128,7 +1128,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {
@@ -2280,7 +2280,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createdAt",
+            "name": "created_at",
             "description": null,
             "args": [],
             "type": {
@@ -2376,7 +2376,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {
@@ -3113,7 +3113,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatedAt",
+            "name": "updated_at",
             "description": null,
             "args": [],
             "type": {

@@ -1,3 +1,5 @@
+import gql from "graphql-tag";
+import * as Urql from "urql";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -9,6 +11,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -25,7 +28,7 @@ export type Account = {
   age: Scalars["Int"];
   avatar: Scalars["String"];
   comment?: Maybe<Array<Comment>>;
-  createdAt: Scalars["Time"];
+  created_at: Scalars["Time"];
   email: Scalars["String"];
   friend?: Maybe<Array<Friend>>;
   gender: AccountGender;
@@ -37,7 +40,7 @@ export type Account = {
   password: Scalars["String"];
   post?: Maybe<Array<Post>>;
   type: AccountType;
-  updatedAt: Scalars["Time"];
+  updated_at: Scalars["Time"];
 };
 
 export enum AccountGender {
@@ -68,11 +71,11 @@ export type Comment = {
   account: Account;
   account_id: Scalars["ID"];
   body: Scalars["String"];
-  createdAt: Scalars["Time"];
+  created_at: Scalars["Time"];
   id: Scalars["ID"];
   post: Post;
   post_id: Scalars["ID"];
-  updatedAt: Scalars["Time"];
+  updated_at: Scalars["Time"];
 };
 
 export type CommentInput = {
@@ -118,14 +121,14 @@ export type LoginInput = {
 
 export type Marker = {
   __typename?: "Marker";
-  createdAt: Scalars["Time"];
+  created_at: Scalars["Time"];
   id: Scalars["ID"];
   lat: Scalars["String"];
   lng: Scalars["String"];
   post: Post;
   post_id: Scalars["ID"];
   title: Scalars["String"];
-  updatedAt: Scalars["Time"];
+  updated_at: Scalars["Time"];
 };
 
 export type MarkerInput = {
@@ -285,13 +288,13 @@ export type Post = {
   account_id: Scalars["ID"];
   body: Scalars["String"];
   comment?: Maybe<Array<Comment>>;
-  createdAt: Scalars["Time"];
+  created_at: Scalars["Time"];
   id: Scalars["ID"];
   img: Scalars["String"];
   like?: Maybe<Array<Like>>;
   marker?: Maybe<Marker>;
   title: Scalars["String"];
-  updatedAt: Scalars["Time"];
+  updated_at: Scalars["Time"];
 };
 
 export type PostInput = {
@@ -382,7 +385,7 @@ export type Session = {
   __typename?: "Session";
   account_id: Scalars["ID"];
   session: Scalars["String"];
-  updatedAt: Scalars["Time"];
+  updated_at: Scalars["Time"];
 };
 
 export type SessionInput = {
@@ -392,6 +395,61 @@ export type SessionInput = {
 
 export type UploadFile = {
   content: Scalars["Upload"];
+};
+
+export type CreateAccountMutationVariables = Exact<{
+  email: Scalars["String"];
+  password: Scalars["String"];
+  type: AccountType;
+  name: Scalars["String"];
+  age: Scalars["Int"];
+  gender: AccountGender;
+  avatar: Scalars["String"];
+  introduction: Scalars["String"];
+}>;
+
+export type CreateAccountMutation = {
+  __typename?: "Mutation";
+  createAccount: {
+    __typename?: "Account";
+    id: string;
+    email: string;
+    password: string;
+    type: AccountType;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+  };
+};
+
+export type UpdateAccountMutationVariables = Exact<{
+  id: Scalars["ID"];
+  email: Scalars["String"];
+  password: Scalars["String"];
+  type: AccountType;
+  name: Scalars["String"];
+  age: Scalars["Int"];
+  gender: AccountGender;
+  avatar: Scalars["String"];
+  introduction: Scalars["String"];
+}>;
+
+export type UpdateAccountMutation = {
+  __typename?: "Mutation";
+  updateAccount: {
+    __typename?: "Account";
+    id: string;
+    email: string;
+    password: string;
+    type: AccountType;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+  };
 };
 
 import { IntrospectionQuery } from "graphql";
@@ -447,7 +505,7 @@ export default {
             args: [],
           },
           {
-            name: "createdAt",
+            name: "created_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -595,7 +653,7 @@ export default {
             args: [],
           },
           {
-            name: "updatedAt",
+            name: "updated_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -647,7 +705,7 @@ export default {
             args: [],
           },
           {
-            name: "createdAt",
+            name: "created_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -692,7 +750,7 @@ export default {
             args: [],
           },
           {
-            name: "updatedAt",
+            name: "updated_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -822,7 +880,7 @@ export default {
         name: "Marker",
         fields: [
           {
-            name: "createdAt",
+            name: "created_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -900,7 +958,7 @@ export default {
             args: [],
           },
           {
-            name: "updatedAt",
+            name: "updated_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -1617,7 +1675,7 @@ export default {
             args: [],
           },
           {
-            name: "createdAt",
+            name: "created_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -1685,7 +1743,7 @@ export default {
             args: [],
           },
           {
-            name: "updatedAt",
+            name: "updated_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -2072,7 +2130,7 @@ export default {
             args: [],
           },
           {
-            name: "updatedAt",
+            name: "updated_at",
             type: {
               kind: "NON_NULL",
               ofType: {
@@ -2093,3 +2151,90 @@ export default {
     directives: [],
   },
 } as unknown as IntrospectionQuery;
+
+export const CreateAccountDocument = gql`
+  mutation createAccount(
+    $email: String!
+    $password: String!
+    $type: AccountType!
+    $name: String!
+    $age: Int!
+    $gender: AccountGender!
+    $avatar: String!
+    $introduction: String!
+  ) {
+    createAccount(
+      input: {
+        email: $email
+        password: $password
+        type: $type
+        name: $name
+        age: $age
+        gender: $gender
+        avatar: $avatar
+        introduction: $introduction
+      }
+    ) {
+      id
+      email
+      password
+      type
+      name
+      age
+      gender
+      avatar
+      introduction
+    }
+  }
+`;
+
+export function useCreateAccountMutation() {
+  return Urql.useMutation<
+    CreateAccountMutation,
+    CreateAccountMutationVariables
+  >(CreateAccountDocument);
+}
+export const UpdateAccountDocument = gql`
+  mutation updateAccount(
+    $id: ID!
+    $email: String!
+    $password: String!
+    $type: AccountType!
+    $name: String!
+    $age: Int!
+    $gender: AccountGender!
+    $avatar: String!
+    $introduction: String!
+  ) {
+    updateAccount(
+      id: $id
+      input: {
+        email: $email
+        password: $password
+        type: $type
+        name: $name
+        age: $age
+        gender: $gender
+        avatar: $avatar
+        introduction: $introduction
+      }
+    ) {
+      id
+      email
+      password
+      type
+      name
+      age
+      gender
+      avatar
+      introduction
+    }
+  }
+`;
+
+export function useUpdateAccountMutation() {
+  return Urql.useMutation<
+    UpdateAccountMutation,
+    UpdateAccountMutationVariables
+  >(UpdateAccountDocument);
+}
