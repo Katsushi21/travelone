@@ -1,5 +1,13 @@
 type Query {
   ###############
+  # Account
+  ###############
+  # All
+  getAllAccounts: [Account!]
+  # By ID
+  getAccountByID(id: ID!): Account!
+
+  ###############
   # Comment
   ###############
   # By Account ID
@@ -50,12 +58,4 @@ type Query {
   ###############
   # By Account ID
   getSessionByAccountID(account_id: ID!): Session!
-
-  ###############
-  # Account
-  ###############
-  # All
-  getAllAccounts: [Account!]
-  # By ID
-  getAccountByID(id: ID!): Account!
 }

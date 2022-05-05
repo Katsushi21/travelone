@@ -87,5 +87,5 @@ type Mutation {
   # UPDATE
   updateSession(input: SessionInput!): Session!
   # DELETE
-  deleteSession(account_id: ID!): Session!
+  deleteSession(input: SessionInput!): Session!
 }

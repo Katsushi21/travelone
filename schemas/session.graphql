@@ -12,5 +12,4 @@ type Session {
 ###############
 input SessionInput {
   account_id: ID!
-  session: String!
 }

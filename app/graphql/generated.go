@@ -120,7 +120,7 @@ type ComplexityRoot struct {
 		DeleteMute    func(childComplexity int, input *models.MuteInput) int
 		DeletePost    func(childComplexity int, id int) int
 		DeleteRequest func(childComplexity int, input models.RequestInput) int
-		DeleteSession func(childComplexity int, accountID int) int
+		DeleteSession func(childComplexity int, input models.SessionInput) int
 		Login         func(childComplexity int, input models.LoginInput) int
 		UpdateAccount func(childComplexity int, id int, input models.AccountInput) int
 		UpdateMarker  func(childComplexity int, id int, input models.MarkerInput) int
@@ -181,6 +181,10 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
+	CreateAccount(ctx context.Context, input models.AccountInput) (*models.Account, error)
+	UpdateAccount(ctx context.Context, id int, input models.AccountInput) (*models.Account, error)
+	DeleteAccount(ctx context.Context, id int) (*models.Account, error)
+	Login(ctx context.Context, input models.LoginInput) (*models.Account, error)
 	CreateComment(ctx context.Context, input models.CommentInput) (*models.Comment, error)
 	DeleteComment(ctx context.Context, id int) (*models.Comment, error)
 	UploadFile(ctx context.Context, input models.UploadFile) (*models.File, error)
@@ -201,13 +205,11 @@ type MutationResolver interface {
 	DeleteRequest(ctx context.Context, input models.RequestInput) (*models.Request, error)
 	CreateSession(ctx context.Context, input models.SessionInput) (*models.Session, error)
 	UpdateSession(ctx context.Context, input models.SessionInput) (*models.Session, error)
-	DeleteSession(ctx context.Context, accountID int) (*models.Session, error)
-	CreateAccount(ctx context.Context, input models.AccountInput) (*models.Account, error)
-	UpdateAccount(ctx context.Context, id int, input models.AccountInput) (*models.Account, error)
-	DeleteAccount(ctx context.Context, id int) (*models.Account, error)
-	Login(ctx context.Context, input models.LoginInput) (*models.Account, error)
+	DeleteSession(ctx context.Context, input models.SessionInput) (*models.Session, error)
 }
 type QueryResolver interface {
+	GetAllAccounts(ctx context.Context) ([]*models.Account, error)
+	GetAccountByID(ctx context.Context, id int) (*models.Account, error)
 	GetCommentByAccountID(ctx context.Context, accountID int) ([]*models.Comment, error)
 	GetFriendsByAccountID(ctx context.Context, accountID int) ([]*models.Friend, error)
 	GetLikesByAccountID(ctx context.Context, accountID int) ([]*models.Like, error)
@@ -218,8 +220,6 @@ type QueryResolver interface {
 	GetRequestsByAccountID(ctx context.Context, accountID int) ([]*models.Request, error)
 	GetRequestsByTargetID(ctx context.Context, targetAccountID int) ([]*models.Request, error)
 	GetSessionByAccountID(ctx context.Context, accountID int) (*models.Session, error)
-	GetAllAccounts(ctx context.Context) ([]*models.Account, error)
-	GetAccountByID(ctx context.Context, id int) (*models.Account, error)
 }
 
 type executableSchema struct {
@@ -731,7 +731,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSession(childComplexity, args["account_id"].(int)), true
+		return e.complexity.Mutation.DeleteSession(childComplexity, args["input"].(models.SessionInput)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -1318,6 +1318,18 @@ input MarkerInput {
 `, BuiltIn: false},
 	{Name: "../schemas/mutation.graphql", Input: `type Mutation {
   ###############
+  # Account
+  ###############
+  # CREATE
+  createAccount(input: AccountInput!): Account!
+  # UPDATE
+  updateAccount(id: ID!, input: AccountInput!): Account!
+  # DELETE
+  deleteAccount(id: ID!): Account!
+  # OTHER
+  login(input: LoginInput!): Account!
+
+  ###############
   # Comment
   ###############
   # CREATE
@@ -1393,19 +1405,7 @@ input MarkerInput {
   # UPDATE
   updateSession(input: SessionInput!): Session!
   # DELETE
-  deleteSession(account_id: ID!): Session!
-
-  ###############
-  # Account
-  ###############
-  # CREATE
-  createAccount(input: AccountInput!): Account!
-  # UPDATE
-  updateAccount(id: ID!, input: AccountInput!): Account!
-  # DELETE
-  deleteAccount(id: ID!): Account!
-  # OTHER
-  login(input: LoginInput!): Account!
+  deleteSession(input: SessionInput!): Session!
 }
 `, BuiltIn: false},
 	{Name: "../schemas/mute.graphql", Input: `###############
@@ -1453,6 +1453,14 @@ input PostInput {
 }
 `, BuiltIn: false},
 	{Name: "../schemas/query.graphql", Input: `type Query {
+  ###############
+  # Account
+  ###############
+  # All
+  getAllAccounts: [Account!]
+  # By ID
+  getAccountByID(id: ID!): Account!
+
   ###############
   # Comment
   ###############
@@ -1504,14 +1512,6 @@ input PostInput {
   ###############
   # By Account ID
   getSessionByAccountID(account_id: ID!): Session!
-
-  ###############
-  # Account
-  ###############
-  # All
-  getAllAccounts: [Account!]
-  # By ID
-  getAccountByID(id: ID!): Account!
 }
 `, BuiltIn: false},
 	{Name: "../schemas/request.graphql", Input: `###############
@@ -1567,7 +1567,6 @@ type Session {
 ###############
 input SessionInput {
   account_id: ID!
-  session: String!
 }
 `, BuiltIn: false},
 }
@@ -1835,15 +1834,15 @@ func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["account_id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("account_id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+	var arg0 models.SessionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNSessionInput2githubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐSessionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["account_id"] = arg0
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -3552,6 +3551,174 @@ func (ec *executionContext) _Marker_post(ctx context.Context, field graphql.Coll
 	return ec.marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐPost(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createAccount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAccount(rctx, args["input"].(models.AccountInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateAccount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAccount(rctx, args["id"].(int), args["input"].(models.AccountInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteAccount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAccount(rctx, args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_login_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Login(rctx, args["input"].(models.LoginInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_createComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -4417,7 +4584,7 @@ func (ec *executionContext) _Mutation_deleteSession(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSession(rctx, args["account_id"].(int))
+		return ec.resolvers.Mutation().DeleteSession(rctx, args["input"].(models.SessionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4432,174 +4599,6 @@ func (ec *executionContext) _Mutation_deleteSession(ctx context.Context, field g
 	res := resTmp.(*models.Session)
 	fc.Result = res
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐSession(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_createAccount_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAccount(rctx, args["input"].(models.AccountInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Account)
-	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_updateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updateAccount_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateAccount(rctx, args["id"].(int), args["input"].(models.AccountInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Account)
-	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deleteAccount_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteAccount(rctx, args["id"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Account)
-	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_login_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Login(rctx, args["input"].(models.LoginInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Account)
-	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mute_account_id(ctx context.Context, field graphql.CollectedField, obj *models.Mute) (ret graphql.Marshaler) {
@@ -5083,6 +5082,80 @@ func (ec *executionContext) _Post_comment(ctx context.Context, field graphql.Col
 	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐCommentᚄ(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_getAllAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAllAccounts(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*models.Account)
+	fc.Result = res
+	return ec.marshalOAccount2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_getAccountByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getAccountByID_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAccountByID(rctx, args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_getCommentByAccountID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5463,80 +5536,6 @@ func (ec *executionContext) _Query_getSessionByAccountID(ctx context.Context, fi
 	res := resTmp.(*models.Session)
 	fc.Result = res
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐSession(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getAllAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAllAccounts(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Account)
-	fc.Result = res
-	return ec.marshalOAccount2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getAccountByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getAccountByID_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAccountByID(rctx, args["id"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Account)
-	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7468,14 +7467,6 @@ func (ec *executionContext) unmarshalInputSessionInput(ctx context.Context, obj 
 			if err != nil {
 				return it, err
 			}
-		case "session":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("session"))
-			it.Session, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		}
 	}
 
@@ -8043,6 +8034,46 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "createAccount":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createAccount(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateAccount":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateAccount(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAccount":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteAccount(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "login":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_login(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createComment":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createComment(ctx, field)
@@ -8253,46 +8284,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createAccount":
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createAccount(ctx, field)
-			}
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "updateAccount":
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateAccount(ctx, field)
-			}
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "deleteAccount":
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteAccount(ctx, field)
-			}
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "login":
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_login(ctx, field)
-			}
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8496,6 +8487,49 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "getAllAccounts":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getAllAccounts(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "getAccountByID":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getAccountByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "getCommentByAccountID":
 			field := field
 
@@ -8689,49 +8723,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getSessionByAccountID(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "getAllAccounts":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getAllAccounts(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "getAccountByID":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getAccountByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

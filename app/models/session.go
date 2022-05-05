@@ -9,6 +9,5 @@ type Session struct {
 }
 
 type SessionInput struct {
-	AccountID int    `json:"account_id"`
-	Session   string `json:"session"`
+	AccountID int `json:"account_id"`
 }

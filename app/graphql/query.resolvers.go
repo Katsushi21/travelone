@@ -9,6 +9,41 @@ import (
 	"github.com/Katsushi21/traveling_alone/models"
 )
 
+func (r *queryResolver) GetAllAccounts(ctx context.Context) ([]*models.Account, error) {
+	var accounts []*models.Account
+	err := r.DB.
+		Debug().
+		Preload("Post").
+		Preload("Like").
+		Preload("Comment").
+		Preload("Friend").
+		Preload("Mute").
+		Find(&accounts).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return accounts, nil
+}
+
+func (r *queryResolver) GetAccountByID(ctx context.Context, id int) (*models.Account, error) {
+	var account *models.Account
+	err := r.DB.
+		Debug().
+		Joins("Post", r.DB.Where(&models.Post{AccountID: id})).
+		Joins("Comment", r.DB.Where(&models.Comment{AccountID: id})).
+		First(&account, id).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return account, nil
+}
+
 func (r *queryResolver) GetCommentByAccountID(ctx context.Context, accountID int) ([]*models.Comment, error) {
 	var comment []*models.Comment
 	err := r.DB.
@@ -168,41 +203,6 @@ func (r *queryResolver) GetSessionByAccountID(ctx context.Context, accountID int
 	}
 
 	return session, nil
-}
-
-func (r *queryResolver) GetAllAccounts(ctx context.Context) ([]*models.Account, error) {
-	var accounts []*models.Account
-	err := r.DB.
-		Debug().
-		Preload("Post").
-		Preload("Like").
-		Preload("Comment").
-		Preload("Friend").
-		Preload("Mute").
-		Find(&accounts).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return accounts, nil
-}
-
-func (r *queryResolver) GetAccountByID(ctx context.Context, id int) (*models.Account, error) {
-	var account *models.Account
-	err := r.DB.
-		Debug().
-		Joins("Post", r.DB.Where(&models.Post{AccountID: id})).
-		Joins("Comment", r.DB.Where(&models.Comment{AccountID: id})).
-		First(&account, id).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return account, nil
 }
 
 // Query returns QueryResolver implementation.
