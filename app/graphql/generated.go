@@ -121,7 +121,7 @@ type ComplexityRoot struct {
 		DeletePost    func(childComplexity int, id int) int
 		DeleteRequest func(childComplexity int, input models.RequestInput) int
 		DeleteSession func(childComplexity int, input models.SessionInput) int
-		Login         func(childComplexity int, input models.LoginInput) int
+		LoginQuery    func(childComplexity int, input models.LoginInput) int
 		UpdateAccount func(childComplexity int, id int, input models.AccountInput) int
 		UpdateMarker  func(childComplexity int, id int, input models.MarkerInput) int
 		UpdatePost    func(childComplexity int, id int, input models.PostInput) int
@@ -152,7 +152,6 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetAccountByID         func(childComplexity int, id int) int
-		GetAllAccounts         func(childComplexity int) int
 		GetAllMarkers          func(childComplexity int) int
 		GetAllPosts            func(childComplexity int) int
 		GetCommentByAccountID  func(childComplexity int, accountID int) int
@@ -184,7 +183,7 @@ type MutationResolver interface {
 	CreateAccount(ctx context.Context, input models.AccountInput) (*models.Account, error)
 	UpdateAccount(ctx context.Context, id int, input models.AccountInput) (*models.Account, error)
 	DeleteAccount(ctx context.Context, id int) (*models.Account, error)
-	Login(ctx context.Context, input models.LoginInput) (*models.Account, error)
+	LoginQuery(ctx context.Context, input models.LoginInput) (*models.Account, error)
 	CreateComment(ctx context.Context, input models.CommentInput) (*models.Comment, error)
 	DeleteComment(ctx context.Context, id int) (*models.Comment, error)
 	UploadFile(ctx context.Context, input models.UploadFile) (*models.File, error)
@@ -208,7 +207,6 @@ type MutationResolver interface {
 	DeleteSession(ctx context.Context, input models.SessionInput) (*models.Session, error)
 }
 type QueryResolver interface {
-	GetAllAccounts(ctx context.Context) ([]*models.Account, error)
 	GetAccountByID(ctx context.Context, id int) (*models.Account, error)
 	GetCommentByAccountID(ctx context.Context, accountID int) ([]*models.Comment, error)
 	GetFriendsByAccountID(ctx context.Context, accountID int) ([]*models.Friend, error)
@@ -733,17 +731,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteSession(childComplexity, args["input"].(models.SessionInput)), true
 
-	case "Mutation.login":
-		if e.complexity.Mutation.Login == nil {
+	case "Mutation.loginQuery":
+		if e.complexity.Mutation.LoginQuery == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_login_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_loginQuery_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Login(childComplexity, args["input"].(models.LoginInput)), true
+		return e.complexity.Mutation.LoginQuery(childComplexity, args["input"].(models.LoginInput)), true
 
 	case "Mutation.updateAccount":
 		if e.complexity.Mutation.UpdateAccount == nil {
@@ -926,13 +924,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetAccountByID(childComplexity, args["id"].(int)), true
-
-	case "Query.getAllAccounts":
-		if e.complexity.Query.GetAllAccounts == nil {
-			break
-		}
-
-		return e.complexity.Query.GetAllAccounts(childComplexity), true
 
 	case "Query.getAllMarkers":
 		if e.complexity.Query.GetAllMarkers == nil {
@@ -1327,7 +1318,7 @@ input MarkerInput {
   # DELETE
   deleteAccount(id: ID!): Account!
   # OTHER
-  login(input: LoginInput!): Account!
+  loginQuery(input: LoginInput!): Account!
 
   ###############
   # Comment
@@ -1456,8 +1447,6 @@ input PostInput {
   ###############
   # Account
   ###############
-  # All
-  getAllAccounts: [Account!]
   # By ID
   getAccountByID(id: ID!): Account!
 
@@ -1846,7 +1835,7 @@ func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_loginQuery_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 models.LoginInput
@@ -3677,7 +3666,7 @@ func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field g
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_loginQuery(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3694,7 +3683,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_login_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_loginQuery_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -3702,7 +3691,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Login(rctx, args["input"].(models.LoginInput))
+		return ec.resolvers.Mutation().LoginQuery(rctx, args["input"].(models.LoginInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5080,38 +5069,6 @@ func (ec *executionContext) _Post_comment(ctx context.Context, field graphql.Col
 	res := resTmp.([]*models.Comment)
 	fc.Result = res
 	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐCommentᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getAllAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetAllAccounts(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Account)
-	fc.Result = res
-	return ec.marshalOAccount2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_getAccountByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -8064,9 +8021,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "login":
+		case "loginQuery":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_login(ctx, field)
+				return ec._Mutation_loginQuery(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
@@ -8487,26 +8444,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "getAllAccounts":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getAllAccounts(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
 		case "getAccountByID":
 			field := field
 
@@ -9916,53 +9853,6 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalOAccount2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccountᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Account) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveling_aloneᚋmodelsᚐAccount(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

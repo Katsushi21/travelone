@@ -2,8 +2,6 @@ type Query {
   ###############
   # Account
   ###############
-  # All
-  getAllAccounts: [Account!]
   # By ID
   getAccountByID(id: ID!): Account!
 

@@ -76,6 +76,6 @@ func (r *mutationResolver) DeleteAccount(ctx context.Context, id int) (*models.A
 	return account, nil
 }
 
-func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.Account, error) {
+func (r *mutationResolver) LoginQuery(ctx context.Context, input models.LoginInput) (*models.Account, error) {
 	panic(fmt.Errorf("not implemented"))
 }

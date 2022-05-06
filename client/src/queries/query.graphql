@@ -1,82 +1,127 @@
-# ###############
-# # Comment
-# ###############
-# # By Account ID
-# getCommentByAccountID(account_id: ID!): [Comment!]
-
-# ###############
-# # Friend
-# ###############
-# # By Account ID
-# getFriendsByAccountID(account_id: ID!): [Friend!]
-
-# ###############
-# # Like
-# ###############
-# # By Account ID
-# getLikesByAccountID(account_id: ID!): [Like!]
-
-# ###############
-# # Marker
-# ###############
-# # All
-# getAllMarkers: [Marker!]
-
-# ###############
-# # Mute
-# ###############
-# # By Account ID
-# getMutesByAccountID(account_id: ID!): [Mute!]
-
-# ###############
-# # Post
-# ###############
-# # All
-# query getAllPosts {
-#   getAllPosts {
-#     id
-#     account_id
-#     title
-#     body
-#     img
-#     createdAt
-#     updatedAt
-#     account {
-#       name
-#     }
-#     marker {
-#       lat
-#     }
-#     like {
-#       account_id
-#     }
-#     comment {
-#       body
-#     }
-#   }
-# }
-
-# # By Account ID
-# getPostsByAccountID(account_id: ID!): [Post!]
-
-# ###############
-# # Request
-# ###############
-# # By Account ID
-# getRequestsByAccountID(account_id: ID!): [Request!]
-# # By Account ID
-# getRequestsByTargetID(target_account_id: ID!): [Request!]
-
-# ###############
-# # Session
-# ###############
-# # By Account ID
-# getSessionByAccountID(account_id: ID!): Session!
-
-# ###############
-# # Account
-# ###############
-# # All
+###############
+# Account
+###############
+# All
 # getAllAccounts: [Account!]
-# # By ID
-# getAccountByID(id: ID!): Account!
+query getAllAccounts {
+  getAllAccounts {
+    id
+    email
+    password
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+    post {
+      id
+      account_id
+      title
+      body
+      img
+      createdAt
+      updatedAt
+      }
+    comment {
+      id
+      post_id
+      account_id
+      body
+    }
+  }
+}
+
+# By ID
+getAccountByID(id: ID!): Account!
+
+###############
+# Comment
+###############
+# By Account ID
+getCommentByAccountID(account_id: ID!): [Comment!]
+
+###############
+# Friend
+###############
+# By Account ID
+getFriendsByAccountID(account_id: ID!): [Friend!]
+
+###############
+# Like
+###############
+# By Account ID
+getLikesByAccountID(account_id: ID!): [Like!]
+
+###############
+# Marker
+###############
+# All
+getAllMarkers: [Marker!]
+
+###############
+# Mute
+###############
+# By Account ID
+getMutesByAccountID(account_id: ID!): [Mute!]
+
+###############
+# Post
+###############
+# All
+query getAllPosts {
+  getAllPosts {
+    id
+    account_id
+    title
+    body
+    img
+    createdAt
+    updatedAt
+    account {
+      id
+      email
+      password
+      type
+      name
+      age
+      gender
+      avatar
+      introduction
+    }
+    marker {
+      id
+      post_id
+      title
+      lat
+      lng
+    }
+    like {
+      post_id
+      account_id
+    }
+    comment {
+      id
+      post_id
+      account_id
+      body
+    }
+  }
+}
+
+# By Account ID
+getPostsByAccountID(account_id: ID!): [Post!]
+
+###############
+# Request
+###############
+# By Account ID
+getRequestsByAccountID(account_id: ID!): [Request!]
+# By Account ID
+getRequestsByTargetID(target_account_id: ID!): [Request!]
+
+###############
+# Session
+###############
+# By Account ID
+getSessionByAccountID(account_id: ID!): Session!

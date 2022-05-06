@@ -9,25 +9,6 @@ import (
 	"github.com/Katsushi21/traveling_alone/models"
 )
 
-func (r *queryResolver) GetAllAccounts(ctx context.Context) ([]*models.Account, error) {
-	var accounts []*models.Account
-	err := r.DB.
-		Debug().
-		Preload("Post").
-		Preload("Like").
-		Preload("Comment").
-		Preload("Friend").
-		Preload("Mute").
-		Find(&accounts).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return accounts, nil
-}
-
 func (r *queryResolver) GetAccountByID(ctx context.Context, id int) (*models.Account, error) {
 	var account *models.Account
 	err := r.DB.
@@ -129,9 +110,9 @@ func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	err := r.DB.
 		Debug().
 		Joins("Account", r.DB.Where(&models.Account{Type: "active"})).
-		Joins("Like", r.DB.Where(&models.Like{Account: &models.Account{Type: "active"}})).
 		Joins("Marker").
 		Preload("Comment").
+		Preload("Like").
 		Find(&posts).
 		Error
 
@@ -148,6 +129,7 @@ func (r *queryResolver) GetPostsByAccountID(ctx context.Context, accountID int) 
 		Debug().
 		Joins("Marker").
 		Preload("Comment").
+		Preload("Like").
 		Where(&models.Post{AccountID: accountID}).
 		Find(&posts).
 		Error

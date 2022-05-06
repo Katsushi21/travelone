@@ -9,7 +9,7 @@ type Mutation {
   # DELETE
   deleteAccount(id: ID!): Account!
   # OTHER
-  login(input: LoginInput!): Account!
+  loginQuery(input: LoginInput!): Account!
 
   ###############
   # Comment
