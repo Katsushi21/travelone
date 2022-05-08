@@ -1,10 +1,39 @@
 ###############
 # Account
 ###############
-# All
-# getAllAccounts: [Account!]
-query getAllAccounts {
-  getAllAccounts {
+# By ID
+query getAccountByID($id: ID!) {
+  getAccountByID(id: $id) {
+    id
+    email
+    password
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+    post {
+      id
+      account_id
+      title
+      body
+      img
+      createdAt
+      updatedAt
+      }
+    friend {
+      friend
+    }
+  }
+}
+
+###############
+# Comment
+###############
+# By Account ID
+query getCommentByAccountID($account_id: ID!) {
+  getCommentByAccountID(account_id: $account_id) {
     id
     email
     password
@@ -31,15 +60,6 @@ query getAllAccounts {
     }
   }
 }
-
-# By ID
-getAccountByID(id: ID!): Account!
-
-###############
-# Comment
-###############
-# By Account ID
-getCommentByAccountID(account_id: ID!): [Comment!]
 
 ###############
 # Friend
