@@ -4,12 +4,12 @@ import "time"
 
 type Post struct {
 	ID        int        `json:"id"`
-	AccountID int        `json:"account_id"`
+	AccountID int        `json:"accountId"`
 	Title     string     `json:"title"`
 	Body      string     `json:"body"`
 	Img       string     `json:"img"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
 	Account   *Account   `json:"account"`
 	Marker    *Marker    `json:"marker"`
 	Like      []*Like    `json:"like"`
@@ -17,7 +17,7 @@ type Post struct {
 }
 
 type PostInput struct {
-	AccountID int    `json:"account_id"`
+	AccountID int    `json:"accountId"`
 	Title     string `json:"title"`
 	Body      string `json:"body"`
 	Img       string `json:"img"`

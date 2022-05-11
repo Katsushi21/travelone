@@ -2,23 +2,23 @@
 # Request
 ###############
 type Request {
-  account_id: ID!
-  target_account_id: ID!
+  accountId: ID!
+  targetAccountId: ID!
   status: RequestStatus!
   account: Account!
-  target_account: Account!
+  targetAccount: Account!
 }
 
 ###############
 # Enum
 ###############
 enum RequestStatus {
-  in_process
+  inProcess
   accept
   deny
-  break_in_process
-  break_accept
-  break_deny
+  breakInProcess
+  breakAccept
+  breakDeny
   cancel
 }
 
@@ -26,7 +26,7 @@ enum RequestStatus {
 # Input
 ###############
 input RequestInput {
-  account_id: ID!
-  target_account_id: ID!
+  accountId: ID!
+  targetAccountId: ID!
   status: RequestStatus!
 }

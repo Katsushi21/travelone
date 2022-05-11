@@ -3,23 +3,23 @@
 ###############
 type Post {
   id: ID!
-  account_id: ID!
+  accountId: ID!
   title: String!
   body: String!
   img: String!
-  created_at: Time!
-  updated_at: Time!
+  createdAt: Time!
+  updatedAt: Time!
   account: Account!
   marker: Marker
-  like: [Like!]
-  comment: [Comment!]
+  like: [Like]!
+  comment: [Comment]!
 }
 
 ###############
 # Input
 ###############
 input PostInput {
-  account_id: ID!
+  accountId: ID!
   title: String!
   body: String!
   img: String!

@@ -17,8 +17,8 @@ type Account struct {
 	Gender       AccountGender `json:"gender"`
 	Avatar       string        `json:"avatar"`
 	Introduction string        `json:"introduction"`
-	CreatedAt    time.Time     `json:"created_at"`
-	UpdatedAt    time.Time     `json:"updated_at"`
+	CreatedAt    time.Time     `json:"createdAt"`
+	UpdatedAt    time.Time     `json:"updatedAt"`
 	Friend       []*Friend     `json:"friend"`
 	Mute         []*Mute       `json:"mute"`
 	Post         []*Post       `json:"post"`

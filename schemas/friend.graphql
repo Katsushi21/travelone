@@ -2,8 +2,8 @@
 # Friend
 ###############
 type Friend {
-  account_id: ID!
-  friend_id: ID!
+  accountId: ID!
+  friendId: ID!
   friend: Account!
 }
 
@@ -11,6 +11,6 @@ type Friend {
 # Input
 ###############
 input FriendInput {
-  account_id: ID!
-  friend_id: ID!
+  accountId: ID!
+  friendId: ID!
 }

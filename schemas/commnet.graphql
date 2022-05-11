@@ -3,11 +3,11 @@
 ###############
 type Comment {
   id: ID!
-  post_id: ID!
-  account_id: ID!
+  postId: ID!
+  accountId: ID!
   body: String!
-  created_at: Time!
-  updated_at: Time!
+  createdAt: Time!
+  updatedAt: Time!
   post: Post!
   account: Account!
 }
@@ -16,7 +16,7 @@ type Comment {
 # Input
 ###############
 input CommentInput {
-  post_id: ID!
-  account_id: ID!
+  postId: ID!
+  accountId: ID!
   body: String!
 }

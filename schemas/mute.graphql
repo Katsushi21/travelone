@@ -2,8 +2,8 @@
 # Mute
 ###############
 type Mute {
-  account_id: ID!
-  mute_id: ID!
+  accountId: ID!
+  muteId: ID!
   mute: Account!
 }
 
@@ -11,6 +11,6 @@ type Mute {
 # Input
 ###############
 input MuteInput {
-  account_id: ID!
-  mute_id: ID!
+  accountId: ID!
+  muteId: ID!
 }

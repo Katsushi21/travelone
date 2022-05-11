@@ -2,8 +2,8 @@
 # Like
 ###############
 type Like {
-  post_id: ID!
-  account_id: ID!
+  postId: ID!
+  accountId: ID!
   post: Post!
   account: Account!
 }
@@ -12,6 +12,6 @@ type Like {
 # Input
 ###############
 input LikeInput {
-  post_id: ID!
-  account_id: ID!
+  postId: ID!
+  accountId: ID!
 }

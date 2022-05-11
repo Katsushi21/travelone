@@ -11,13 +11,13 @@ type Account {
   gender: AccountGender!
   avatar: String!
   introduction: String!
-  created_at: Time!
-  updated_at: Time!
-  friend: [Friend!]
-  mute: [Mute!]
-  post: [Post!]
-  like: [Like!]
-  comment: [Comment!]
+  createdAt: Time!
+  updatedAt: Time!
+  friend: [Friend]!
+  mute: [Mute]!
+  post: [Post]!
+  like: [Like]!
+  comment: [Comment]!
 }
 
 ###############

@@ -1,13 +1,9 @@
 ###############
 # Account
 ###############
-# By ID
-query getAccountByID($id: ID!) {
-  getAccountByID(id: $id) {
+query getAccountPageInfo($id: ID!) {
+  getAccountPageInfo(id: $id) {
     id
-    email
-    password
-    type
     name
     age
     gender
@@ -15,25 +11,21 @@ query getAccountByID($id: ID!) {
     introduction
     post {
       id
-      account_id
       title
-      body
-      img
-      createdAt
       updatedAt
-      }
+    }
     friend {
-      friend
+      friend {
+        id
+        name
+        avatar
+      }
     }
   }
 }
 
-###############
-# Comment
-###############
-# By Account ID
-query getCommentByAccountID($account_id: ID!) {
-  getCommentByAccountID(account_id: $account_id) {
+query getMyPageInfo($id: ID!) {
+  getMyPageInfo(id: $id) {
     id
     email
     password
@@ -45,45 +37,68 @@ query getCommentByAccountID($account_id: ID!) {
     introduction
     post {
       id
-      account_id
       title
-      body
-      img
-      createdAt
       updatedAt
+    }
+    like {
+      post {
+        id
+        accountId
+        title
+        updatedAt
       }
-    comment {
-      id
-      post_id
-      account_id
-      body
+      account {
+        id
+        name
+        avatar
+      }
+    }
+    friend {
+      friend {
+        id
+        name
+        avatar
+      }
+    }
+    mute {
+      mute {
+        id
+        name
+        avatar
+      }
     }
   }
 }
-
-###############
-# Friend
-###############
-# By Account ID
-getFriendsByAccountID(account_id: ID!): [Friend!]
-
-###############
-# Like
-###############
-# By Account ID
-getLikesByAccountID(account_id: ID!): [Like!]
 
 ###############
 # Marker
 ###############
-# All
-getAllMarkers: [Marker!]
-
-###############
-# Mute
-###############
-# By Account ID
-getMutesByAccountID(account_id: ID!): [Mute!]
+query getAllMarkers {
+  getAllMarkers {
+    id
+    title
+    lat
+    lng
+    post {
+      id
+      title
+      body
+      img
+      account {
+        id
+        name
+        avatar
+      }
+      like {
+        account {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+}
 
 ###############
 # Post
@@ -92,7 +107,6 @@ getMutesByAccountID(account_id: ID!): [Mute!]
 query getAllPosts {
   getAllPosts {
     id
-    account_id
     title
     body
     img
@@ -100,48 +114,47 @@ query getAllPosts {
     updatedAt
     account {
       id
-      email
-      password
-      type
       name
-      age
-      gender
       avatar
-      introduction
     }
     marker {
       id
-      post_id
       title
       lat
       lng
     }
     like {
-      post_id
-      account_id
+      account {
+        id
+        name
+        avatar
+      }
     }
     comment {
       id
-      post_id
-      account_id
       body
+      account {
+        id
+        name
+        avatar
+      }
     }
   }
 }
 
 # By Account ID
-getPostsByAccountID(account_id: ID!): [Post!]
+getPostsByAccountID(accountId: ID!): [Post!]
 
 ###############
 # Request
 ###############
 # By Account ID
-getRequestsByAccountID(account_id: ID!): [Request!]
+getRequestsByAccountID(accountId: ID!): [Request!]
 # By Account ID
-getRequestsByTargetID(target_account_id: ID!): [Request!]
+getRequestsByTargetID(targetAccountId: ID!): [Request!]
 
 ###############
 # Session
 ###############
 # By Account ID
-getSessionByAccountID(account_id: ID!): Session!
+getSessionByAccountID(accountId: ID!): Session!

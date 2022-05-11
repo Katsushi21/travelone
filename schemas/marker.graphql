@@ -3,12 +3,12 @@
 ###############
 type Marker {
   id: ID!
-  post_id: ID!
+  postId: ID!
   title: String!
   lat: String!
   lng: String!
-  created_at: Time!
-  updated_at: Time!
+  createdAt: Time!
+  updatedAt: Time!
   post: Post!
 }
 
@@ -16,7 +16,7 @@ type Marker {
 # Input
 ###############
 input MarkerInput {
-  post_id: ID!
+  postId: ID!
   title: String!
   lat: String!
   lng: String!

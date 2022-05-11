@@ -2,58 +2,29 @@ type Query {
   ###############
   # Account
   ###############
-  # By ID
-  getAccountByID(id: ID!): Account!
+  getAccountPageInfo(id: ID!): Account!
 
-  ###############
-  # Comment
-  ###############
-  # By Account ID
-  getCommentByAccountID(accountID: ID!): [Comment!]
-
-  ###############
-  # Friend
-  ###############
-  # By Account ID
-  getFriendsByAccountID(accountID: ID!): [Friend!]
-
-  ###############
-  # Like
-  ###############
-  # By Account ID
-  getLikesByAccountID(accountID: ID!): [Like!]
+  getMyPageInfo(id: ID!): Account!
 
   ###############
   # Marker
   ###############
-  # All
-  getAllMarkers: [Marker!]
-
-  ###############
-  # Mute
-  ###############
-  # By Account ID
-  getMutesByAccountID(accountID: ID!): [Mute!]
+  getAllMarkers: [Marker]!
 
   ###############
   # Post
   ###############
-  # All
-  getAllPosts: [Post!]!
-  # By Account ID
-  getPostsByAccountID(accountID: ID!): [Post!]
+  getAllPosts: [Post]!
 
   ###############
   # Request
   ###############
-  # By Account ID
-  getRequestsByAccountID(accountID: ID!): [Request!]
-  # By Account ID
-  getRequestsByTargetID(targetAccountID: ID!): [Request!]
+  getRequestsByAccountID(accountID: ID!): [Request]!
+
+  getRequestsByTargetID(targetAccountID: ID!): [Request]!
 
   ###############
   # Session
   ###############
-  # By Account ID
   getSessionByAccountID(accountID: ID!): Session!
 }

@@ -7,28 +7,28 @@ import (
 )
 
 type Request struct {
-	AccountID       int           `json:"account_id"`
-	TargetAccountID int           `json:"target_account_id"`
+	AccountID       int           `json:"accountId"`
+	TargetAccountID int           `json:"targetAccountId"`
 	Status          RequestStatus `json:"status"`
 	Account         *Account      `json:"account"`
-	TargetAccount   *Account      `json:"target_account"`
+	TargetAccount   *Account      `json:"targetAccount"`
 }
 
 type RequestInput struct {
-	AccountID       int           `json:"account_id"`
-	TargetAccountID int           `json:"target_account_id"`
+	AccountID       int           `json:"accountId"`
+	TargetAccountID int           `json:"targetAccountId"`
 	Status          RequestStatus `json:"status"`
 }
 
 type RequestStatus string
 
 const (
-	RequestStatusInProcess      RequestStatus = "in_process"
+	RequestStatusInProcess      RequestStatus = "inProcess"
 	RequestStatusAccept         RequestStatus = "accept"
 	RequestStatusDeny           RequestStatus = "deny"
-	RequestStatusBreakInProcess RequestStatus = "break_in_process"
-	RequestStatusBreakAccept    RequestStatus = "break_accept"
-	RequestStatusBreakDeny      RequestStatus = "break_deny"
+	RequestStatusBreakInProcess RequestStatus = "breakInProcess"
+	RequestStatusBreakAccept    RequestStatus = "breakAccept"
+	RequestStatusBreakDeny      RequestStatus = "breakDeny"
 	RequestStatusCancel         RequestStatus = "cancel"
 )
 

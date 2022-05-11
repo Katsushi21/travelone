@@ -2,14 +2,14 @@
 # Session
 ###############
 type Session {
-  account_id: ID!
+  accountId: ID!
   session: String!
-  updated_at: Time!
+  updatedAt: Time!
 }
 
 ###############
 # Input
 ###############
 input SessionInput {
-  account_id: ID!
+  accountId: ID!
 }
