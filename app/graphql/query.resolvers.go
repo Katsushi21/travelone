@@ -14,7 +14,7 @@ func (r *queryResolver) GetAccountPageInfo(ctx context.Context, id int) (*models
 	err := r.DB.
 		Debug().
 		Preload("Post").
-		Preload("Friend.Friend", r.DB.Where(&models.Account{Type: "active"})).
+		Preload("Friend.Friend").
 		First(&account, id).
 		Error
 
@@ -32,8 +32,8 @@ func (r *queryResolver) GetMyPageInfo(ctx context.Context, id int) (*models.Acco
 		Preload("Post").
 		Preload("Like.Post").
 		Preload("Like.Account").
-		Preload("Friend.Friend", r.DB.Where(&models.Account{Type: "active"})).
-		Preload("Mute.Mute", r.DB.Where(&models.Account{Type: "active"})).
+		Preload("Friend.Friend").
+		Preload("Mute.Mute").
 		First(&account, id).
 		Error
 
@@ -42,6 +42,21 @@ func (r *queryResolver) GetMyPageInfo(ctx context.Context, id int) (*models.Acco
 	}
 
 	return account, nil
+}
+
+func (r *queryResolver) GetLikesByPost(ctx context.Context, postID int) ([]*models.Like, error) {
+	var likes []*models.Like
+	err := r.DB.
+		Debug().
+		Joins("Account").
+		Find(&likes).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return likes, nil
 }
 
 func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, error) {
@@ -83,7 +98,7 @@ func (r *queryResolver) GetRequestsByAccountID(ctx context.Context, accountID in
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("TargetAccount", r.DB.Where(&models.Account{Type: "active"})).
+		Joins("TargetAccount").
 		Where(&models.Request{AccountID: accountID}).
 		Find(&requests).
 		Error
@@ -99,7 +114,7 @@ func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetAccount
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
-		Joins("Account", r.DB.Where(&models.Account{Type: "active"})).
+		Joins("Account").
 		Where(&models.Request{TargetAccountID: targetAccountID}).
 		Find(&requests).
 		Error

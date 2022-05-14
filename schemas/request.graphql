@@ -28,5 +28,5 @@ enum RequestStatus {
 input RequestInput {
   accountId: ID!
   targetAccountId: ID!
-  status: RequestStatus!
+  status: RequestStatus
 }

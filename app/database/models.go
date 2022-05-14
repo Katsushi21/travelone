@@ -55,7 +55,6 @@ type Like struct {
 	PostID    int       `gorm:"primaryKey"`
 	AccountID int       `gorm:"primaryKey"`
 	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 	Post      Post
 	Account   Account
 }

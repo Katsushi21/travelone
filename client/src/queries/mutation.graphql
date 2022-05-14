@@ -175,7 +175,7 @@ mutation createMarker(
   $lng: String!
 ) {
   createMarker(
-    input: { accountId: $accountId, title: $title, lat: $lat, lng: $lng }
+    input: { postId: $postId, title: $title, lat: $lat, lng: $lng }
   ) {
     id
     postId
@@ -185,17 +185,8 @@ mutation createMarker(
   }
 }
 # UPDATE
-mutation updateMarker(
-  $id: ID!
-  $postId: ID!
-  $title: String!
-  $lat: String!
-  $lng: String!
-) {
-  updateMarker(
-    id: $id
-    input: { accountId: $accountId, title: $title, lat: $lat, lng: $lng }
-  ) {
+mutation updateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
+  updateMarker(id: $id, input: { title: $title, lat: $lat, lng: $lng }) {
     id
     postId
     title

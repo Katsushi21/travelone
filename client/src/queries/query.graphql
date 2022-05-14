@@ -13,6 +13,9 @@ query getAccountPageInfo($id: ID!) {
       id
       title
       updatedAt
+      like {
+        accountId
+      }
     }
     friend {
       friend {
@@ -38,7 +41,11 @@ query getMyPageInfo($id: ID!) {
     post {
       id
       title
+      createdAt
       updatedAt
+      like {
+        accountId
+      }
     }
     like {
       post {
@@ -71,6 +78,20 @@ query getMyPageInfo($id: ID!) {
 }
 
 ###############
+# Like
+###############
+query getLikesByPost($postId: ID!) {
+  getLikesByPost(postId: $postId) {
+    account {
+      id
+      name
+      avatar
+    }
+    createdAt
+  }
+}
+
+###############
 # Marker
 ###############
 query getAllMarkers {
@@ -90,11 +111,7 @@ query getAllMarkers {
         avatar
       }
       like {
-        account {
-          id
-          name
-          avatar
-        }
+        accountId
       }
     }
   }
@@ -103,7 +120,6 @@ query getAllMarkers {
 ###############
 # Post
 ###############
-# All
 query getAllPosts {
   getAllPosts {
     id
@@ -124,11 +140,7 @@ query getAllPosts {
       lng
     }
     like {
-      account {
-        id
-        name
-        avatar
-      }
+      accountId
     }
     comment {
       id
@@ -142,19 +154,34 @@ query getAllPosts {
   }
 }
 
-# By Account ID
-getPostsByAccountID(accountId: ID!): [Post!]
-
 ###############
 # Request
 ###############
-# By Account ID
-getRequestsByAccountID(accountId: ID!): [Request!]
-# By Account ID
-getRequestsByTargetID(targetAccountId: ID!): [Request!]
+query getRequestsByAccountId($accountId: ID!) {
+  getRequestsByAccountId(accountId: $accountId) {
+    targetAccount {
+      id
+      name
+      avatar
+    }
+  }
+}
+
+query getRequestsByTargetId($targetAccountId: ID!) {
+  getRequestsByTargetId(targetAccountId: $targetAccountId) {
+    account {
+      id
+      name
+      avatar
+    }
+  }
+}
 
 ###############
 # Session
 ###############
-# By Account ID
-getSessionByAccountID(accountId: ID!): Session!
+query getSessionByAccountId($accountId: ID!) {
+  getSessionByAccountId(accountId: $accountId) {
+    session
+  }
+}

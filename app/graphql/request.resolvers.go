@@ -11,7 +11,7 @@ func (r *mutationResolver) CreateRequest(ctx context.Context, input models.Reque
 	request := &models.Request{
 		AccountID:       input.AccountID,
 		TargetAccountID: input.TargetAccountID,
-		Status:          input.Status,
+		Status:          *input.Status,
 	}
 	err := r.DB.
 		Debug().

@@ -4,6 +4,7 @@
 type Like {
   postId: ID!
   accountId: ID!
+  createdAt: Time!
   post: Post!
   account: Account!
 }

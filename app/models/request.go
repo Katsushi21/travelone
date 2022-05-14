@@ -15,9 +15,9 @@ type Request struct {
 }
 
 type RequestInput struct {
-	AccountID       int           `json:"accountId"`
-	TargetAccountID int           `json:"targetAccountId"`
-	Status          RequestStatus `json:"status"`
+	AccountID       int            `json:"accountId"`
+	TargetAccountID int            `json:"targetAccountId"`
+	Status          *RequestStatus `json:"status"`
 }
 
 type RequestStatus string

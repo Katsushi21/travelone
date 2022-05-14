@@ -16,7 +16,7 @@ type Marker {
 # Input
 ###############
 input MarkerInput {
-  postId: ID!
+  postId: ID
   title: String!
   lat: String!
   lng: String!

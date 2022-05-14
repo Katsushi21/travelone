@@ -7,6 +7,11 @@ type Query {
   getMyPageInfo(id: ID!): Account!
 
   ###############
+  # Like
+  ###############
+  getLikesByPost(postId: ID!): [Like]!
+
+  ###############
   # Marker
   ###############
   getAllMarkers: [Marker]!
@@ -19,12 +24,12 @@ type Query {
   ###############
   # Request
   ###############
-  getRequestsByAccountID(accountID: ID!): [Request]!
+  getRequestsByAccountId(accountId: ID!): [Request]!
 
-  getRequestsByTargetID(targetAccountID: ID!): [Request]!
+  getRequestsByTargetId(targetAccountId: ID!): [Request]!
 
   ###############
   # Session
   ###############
-  getSessionByAccountID(accountID: ID!): Session!
+  getSessionByAccountId(accountId: ID!): Session!
 }
