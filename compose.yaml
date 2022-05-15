@@ -23,7 +23,7 @@ services:
     container_name: app
     hostname: travel-app.com
     ports:
-      - "8000:8000"
+      - '8000:8000'
     environment:
       # - SERVER_LOG=${SERVER_LOG}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -31,19 +31,21 @@ services:
       - POSTGRES_DBNAME=${POSTGRES_DBNAME}
       - TZ="Asia/Tokyo"
     volumes:
-      - ./app:/src/app
+      - ./app:/src
     depends_on:
       - db
-  # client:
-  #   build:
-  #     context: ./client
-  #     dockerfile: ./dockerfiles/develop/Dockerfile
-  #   container_name: client
-  #   hostname: travel-client.com
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./client:/src/client
+
+  client:
+    build:
+      context: ./client
+      dockerfile: ./dockerfiles/develop/Dockerfile
+    container_name: client
+    hostname: travel-client.com
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./client:/src
+      - ./client/node_modules:/myapp/node_modules
 
   # proxy:
   #   build: proxy
