@@ -1,37 +1,56 @@
-FROM golang:1.18.0-alpine3.15 as dev
+# Install dependencies only when needed
+FROM node:16-alpine AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
-ENV ROOT=/src/app
-ENV CGO_ENABLED 0
-WORKDIR ${ROOT}
-COPY go.mod ./
+# If using npm with a `package-lock.json` comment out above and use below instead
+# COPY package.json package-lock.json ./
+# RUN npm ci
 
-# hadolint ignore=DL3018
-RUN apk update && \
-  apk --no-cache add git && \
-  go mod tidy && \
-  go install github.com/cosmtrek/air@v1.29.0
+# Rebuild the source code only when needed
+FROM node:16-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-CMD ["go", "run", "main.go"]
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+# ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN yarn build
 
-FROM golang:1.18.0-alpine3.15 as builder
+# If using npm comment out above and use below instead
+# RUN npm run build
 
-ENV ROOT=/src/app
-WORKDIR ${ROOT}
+# Production image, copy all the files and run next
+FROM node:16-alpine AS runner
+WORKDIR /app
 
-RUN apk update
-COPY go.mod ./
-RUN go mod tidy
+ENV NODE_ENV production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED 1
 
-COPY . ${ROOT}
-RUN CGO_ENABLED=0 GOOS=linux go build -o $ROOT/binary
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
+# You only need to copy next.config.js if you are NOT using the default configuration
+# COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
 
-FROM scratch as prod
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-ENV ROOT=/src/app
-WORKDIR ${ROOT}
-COPY --from=builder ${ROOT}/binary ${ROOT}
+USER nextjs
 
-EXPOSE 8000
-CMD ["/src/app/binary"]
+EXPOSE 3000
+
+ENV PORT 3000
+
+CMD ["node", "server.js"]

@@ -1,0 +1,7 @@
+dockerfiles
+node_modules
+.eslintrc.json
+codegen.yml
+tsconfig.json
+*/*.log
+*.lock

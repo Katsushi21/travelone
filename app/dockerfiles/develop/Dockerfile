@@ -1,9 +1,9 @@
 FROM golang:1.18.0-alpine3.15 as dev
 
-ENV ROOT=/src
+ENV ROOT=/traveling_alone
 ENV CGO_ENABLED 0
 WORKDIR ${ROOT}
-COPY go.mod ./
+COPY . .
 
 # hadolint ignore=DL3018
 RUN apk update && \

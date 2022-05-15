@@ -1,11 +1,9 @@
 FROM node:18-alpine3.14 as dev
 
-ENV ROOT=/src
+ENV ROOT=/traveling_alone
 WORKDIR ${ROOT}
-COPY ./src ./
-COPY ./package.json ./
+COPY . .
 
-# hadolint ignore=DL3018
 RUN apk update && \
   yarn install && \
   yarn cache clean
