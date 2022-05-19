@@ -1,5 +1,5 @@
-const MyApp = ({ Component, pageProps }) => {
-  return <div>MyApp</div>;
-};
+import React from "react"
 
-export default MyApp;
+export const MyApp = () => {
+  return <div>MyApp</div>
+}
