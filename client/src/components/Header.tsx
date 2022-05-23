@@ -1,10 +1,28 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Logo } from './Logo'
 import { BellIcon, SearchIcon } from '@heroicons/react/solid'
+import Link from 'next/link'
 
 export const Header: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   return (
-    <header>
+    <header className={`${isScrolled && 'bg-black'}`}>
       <div className='flex items-center space-x-2 md:space-x-10'>
         <Logo />
         <ul className='hidden space-x-4 md:flex'>
@@ -15,10 +33,11 @@ export const Header: React.FC = () => {
           <li className='headerLink'>e</li>
         </ul>
       </div>
-      <div className='flex item-center space-x-4'>
+      <div className='flex item-center space-x-4 text-sm font-light'>
         <SearchIcon className='hidden h-6 w-6 sm:inline' />
         <p className='hidden lg:inline'>Kids</p>
         <BellIcon className='h-6 w-6' />
+        <Link href='/mypage'>mypage</Link>
       </div>
     </header>
   )
