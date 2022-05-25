@@ -7,7 +7,7 @@ WORKDIR ${ROOT}
 COPY package.json yarn.lock ./
 RUN apk update && \
   apk add --no-cache libc6-compat=1.2.2-r3 && \
-  yarn install --frozen-lockfile && \
+  yarn install --frozen-lockfile --ignore-optional && \
   yarn cache clean
 
 # ビルド
