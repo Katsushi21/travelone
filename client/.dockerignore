@@ -5,3 +5,4 @@ codegen.yml
 tsconfig.json
 */*.log
 *.lock
+tmp

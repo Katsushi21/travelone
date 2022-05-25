@@ -1,35 +1,23 @@
-# 依存パッケージのインストール
-FROM golang:1.18.0-alpine3.15 as deps
-
-ENV ROOT=/src/app
+FROM golang:1.18.0-alpine3.15 AS builder
+WORKDIR /src/app
 ENV CGO_ENABLED 0
-WORKDIR ${ROOT}
+ENV GOOS linux
 
-COPY go.mod ${ROOT}
-RUN apk update && \
-  apk --no-cache add git=2.34.2-r0 && \
-  go mod tidy
+COPY go.mod .
+COPY go.sum .
+RUN  go mod download
 
-COPY . ${ROOT}
+COPY . .
 
-CMD ["go", "run", "main.go"]
+RUN go build -o ./binary .
 
-FROM golang:1.18.0-alpine3.15 as builder
+FROM alpine:3.15 AS runner
+WORKDIR /src/app
 
-ENV ROOT=/src/app
-WORKDIR ${ROOT}
+COPY --from=builder /src/app/binary .
 
-COPY go.mod ${ROOT}
-RUN apk update && \
-  go mod tidy
-COPY . ${ROOT}
-
-RUN CGO_ENABLED=0 GOOS=linux go build -o ${ROOT}/binary
-
-FROM builder as runner
-
-ENV ROOT=/src/app
-WORKDIR ${ROOT}
-COPY --from=builder ${ROOT}/binary ${ROOT}
+RUN addgroup --system --gid 1001 golang && \
+  adduser --system --uid 1001 golang
+USER golang:golang
 
 CMD ["/src/app/binary"]

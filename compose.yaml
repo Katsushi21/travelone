@@ -19,7 +19,6 @@ services:
     build:
       context: ./app
       dockerfile: ./dockerfiles/develop/Dockerfile
-      target: dev
     container_name: app
     hostname: travel-app.com
     ports:

@@ -1,3 +1,4 @@
 dockerfiles
-go.sum
+.air.toml
 gqlgen.yml
+tmp
