@@ -1,37 +1,35 @@
-FROM golang:1.18.0-alpine3.15 as dev
+# 依存パッケージのインストール
+FROM golang:1.18.0-alpine3.15 as deps
 
 ENV ROOT=/src/app
 ENV CGO_ENABLED 0
 WORKDIR ${ROOT}
-COPY go.mod ./
 
-# hadolint ignore=DL3018
+COPY go.mod ${ROOT}
 RUN apk update && \
-  apk --no-cache add git && \
-  go mod tidy && \
-  go install github.com/cosmtrek/air@v1.29.0
+  apk --no-cache add git=2.34.2-r0 && \
+  go mod tidy
+
+COPY . ${ROOT}
 
 CMD ["go", "run", "main.go"]
-
 
 FROM golang:1.18.0-alpine3.15 as builder
 
 ENV ROOT=/src/app
 WORKDIR ${ROOT}
 
-RUN apk update
-COPY go.mod ./
-RUN go mod tidy
-
+COPY go.mod ${ROOT}
+RUN apk update && \
+  go mod tidy
 COPY . ${ROOT}
-RUN CGO_ENABLED=0 GOOS=linux go build -o $ROOT/binary
 
+RUN CGO_ENABLED=0 GOOS=linux go build -o ${ROOT}/binary
 
-FROM scratch as prod
+FROM builder as runner
 
 ENV ROOT=/src/app
 WORKDIR ${ROOT}
 COPY --from=builder ${ROOT}/binary ${ROOT}
 
-EXPOSE 8000
 CMD ["/src/app/binary"]
