@@ -1,6 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import { Header } from 'src/components/Header'
+import { PostList } from 'src/components/PostList'
 
 const Home = () => {
   return (
@@ -12,7 +13,7 @@ const Home = () => {
       <main>
         {/* Banner */}
         <section>
-          {/* Row */}
+          <PostList />
           {/* Row */}
           {/* Row */}
           {/* Row */}
