@@ -28,6 +28,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DBNAME=${POSTGRES_DBNAME}
+      - REQUEST_ORIGIN=${REQUEST_ORIGIN}
       - TZ="Asia/Tokyo"
     volumes:
       - ./app:/src/app
@@ -43,7 +44,7 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - NEXT_PUBLIC_URQL_CLIENT=${NEXT_PUBLIC_URQL_CLIENT}
+      - NEXT_PUBLIC_URQL_REQUEST_DEST=${NEXT_PUBLIC_URQL_REQUEST_DEST}
       - TZ="Asia/Tokyo"
     volumes:
       - ./client:/src/client

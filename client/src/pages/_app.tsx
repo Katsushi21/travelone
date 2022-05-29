@@ -2,9 +2,9 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { createClient, Provider } from 'urql'
 
-console.log(process.env.NEXT_PUBLIC_URQL_CLIENT)
+console.log(process.env.NEXT_PUBLIC_URQL_REQUEST_DEST)
 const client = createClient({
-  url: process.env.NEXT_PUBLIC_URQL_CLIENT,
+  url: process.env.NEXT_PUBLIC_URQL_REQUEST_DEST,
 })
 
 function MyApp({ Component, pageProps }: AppProps) {

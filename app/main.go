@@ -14,7 +14,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// Defining the Graphql handler
 func graphqlHandler(db *gorm.DB) gin.HandlerFunc {
 	h := handler.NewDefaultServer(
 		graphql.NewExecutableSchema(
@@ -37,6 +36,7 @@ func main() {
 
 	r := gin.Default()
 	r.Use(sessions.Sessions("traveling_alone", store))
+	r.Use(middleware.CorsConfig())
 	r.Use(middleware.GinContextToContextMiddleware())
 
 	r.POST("/graphql", graphqlHandler(db))
