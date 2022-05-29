@@ -42,8 +42,13 @@ services:
     hostname: travel-client.com
     ports:
       - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_URQL_CLIENT=${NEXT_PUBLIC_URQL_CLIENT}
+      - TZ="Asia/Tokyo"
     volumes:
       - ./client:/src/client
+    depends_on:
+      - app
   # proxy:
   #   build: proxy
   #   container_name: proxy
