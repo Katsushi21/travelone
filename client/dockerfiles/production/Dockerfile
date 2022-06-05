@@ -8,14 +8,12 @@ RUN apk update && \
   yarn cache clean
 
 FROM deps AS builder
-WORKDIR /src/client
 COPY --from=deps /src/client/node_modules ./node_modules
 COPY . .
 
 RUN yarn build
 
 FROM builder AS runner
-WORKDIR /src/client
 ENV NODE_ENV production
 
 COPY --from=builder /src/client/next.config.js .
