@@ -1,5 +1,5 @@
-import { Dialog, DialogTitle, IconButton } from '@mui/material'
-import React, { useEffect } from 'react'
+import { Dialog, DialogTitle, IconButton } from '@mui/material';
+import { useEffect } from 'react';
 
 export const Modal = () => {
   const {
@@ -7,23 +7,23 @@ export const Modal = () => {
     setModal,
     alert: { location, isAlert },
     setAlert,
-  } = useAuth()
+  } = useAuth();
   const handleClose = () => {
-    setModal({ ...modal, isOpen: false })
-  }
+    setModal({ ...modal, isOpen: false });
+  };
   useEffect(() => {
     if (modal.isOpen === false) {
       if (isAlert && location === 'modal') {
-        setAlert({ ...alert, isAlert: false })
+        setAlert({ ...alert, isAlert: false });
       }
     }
-  }, [modal?.isOpen])
+  }, [modal?.isOpen]);
   return (
     <Dialog open={modal.isOpen} onClose={handleClose}>
       <DialogTitle>
         {modal.title}
         <IconButton
-          aria-label='Close'
+          aria-label="Close"
           onClick={handleClose}
           sx={{
             position: 'absolute',
@@ -38,5 +38,5 @@ export const Modal = () => {
       {location === 'modal' && <Notify />}
       {modal.content}
     </Dialog>
-  )
-}
+  );
+};
