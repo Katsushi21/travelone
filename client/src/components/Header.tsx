@@ -22,8 +22,10 @@ export const Header: React.FC = () => {
     };
   }, []);
 
+  const headerColor = isScrolled ? 'bg-black' : '';
+
   return (
-    <header className={`${isScrolled && 'bg-black'}`}>
+    <header className={headerColor}>
       <div className="flex items-center space-x-2 md:space-x-10">
         <Logo />
         <ul className="hidden space-x-4 md:flex">
