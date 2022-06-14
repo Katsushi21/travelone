@@ -6,7 +6,7 @@ import { PostList } from 'src/components/PostList';
 
 const Home = () => {
   return (
-    <div className="relative h-screen bg-gradient-to-b from-gray-900/10 to-[#010511] lg:h-[140vh]">
+    <div className="relative h-screen bg-white from-gray-900/10 to-[#010511] lg:h-[140vh]">
       <Image
         src="/background.jpg"
         width={4460}

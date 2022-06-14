@@ -22,25 +22,24 @@ export const Header: React.FC = () => {
     };
   }, []);
 
-  const headerColor = isScrolled ? 'bg-black' : '';
+  const headerColor = isScrolled ? 'bg-white' : '';
 
   return (
     <header className={headerColor}>
-      <div className="flex items-center space-x-2 md:space-x-10">
+      <div className="flex items-center space-x-2 md:space-x-8">
         <Logo />
-        <ul className="hidden space-x-4 md:flex">
-          <li className="headerLink">a</li>
-          <li className="headerLink">b</li>
-          <li className="headerLink">c</li>
-          <li className="headerLink">d</li>
-          <li className="headerLink">e</li>
+        <ul className="hidden space-x-8 md:flex">
+          <li className="headerLink">Home</li>
+          <li className="headerLink">About</li>
+          <li className="headerLink">Posts</li>
+          <li className="headerLink">Maps</li>
+          <li className="headerLink">Friends</li>
         </ul>
       </div>
       <div className="flex item-center space-x-4 text-sm font-light">
         <SearchIcon className="hidden h-6 w-6 sm:inline" />
-        <p className="hidden lg:inline">Kids</p>
         <BellIcon className="h-6 w-6" />
-        <Link href="/mypage">mypage</Link>
+        <Link href="/mypage">Mypage</Link>
       </div>
     </header>
   );
