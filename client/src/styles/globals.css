@@ -4,16 +4,12 @@
 
 @layer base {
   body {
-    @apply  text-white  font-ja leading-relaxed tracking-wider
-  }
-
-  header {
-    @apply fixed top-0 z-50 flex w-full items-center justify-between px-2 py-2 transition-all lg:px-4 lg:py-4
+    @apply   font-ja leading-relaxed tracking-wider
   }
 }
 
 @layer components {
   .headerLink {
-    @apply cursor-pointer text-xl font-light text-white transition duration-[.4s] hover:text-[#b3b3b3]
+    @apply cursor-pointer text-xl transition duration-[.4s] hover:text-[#b3b3b3]
   }
 }
