@@ -10,6 +10,6 @@
 
 @layer components {
   .headerLink {
-    @apply cursor-pointer text-xl transition duration-[.4s] hover:text-[#b3b3b3]
+    @apply cursor-pointer text-xl transition duration-[.3s] hover:text-primary-content
   }
 }

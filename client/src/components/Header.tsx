@@ -24,11 +24,11 @@ export const Header: React.FC = () => {
     };
   }, []);
 
-  const headerColor = isScrolled ? 'bg-white' : 'bg-opacity-0';
+  const headerColor = isScrolled ? 'bg-base-100' : 'bg-opacity-0';
 
   return (
     <div className={headerColor}>
-      <div className="navbar fixed top-0 z-50">
+      <div className={`navbar duration-[.3s] fixed top-0 z-50 ${headerColor}`}>
         <div className="flex-1">
           <Logo />
           <ul className="hidden space-x-8 md:flex px-6">

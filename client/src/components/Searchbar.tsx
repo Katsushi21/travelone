@@ -7,7 +7,7 @@ export const Searchbar = () => {
         <input
           type="text"
           placeholder="Search…"
-          className="input input-bordered"
+          className="input input-ghost"
         />
         <button className="btn btn-square">
           <svg

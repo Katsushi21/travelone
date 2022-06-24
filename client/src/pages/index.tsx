@@ -6,8 +6,7 @@ import { PostList } from 'src/components/PostList';
 
 const Home = () => {
   return (
-    <div data-theme="winter">
-      <Header />
+    <div data-theme="light">
       <Image
         src="/background.jpg"
         width={4460}
@@ -15,6 +14,7 @@ const Home = () => {
         layout="responsive"
         alt="background image"
       />
+      <Header />
       <main>
         {/* Banner */}
         <section>
