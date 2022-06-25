@@ -1,5 +1,4 @@
 import React from 'react';
-import { BellIcon, SearchIcon } from '@heroicons/react/solid';
 
 export default function MenuListComposition() {
   const [open, setOpen] = React.useState(false);
@@ -40,12 +39,12 @@ export default function MenuListComposition() {
   }, [open]);
 
   return (
-    <ul className="menu bg-base-100 w-56 p-2 rounded-box">
+    <ul className="p-2 w-56 menu bg-base-100 rounded-box">
       <li>
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="w-5 h-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -64,7 +63,7 @@ export default function MenuListComposition() {
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="w-5 h-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -83,7 +82,7 @@ export default function MenuListComposition() {
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="w-5 h-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

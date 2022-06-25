@@ -9,7 +9,7 @@ export const Logo: React.FC = () => {
         height={80}
         width={132}
         alt="Logo"
-        className="cursor-pointer object-contain"
+        className="object-contain cursor-pointer"
       />
     </div>
   );

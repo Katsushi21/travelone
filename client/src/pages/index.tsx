@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Image from 'next/image';
 
 import { Header } from 'src/components/Header';
@@ -8,6 +7,7 @@ const Home = () => {
   return (
     <div data-theme="light">
       <Image
+        className="bg-fixed"
         src="/background.jpg"
         width={4460}
         height={3345}

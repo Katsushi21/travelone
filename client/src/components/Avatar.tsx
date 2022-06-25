@@ -10,7 +10,7 @@ export const Avatar = () => {
       </label>
       <ul
         tabIndex={0}
-        className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+        className="p-2 mt-3 w-52 shadow menu menu-compact dropdown-content bg-base-100 rounded-box"
       >
         <li>
           <a className="justify-between">

@@ -1,6 +1,6 @@
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import React from 'react';
-import { GetStaticPaths, GetStaticProps } from 'next';
 
 type PathParams = {
   id: string;
