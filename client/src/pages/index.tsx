@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { Footer } from '@/components/Footer';
 import { Header } from 'src/components/Header';
 import { PostList } from 'src/components/PostList';
 
@@ -29,7 +30,7 @@ const Home = () => {
         </section>
       </main>
       {/* Modal */}
-      {/* Footer */}
+      <Footer />
     </div>
   );
 };
