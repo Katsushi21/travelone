@@ -11,7 +11,7 @@ const Home = () => {
         className="bg-fixed"
         src="/background.jpg"
         width={4460}
-        height={3345}
+        height={2375}
         layout="responsive"
         alt="background image"
       />
