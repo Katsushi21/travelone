@@ -26,23 +26,21 @@ export const Header: React.FC = () => {
   const headerColor = isScrolled ? 'bg-base-100' : 'bg-opacity-0';
 
   return (
-    <div className={headerColor}>
-      <div className={`navbar duration-[.3s] fixed top-0 z-50 ${headerColor}`}>
-        <div className="flex-1">
-          <Logo />
-          <ul className="hidden px-6 space-x-8 md:flex">
-            <li className="headerLink">Home</li>
-            <li className="headerLink">About</li>
-            <li className="headerLink">Posts</li>
-            <li className="headerLink">Maps</li>
-            <li className="headerLink">Friends</li>
-          </ul>
-        </div>
-        <div className="flex-none gap-2">
-          <Searchbar />
-          <Bell />
-          <Avatar />
-        </div>
+    <div className={`navbar duration-[.3s] fixed top-0 z-50 ${headerColor}`}>
+      <div className="navbar-start">
+        <Logo />
+        <ul className="hidden px-6 space-x-8 md:flex">
+          <li className="headerLink">Home</li>
+          <li className="headerLink">About</li>
+          <li className="headerLink">Posts</li>
+          <li className="headerLink">Maps</li>
+          <li className="headerLink">Friends</li>
+        </ul>
+      </div>
+      <div className="navbar-end">
+        <Searchbar />
+        <Bell />
+        <Avatar />
       </div>
     </div>
   );
