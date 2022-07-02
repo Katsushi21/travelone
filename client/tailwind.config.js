@@ -5,6 +5,7 @@ module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx}',
     './src/components/**/*.{js,ts,jsx,tsx}',
+    './node_modules/tw-elements/dist/js/**/*.js',
   ],
   theme: {
     fontFamily: {
@@ -22,5 +23,5 @@ module.exports = {
     prefix: '',
     darkTheme: 'dark',
   },
-  plugins: [require('daisyui')],
+  plugins: [require('daisyui'), require('tw-elements/dist/plugin')],
 };
