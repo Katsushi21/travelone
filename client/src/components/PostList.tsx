@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { useGetAllPostsQuery } from 'src/generated/graphql';
+import { Post } from './Post';
 
 import { Post } from './Post';
 

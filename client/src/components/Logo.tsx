@@ -6,7 +6,7 @@ export const Logo: React.FC = () => {
     <div>
       <Image
         src="/icon.png"
-        height={80}
+        height={70}
         width={132}
         alt="Logo"
         className="object-contain cursor-pointer"
