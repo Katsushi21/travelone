@@ -1,8 +1,21 @@
-import React from 'react';
+import { GetServerSideProps } from 'next';
 
 import { useGetAllPostsQuery } from 'src/generated/graphql';
 
-export const PostList: React.FC = () => {
-  const [result] = useGetAllPostsQuery();
-  return <div>PostList</div>;
+import { Post } from './Post';
+
+export const PostList = ({ resultPosts }) => {
+  console.log(resultPosts);
+  return (
+    <div>
+      <Post />
+    </div>
+  );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const [resultPosts] = useGetAllPostsQuery();
+  return {
+    props: resultPosts,
+  };
 };
