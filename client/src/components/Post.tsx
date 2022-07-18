@@ -1,6 +1,7 @@
 import React from 'react';
+import { GetAllPostsQuery } from '../generated/graphql';
 
-export const Post = () => {
+export const Post = ({ post }: { post: GetAllPostsQuery['getAllPosts'] }) => {
   return (
     <div className="card w-96 bg-base-100 shadow-xl">
       <figure>

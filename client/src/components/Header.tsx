@@ -26,10 +26,10 @@ export const Header: React.FC = () => {
   const headerColor = isScrolled ? 'bg-base-100' : 'bg-opacity-0';
 
   return (
-    <div className={`navbar duration-[.3s] fixed top-0 z-50 ${headerColor}`}>
+    <div className={`navbar fixed top-0 z-50 duration-[.3s] ${headerColor}`}>
       <div className="navbar-start">
         <Logo />
-        <ul className="hidden px-6 space-x-8 md:flex">
+        <ul className="hidden space-x-8 px-6 md:flex">
           <li className="headerLink">Home</li>
           <li className="headerLink">About</li>
           <li className="headerLink">Posts</li>

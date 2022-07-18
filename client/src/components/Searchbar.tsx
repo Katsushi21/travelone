@@ -6,12 +6,12 @@ export const Searchbar = () => {
       <input
         type="text"
         placeholder="Search..."
-        className="input input-ghost input-bordered text-primary-content placeholder-primary-content focus:text-primary-content rounded-full focus:bg-transparent"
+        className="input-bordered input-ghost input rounded-full text-primary-content placeholder:text-primary-content focus:bg-transparent focus:text-primary-content"
       />
-      <button className="btn btn-circle btn-ghost">
+      <button className="btn-ghost btn-circle btn">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-6 h-6"
+          className="h-6 w-6"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

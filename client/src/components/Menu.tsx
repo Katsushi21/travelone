@@ -39,12 +39,12 @@ export default function MenuListComposition() {
   }, [open]);
 
   return (
-    <ul className="p-2 w-56 menu bg-base-100 rounded-box">
+    <ul className="menu rounded-box w-56 bg-base-100 p-2">
       <li>
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
+            className="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -63,7 +63,7 @@ export default function MenuListComposition() {
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
+            className="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -82,7 +82,7 @@ export default function MenuListComposition() {
         <a>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
+            className="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
