@@ -1,4 +1,4 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 
 import { useGetAllPostsQuery } from 'src/generated/graphql';
 
@@ -19,8 +19,8 @@ export const PostList: NextPage<Props> = () => {
   const postToRender = data?.getAllPosts;
 
   return (
-    <div>
-      <div className="grid grid-cols-4 gap-20">
+    <div className="flex justify-center p-10">
+      <div className="grid grid-cols-3 gap-10 ">
         {postToRender?.map((post) => (
           <Post key={post?.id} post={[post]} />
         ))}

@@ -2,8 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['travel-client.com'],
+    domains: ['travel-client.com', 'api.lorem.space'],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
