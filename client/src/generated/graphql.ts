@@ -307,37 +307,37 @@ export type PostInput = {
 
 export type Query = {
   __typename?: 'Query';
-  getAccountPageInfo: Account;
-  getAllMarkers: Array<Maybe<Marker>>;
-  getAllPosts: Array<Maybe<Post>>;
-  getLikesByPost: Array<Maybe<Like>>;
-  getMyPageInfo: Account;
-  getRequestsByAccountId: Array<Maybe<Request>>;
-  getRequestsByTargetId: Array<Maybe<Request>>;
-  getSessionByAccountId: Session;
+  accountPageInfo: Account;
+  allMarkers: Array<Marker>;
+  allPosts: Array<Post>;
+  likesByPost: Array<Like>;
+  myPageInfo: Account;
+  requestsByAccountId: Array<Request>;
+  requestsByTargetId: Array<Request>;
+  sessionByAccountId: Session;
 };
 
-export type QueryGetAccountPageInfoArgs = {
+export type QueryAccountPageInfoArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryGetLikesByPostArgs = {
+export type QueryLikesByPostArgs = {
   postId: Scalars['ID'];
 };
 
-export type QueryGetMyPageInfoArgs = {
+export type QueryMyPageInfoArgs = {
   id: Scalars['ID'];
 };
 
-export type QueryGetRequestsByAccountIdArgs = {
+export type QueryRequestsByAccountIdArgs = {
   accountId: Scalars['ID'];
 };
 
-export type QueryGetRequestsByTargetIdArgs = {
+export type QueryRequestsByTargetIdArgs = {
   targetAccountId: Scalars['ID'];
 };
 
-export type QueryGetSessionByAccountIdArgs = {
+export type QuerySessionByAccountIdArgs = {
   accountId: Scalars['ID'];
 };
 
@@ -749,13 +749,13 @@ export type DeleteSessionMutation = {
   deleteSession: { __typename?: 'Session'; accountId: string };
 };
 
-export type GetAccountPageInfoQueryVariables = Exact<{
+export type AccountPageInfoQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-export type GetAccountPageInfoQuery = {
+export type AccountPageInfoQuery = {
   __typename?: 'Query';
-  getAccountPageInfo: {
+  accountPageInfo: {
     __typename?: 'Account';
     id: string;
     name: string;
@@ -782,13 +782,13 @@ export type GetAccountPageInfoQuery = {
   };
 };
 
-export type GetMyPageInfoQueryVariables = Exact<{
+export type MyPageInfoQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-export type GetMyPageInfoQuery = {
+export type MyPageInfoQuery = {
   __typename?: 'Query';
-  getMyPageInfo: {
+  myPageInfo: {
     __typename?: 'Account';
     id: string;
     email: string;
@@ -844,13 +844,13 @@ export type GetMyPageInfoQuery = {
   };
 };
 
-export type GetLikesByPostQueryVariables = Exact<{
+export type LikesByPostQueryVariables = Exact<{
   postId: Scalars['ID'];
 }>;
 
-export type GetLikesByPostQuery = {
+export type LikesByPostQuery = {
   __typename?: 'Query';
-  getLikesByPost: Array<{
+  likesByPost: Array<{
     __typename?: 'Like';
     createdAt: any;
     account: {
@@ -859,14 +859,14 @@ export type GetLikesByPostQuery = {
       name: string;
       avatar: string;
     };
-  } | null>;
+  }>;
 };
 
-export type GetAllMarkersQueryVariables = Exact<{ [key: string]: never }>;
+export type AllMarkersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetAllMarkersQuery = {
+export type AllMarkersQuery = {
   __typename?: 'Query';
-  getAllMarkers: Array<{
+  allMarkers: Array<{
     __typename?: 'Marker';
     id: string;
     title: string;
@@ -886,14 +886,14 @@ export type GetAllMarkersQuery = {
       };
       like: Array<{ __typename?: 'Like'; accountId: string } | null>;
     };
-  } | null>;
+  }>;
 };
 
-export type GetAllPostsQueryVariables = Exact<{ [key: string]: never }>;
+export type AllPostsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetAllPostsQuery = {
+export type AllPostsQuery = {
   __typename?: 'Query';
-  getAllPosts: Array<{
+  allPosts: Array<{
     __typename?: 'Post';
     id: string;
     title: string;
@@ -926,16 +926,16 @@ export type GetAllPostsQuery = {
         avatar: string;
       };
     } | null>;
-  } | null>;
+  }>;
 };
 
-export type GetRequestsByAccountIdQueryVariables = Exact<{
+export type RequestsByAccountIdQueryVariables = Exact<{
   accountId: Scalars['ID'];
 }>;
 
-export type GetRequestsByAccountIdQuery = {
+export type RequestsByAccountIdQuery = {
   __typename?: 'Query';
-  getRequestsByAccountId: Array<{
+  requestsByAccountId: Array<{
     __typename?: 'Request';
     targetAccount: {
       __typename?: 'Account';
@@ -943,16 +943,16 @@ export type GetRequestsByAccountIdQuery = {
       name: string;
       avatar: string;
     };
-  } | null>;
+  }>;
 };
 
-export type GetRequestsByTargetIdQueryVariables = Exact<{
+export type RequestsByTargetIdQueryVariables = Exact<{
   targetAccountId: Scalars['ID'];
 }>;
 
-export type GetRequestsByTargetIdQuery = {
+export type RequestsByTargetIdQuery = {
   __typename?: 'Query';
-  getRequestsByTargetId: Array<{
+  requestsByTargetId: Array<{
     __typename?: 'Request';
     account: {
       __typename?: 'Account';
@@ -960,16 +960,16 @@ export type GetRequestsByTargetIdQuery = {
       name: string;
       avatar: string;
     };
-  } | null>;
+  }>;
 };
 
-export type GetSessionByAccountIdQueryVariables = Exact<{
+export type SessionByAccountIdQueryVariables = Exact<{
   accountId: Scalars['ID'];
 }>;
 
-export type GetSessionByAccountIdQuery = {
+export type SessionByAccountIdQuery = {
   __typename?: 'Query';
-  getSessionByAccountId: { __typename?: 'Session'; session: string };
+  sessionByAccountId: { __typename?: 'Session'; session: string };
 };
 
 import { IntrospectionQuery } from 'graphql';
@@ -2292,7 +2292,7 @@ export default {
         name: 'Query',
         fields: [
           {
-            name: 'getAccountPageInfo',
+            name: 'accountPageInfo',
             type: {
               kind: 'NON_NULL',
               ofType: {
@@ -2315,45 +2315,54 @@ export default {
             ],
           },
           {
-            name: 'getAllMarkers',
+            name: 'allMarkers',
             type: {
               kind: 'NON_NULL',
               ofType: {
                 kind: 'LIST',
                 ofType: {
-                  kind: 'OBJECT',
-                  name: 'Marker',
-                  ofType: null,
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Marker',
+                    ofType: null,
+                  },
                 },
               },
             },
             args: [],
           },
           {
-            name: 'getAllPosts',
+            name: 'allPosts',
             type: {
               kind: 'NON_NULL',
               ofType: {
                 kind: 'LIST',
                 ofType: {
-                  kind: 'OBJECT',
-                  name: 'Post',
-                  ofType: null,
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Post',
+                    ofType: null,
+                  },
                 },
               },
             },
             args: [],
           },
           {
-            name: 'getLikesByPost',
+            name: 'likesByPost',
             type: {
               kind: 'NON_NULL',
               ofType: {
                 kind: 'LIST',
                 ofType: {
-                  kind: 'OBJECT',
-                  name: 'Like',
-                  ofType: null,
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Like',
+                    ofType: null,
+                  },
                 },
               },
             },
@@ -2371,7 +2380,7 @@ export default {
             ],
           },
           {
-            name: 'getMyPageInfo',
+            name: 'myPageInfo',
             type: {
               kind: 'NON_NULL',
               ofType: {
@@ -2394,15 +2403,18 @@ export default {
             ],
           },
           {
-            name: 'getRequestsByAccountId',
+            name: 'requestsByAccountId',
             type: {
               kind: 'NON_NULL',
               ofType: {
                 kind: 'LIST',
                 ofType: {
-                  kind: 'OBJECT',
-                  name: 'Request',
-                  ofType: null,
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Request',
+                    ofType: null,
+                  },
                 },
               },
             },
@@ -2420,15 +2432,18 @@ export default {
             ],
           },
           {
-            name: 'getRequestsByTargetId',
+            name: 'requestsByTargetId',
             type: {
               kind: 'NON_NULL',
               ofType: {
                 kind: 'LIST',
                 ofType: {
-                  kind: 'OBJECT',
-                  name: 'Request',
-                  ofType: null,
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'Request',
+                    ofType: null,
+                  },
                 },
               },
             },
@@ -2446,7 +2461,7 @@ export default {
             ],
           },
           {
-            name: 'getSessionByAccountId',
+            name: 'sessionByAccountId',
             type: {
               kind: 'NON_NULL',
               ofType: {
@@ -3073,9 +3088,9 @@ export function useDeleteSessionMutation() {
     DeleteSessionMutationVariables
   >(DeleteSessionDocument);
 }
-export const GetAccountPageInfoDocument = gql`
-  query getAccountPageInfo($id: ID!) {
-    getAccountPageInfo(id: $id) {
+export const AccountPageInfoDocument = gql`
+  query accountPageInfo($id: ID!) {
+    accountPageInfo(id: $id) {
       id
       name
       age
@@ -3101,17 +3116,17 @@ export const GetAccountPageInfoDocument = gql`
   }
 `;
 
-export function useGetAccountPageInfoQuery(
-  options: Omit<Urql.UseQueryArgs<GetAccountPageInfoQueryVariables>, 'query'>,
+export function useAccountPageInfoQuery(
+  options: Omit<Urql.UseQueryArgs<AccountPageInfoQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetAccountPageInfoQuery>({
-    query: GetAccountPageInfoDocument,
+  return Urql.useQuery<AccountPageInfoQuery>({
+    query: AccountPageInfoDocument,
     ...options,
   });
 }
-export const GetMyPageInfoDocument = gql`
-  query getMyPageInfo($id: ID!) {
-    getMyPageInfo(id: $id) {
+export const MyPageInfoDocument = gql`
+  query myPageInfo($id: ID!) {
+    myPageInfo(id: $id) {
       id
       email
       password
@@ -3161,17 +3176,17 @@ export const GetMyPageInfoDocument = gql`
   }
 `;
 
-export function useGetMyPageInfoQuery(
-  options: Omit<Urql.UseQueryArgs<GetMyPageInfoQueryVariables>, 'query'>,
+export function useMyPageInfoQuery(
+  options: Omit<Urql.UseQueryArgs<MyPageInfoQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetMyPageInfoQuery>({
-    query: GetMyPageInfoDocument,
+  return Urql.useQuery<MyPageInfoQuery>({
+    query: MyPageInfoDocument,
     ...options,
   });
 }
-export const GetLikesByPostDocument = gql`
-  query getLikesByPost($postId: ID!) {
-    getLikesByPost(postId: $postId) {
+export const LikesByPostDocument = gql`
+  query likesByPost($postId: ID!) {
+    likesByPost(postId: $postId) {
       account {
         id
         name
@@ -3182,17 +3197,17 @@ export const GetLikesByPostDocument = gql`
   }
 `;
 
-export function useGetLikesByPostQuery(
-  options: Omit<Urql.UseQueryArgs<GetLikesByPostQueryVariables>, 'query'>,
+export function useLikesByPostQuery(
+  options: Omit<Urql.UseQueryArgs<LikesByPostQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetLikesByPostQuery>({
-    query: GetLikesByPostDocument,
+  return Urql.useQuery<LikesByPostQuery>({
+    query: LikesByPostDocument,
     ...options,
   });
 }
-export const GetAllMarkersDocument = gql`
-  query getAllMarkers {
-    getAllMarkers {
+export const AllMarkersDocument = gql`
+  query allMarkers {
+    allMarkers {
       id
       title
       lat
@@ -3215,17 +3230,17 @@ export const GetAllMarkersDocument = gql`
   }
 `;
 
-export function useGetAllMarkersQuery(
-  options?: Omit<Urql.UseQueryArgs<GetAllMarkersQueryVariables>, 'query'>,
+export function useAllMarkersQuery(
+  options?: Omit<Urql.UseQueryArgs<AllMarkersQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetAllMarkersQuery>({
-    query: GetAllMarkersDocument,
+  return Urql.useQuery<AllMarkersQuery>({
+    query: AllMarkersDocument,
     ...options,
   });
 }
-export const GetAllPostsDocument = gql`
-  query getAllPosts {
-    getAllPosts {
+export const AllPostsDocument = gql`
+  query allPosts {
+    allPosts {
       id
       title
       body
@@ -3259,17 +3274,14 @@ export const GetAllPostsDocument = gql`
   }
 `;
 
-export function useGetAllPostsQuery(
-  options?: Omit<Urql.UseQueryArgs<GetAllPostsQueryVariables>, 'query'>,
+export function useAllPostsQuery(
+  options?: Omit<Urql.UseQueryArgs<AllPostsQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetAllPostsQuery>({
-    query: GetAllPostsDocument,
-    ...options,
-  });
+  return Urql.useQuery<AllPostsQuery>({ query: AllPostsDocument, ...options });
 }
-export const GetRequestsByAccountIdDocument = gql`
-  query getRequestsByAccountId($accountId: ID!) {
-    getRequestsByAccountId(accountId: $accountId) {
+export const RequestsByAccountIdDocument = gql`
+  query requestsByAccountId($accountId: ID!) {
+    requestsByAccountId(accountId: $accountId) {
       targetAccount {
         id
         name
@@ -3279,20 +3291,17 @@ export const GetRequestsByAccountIdDocument = gql`
   }
 `;
 
-export function useGetRequestsByAccountIdQuery(
-  options: Omit<
-    Urql.UseQueryArgs<GetRequestsByAccountIdQueryVariables>,
-    'query'
-  >,
+export function useRequestsByAccountIdQuery(
+  options: Omit<Urql.UseQueryArgs<RequestsByAccountIdQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetRequestsByAccountIdQuery>({
-    query: GetRequestsByAccountIdDocument,
+  return Urql.useQuery<RequestsByAccountIdQuery>({
+    query: RequestsByAccountIdDocument,
     ...options,
   });
 }
-export const GetRequestsByTargetIdDocument = gql`
-  query getRequestsByTargetId($targetAccountId: ID!) {
-    getRequestsByTargetId(targetAccountId: $targetAccountId) {
+export const RequestsByTargetIdDocument = gql`
+  query requestsByTargetId($targetAccountId: ID!) {
+    requestsByTargetId(targetAccountId: $targetAccountId) {
       account {
         id
         name
@@ -3302,33 +3311,27 @@ export const GetRequestsByTargetIdDocument = gql`
   }
 `;
 
-export function useGetRequestsByTargetIdQuery(
-  options: Omit<
-    Urql.UseQueryArgs<GetRequestsByTargetIdQueryVariables>,
-    'query'
-  >,
+export function useRequestsByTargetIdQuery(
+  options: Omit<Urql.UseQueryArgs<RequestsByTargetIdQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetRequestsByTargetIdQuery>({
-    query: GetRequestsByTargetIdDocument,
+  return Urql.useQuery<RequestsByTargetIdQuery>({
+    query: RequestsByTargetIdDocument,
     ...options,
   });
 }
-export const GetSessionByAccountIdDocument = gql`
-  query getSessionByAccountId($accountId: ID!) {
-    getSessionByAccountId(accountId: $accountId) {
+export const SessionByAccountIdDocument = gql`
+  query sessionByAccountId($accountId: ID!) {
+    sessionByAccountId(accountId: $accountId) {
       session
     }
   }
 `;
 
-export function useGetSessionByAccountIdQuery(
-  options: Omit<
-    Urql.UseQueryArgs<GetSessionByAccountIdQueryVariables>,
-    'query'
-  >,
+export function useSessionByAccountIdQuery(
+  options: Omit<Urql.UseQueryArgs<SessionByAccountIdQueryVariables>, 'query'>,
 ) {
-  return Urql.useQuery<GetSessionByAccountIdQuery>({
-    query: GetSessionByAccountIdDocument,
+  return Urql.useQuery<SessionByAccountIdQuery>({
+    query: SessionByAccountIdDocument,
     ...options,
   });
 }

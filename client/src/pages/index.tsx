@@ -10,6 +10,7 @@ const Home = () => {
     <>
       <Script src="../../.node_modules/tw-elements-ELEMENTS-PATH/dist/js/index.min.js" />
       <div data-theme="light">
+        <Header />
         <Image
           className="bg-fixed"
           src="/background.jpg"
@@ -18,7 +19,6 @@ const Home = () => {
           layout="responsive"
           alt="background image"
         />
-        <Header />
         <main>
           {/* Banner */}
           <section>

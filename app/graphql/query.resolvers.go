@@ -9,7 +9,7 @@ import (
 	"github.com/Katsushi21/traveling_alone/models"
 )
 
-func (r *queryResolver) GetAccountPageInfo(ctx context.Context, id int) (*models.Account, error) {
+func (r *queryResolver) AccountPageInfo(ctx context.Context, id int) (*models.Account, error) {
 	var account *models.Account
 	err := r.DB.
 		Debug().
@@ -25,7 +25,7 @@ func (r *queryResolver) GetAccountPageInfo(ctx context.Context, id int) (*models
 	return account, nil
 }
 
-func (r *queryResolver) GetMyPageInfo(ctx context.Context, id int) (*models.Account, error) {
+func (r *queryResolver) MyPageInfo(ctx context.Context, id int) (*models.Account, error) {
 	var account *models.Account
 	err := r.DB.
 		Debug().
@@ -44,7 +44,7 @@ func (r *queryResolver) GetMyPageInfo(ctx context.Context, id int) (*models.Acco
 	return account, nil
 }
 
-func (r *queryResolver) GetLikesByPost(ctx context.Context, postID int) ([]*models.Like, error) {
+func (r *queryResolver) LikesByPost(ctx context.Context, postID int) ([]*models.Like, error) {
 	var likes []*models.Like
 	err := r.DB.
 		Debug().
@@ -59,7 +59,7 @@ func (r *queryResolver) GetLikesByPost(ctx context.Context, postID int) ([]*mode
 	return likes, nil
 }
 
-func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, error) {
+func (r *queryResolver) AllMarkers(ctx context.Context) ([]*models.Marker, error) {
 	var markers []*models.Marker
 	err := r.DB.
 		Debug().
@@ -76,7 +76,7 @@ func (r *queryResolver) GetAllMarkers(ctx context.Context) ([]*models.Marker, er
 	return markers, nil
 }
 
-func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error) {
+func (r *queryResolver) AllPosts(ctx context.Context) ([]*models.Post, error) {
 	var posts []*models.Post
 	err := r.DB.
 		Debug().
@@ -94,7 +94,7 @@ func (r *queryResolver) GetAllPosts(ctx context.Context) ([]*models.Post, error)
 	return posts, nil
 }
 
-func (r *queryResolver) GetRequestsByAccountID(ctx context.Context, accountID int) ([]*models.Request, error) {
+func (r *queryResolver) RequestsByAccountID(ctx context.Context, accountID int) ([]*models.Request, error) {
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
@@ -110,7 +110,7 @@ func (r *queryResolver) GetRequestsByAccountID(ctx context.Context, accountID in
 	return requests, nil
 }
 
-func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetAccountID int) ([]*models.Request, error) {
+func (r *queryResolver) RequestsByTargetID(ctx context.Context, targetAccountID int) ([]*models.Request, error) {
 	var requests []*models.Request
 	err := r.DB.
 		Debug().
@@ -126,7 +126,7 @@ func (r *queryResolver) GetRequestsByTargetID(ctx context.Context, targetAccount
 	return requests, nil
 }
 
-func (r *queryResolver) GetSessionByAccountID(ctx context.Context, accountID int) (*models.Session, error) {
+func (r *queryResolver) SessionByAccountID(ctx context.Context, accountID int) (*models.Session, error) {
 	var session *models.Session
 	err := r.DB.
 		Where(&models.Session{AccountID: accountID}).

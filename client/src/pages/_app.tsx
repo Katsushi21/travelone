@@ -11,7 +11,10 @@ import {
 import type { AppProps } from 'next/app';
 
 const isServerSide = typeof window === 'undefined';
-const ssrCache = ssrExchange({ isClient: !isServerSide });
+const ssrCache = ssrExchange({
+  isClient: !isServerSide,
+  initialState: !isServerSide ? window.__URQL_DATA__ : undefined,
+});
 const client = createClient({
   url: process.env.NEXT_PUBLIC_URQL_REQUEST_DEST,
   exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],

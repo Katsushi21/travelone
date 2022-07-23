@@ -1,8 +1,8 @@
 ###############
 # Account
 ###############
-query getAccountPageInfo($id: ID!) {
-  getAccountPageInfo(id: $id) {
+query accountPageInfo($id: ID!) {
+  accountPageInfo(id: $id) {
     id
     name
     age
@@ -27,8 +27,8 @@ query getAccountPageInfo($id: ID!) {
   }
 }
 
-query getMyPageInfo($id: ID!) {
-  getMyPageInfo(id: $id) {
+query myPageInfo($id: ID!) {
+  myPageInfo(id: $id) {
     id
     email
     password
@@ -80,8 +80,8 @@ query getMyPageInfo($id: ID!) {
 ###############
 # Like
 ###############
-query getLikesByPost($postId: ID!) {
-  getLikesByPost(postId: $postId) {
+query likesByPost($postId: ID!) {
+  likesByPost(postId: $postId) {
     account {
       id
       name
@@ -94,8 +94,8 @@ query getLikesByPost($postId: ID!) {
 ###############
 # Marker
 ###############
-query getAllMarkers {
-  getAllMarkers {
+query allMarkers {
+  allMarkers {
     id
     title
     lat
@@ -120,8 +120,8 @@ query getAllMarkers {
 ###############
 # Post
 ###############
-query getAllPosts {
-  getAllPosts {
+query allPosts {
+  allPosts {
     id
     title
     body
@@ -157,8 +157,8 @@ query getAllPosts {
 ###############
 # Request
 ###############
-query getRequestsByAccountId($accountId: ID!) {
-  getRequestsByAccountId(accountId: $accountId) {
+query requestsByAccountId($accountId: ID!) {
+  requestsByAccountId(accountId: $accountId) {
     targetAccount {
       id
       name
@@ -167,8 +167,8 @@ query getRequestsByAccountId($accountId: ID!) {
   }
 }
 
-query getRequestsByTargetId($targetAccountId: ID!) {
-  getRequestsByTargetId(targetAccountId: $targetAccountId) {
+query requestsByTargetId($targetAccountId: ID!) {
+  requestsByTargetId(targetAccountId: $targetAccountId) {
     account {
       id
       name
@@ -180,8 +180,8 @@ query getRequestsByTargetId($targetAccountId: ID!) {
 ###############
 # Session
 ###############
-query getSessionByAccountId($accountId: ID!) {
-  getSessionByAccountId(accountId: $accountId) {
+query sessionByAccountId($accountId: ID!) {
+  sessionByAccountId(accountId: $accountId) {
     session
   }
 }

@@ -13,10 +13,10 @@ resolver:
   layout: follow-schema
   dir: graphql
   package: graphql
-  filename_template: "{name}.resolvers.go"
+  filename_template: '{name}.resolvers.go'
 
 autobind:
-  - "github.com/Katsushi21/traveling_alone/models"
+  - 'github.com/Katsushi21/traveling_alone/models'
 
 models:
   ID:
