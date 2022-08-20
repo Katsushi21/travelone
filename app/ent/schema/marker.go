@@ -1,18 +1,58 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"entgo.io/contrib/entgql"
+	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
+)
 
-// Marker holds the schema definition for the Marker entity.
 type Marker struct {
 	ent.Schema
 }
 
-// Fields of the Marker.
-func (Marker) Fields() []ent.Field {
-	return nil
+func (Marker) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "Markers"},
+	}
 }
 
-// Edges of the Marker.
+func (Marker) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
+}
+
+func (Marker) Fields() []ent.Field {
+	return []ent.Field{
+		field.UUID("id", uuid.UUID{}).
+			Immutable().
+			Default(uuid.New).
+			Annotations(
+				entgql.OrderField("ID"),
+			),
+		field.String("title").
+			Annotations(
+				entgql.OrderField("TITLE"),
+			),
+		field.String("lat").
+			Annotations(
+				entgql.OrderField("LAT"),
+			),
+		field.String("lng").
+			Annotations(
+				entgql.OrderField("LNG"),
+			),
+	}
+}
+
 func (Marker) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("post", Post.Type).
+			Ref("marker").
+			Unique(),
+	}
 }

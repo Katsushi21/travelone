@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 )
@@ -49,5 +50,12 @@ func (Post) Fields() []ent.Field {
 }
 
 func (Post) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("comments", Comment.Type),
+		edge.From("account", Account.Type).
+			Ref("posts").
+			Unique(),
+		edge.To("marker", Marker.Type).
+			Unique(),
+	}
 }

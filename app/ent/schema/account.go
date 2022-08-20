@@ -42,11 +42,12 @@ func (Account) Fields() []ent.Field {
 				entgql.OrderField("EMAIL"),
 			),
 		field.String("password").
+			Sensitive().
 			Annotations(
 				entgql.OrderField("PASSWORD"),
 			),
 		field.Enum("type").
-			NamedValues(
+			Values(
 				"active",
 				"inactive",
 				"admin",
@@ -64,7 +65,7 @@ func (Account) Fields() []ent.Field {
 				entgql.OrderField("AGE"),
 			),
 		field.Enum("gender").
-			NamedValues(
+			Values(
 				"male",
 				"female",
 			).
@@ -84,6 +85,8 @@ func (Account) Fields() []ent.Field {
 
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.To("posts", Post.Type),
+		edge.To("comments", Comment.Type),
 		edge.To("friends", Account.Type).
 			Through("friendships", FriendShip.Type),
 	}

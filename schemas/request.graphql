@@ -19,7 +19,6 @@ enum RequestStatus {
   breakInProcess
   breakAccept
   breakDeny
-  cancel
 }
 
 ###############

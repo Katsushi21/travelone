@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -8,7 +9,6 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// FriendShip holds the schema definition for the FriendShip entity.
 type FriendShip struct {
 	ent.Schema
 }
@@ -27,17 +27,23 @@ func (FriendShip) Mixin() []ent.Mixin {
 
 func (FriendShip) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("account_id"),
-		field.Int("friend_id"),
+		field.String("account_id").
+			Annotations(
+				entgql.OrderField("ACCOUNT_ID"),
+			),
+		field.String("friend_id").
+			Annotations(
+				entgql.OrderField("FRIEND_ID"),
+			),
 	}
 }
 
 func (FriendShip) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("user", Account.Type).
+		edge.To("account", Account.Type).
 			Required().
 			Unique().
-			Field("user_id"),
+			Field("account_id"),
 		edge.To("friend", Account.Type).
 			Required().
 			Unique().

@@ -1,18 +1,47 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"entgo.io/contrib/entgql"
+	"entgo.io/ent"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/field"
+)
 
 // Like holds the schema definition for the Like entity.
 type Like struct {
 	ent.Schema
 }
 
-// Fields of the Like.
-func (Like) Fields() []ent.Field {
-	return nil
+func (Like) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		field.ID("account_id", "post_id"),
+	}
 }
 
-// Edges of the Like.
+// Fields of the Like.
+func (Like) Fields() []ent.Field {
+	return []ent.Field{
+		field.String("account_id").
+			Annotations(
+				entgql.OrderField("ACCOUNT_ID"),
+			),
+		field.String("post_id").
+			Annotations(
+				entgql.OrderField("POST_ID"),
+			),
+	}
+}
+
 func (Like) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("account", Account.Type).
+			Unique().
+			Required().
+			Field("user_id"),
+		edge.To("post", Post.Type).
+			Unique().
+			Required().
+			Field("post_id"),
+	}
 }

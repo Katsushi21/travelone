@@ -1,18 +1,53 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"entgo.io/contrib/entgql"
+	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/field"
+)
 
-// Request holds the schema definition for the Request entity.
 type Request struct {
 	ent.Schema
 }
 
-// Fields of the Request.
-func (Request) Fields() []ent.Field {
-	return nil
+func (Request) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "Requests"},
+	}
 }
 
-// Edges of the Request.
+func (Request) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
+}
+
+func (Request) Fields() []ent.Field {
+	return []ent.Field{
+		field.String("account_id").
+			Annotations(
+				entgql.OrderField("ACCOUNT_ID"),
+			),
+		field.String("request_id").
+			Annotations(
+				entgql.OrderField("REQUEST_ID"),
+			),
+		field.Enum("status").Values(
+			"inProcess",
+			"accept",
+			"deny",
+			"breakInProcess",
+			"breakAccept",
+			"breakDeny",
+		).
+			Annotations(
+				entgql.OrderField("STATUS"),
+			),
+	}
+}
+
 func (Request) Edges() []ent.Edge {
 	return nil
 }
