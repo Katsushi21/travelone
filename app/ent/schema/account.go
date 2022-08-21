@@ -88,6 +88,11 @@ func (Account) Edges() []ent.Edge {
 		edge.To("posts", Post.Type),
 		edge.To("comments", Comment.Type),
 		edge.To("friends", Account.Type).
-			Through("friendships", FriendShip.Type),
+			Through("Friends", Friend.Type),
+		edge.To("mutes", Mute.Type),
+		edge.To("requests", Request.Type).
+			Through("Requests", Friend.Type),
+		edge.To("likes", Like.Type),
+		edge.To("session", Session.Type),
 	}
 }

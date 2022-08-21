@@ -46,6 +46,10 @@ func (Marker) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("LNG"),
 			),
+		field.String("post_id").
+			Annotations(
+				entgql.OrderField("POST_ID"),
+			),
 	}
 }
 
@@ -53,6 +57,7 @@ func (Marker) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("post", Post.Type).
 			Ref("marker").
-			Unique(),
+			Unique().
+			Field("post_id"),
 	}
 }

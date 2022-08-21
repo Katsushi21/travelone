@@ -46,16 +46,21 @@ func (Post) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("IMG"),
 			),
+		field.String("account_id").
+			Annotations(
+				entgql.OrderField("ACCOUNT_ID"),
+			),
 	}
 }
 
 func (Post) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("comments", Comment.Type),
-		edge.From("account", Account.Type).
-			Ref("posts").
-			Unique(),
 		edge.To("marker", Marker.Type).
 			Unique(),
+		edge.From("account", Account.Type).
+			Ref("posts").
+			Unique().
+			Field("account_id"),
 	}
 }

@@ -5,10 +5,10 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
-// Session holds the schema definition for the Session entity.
 type Session struct {
 	ent.Schema
 }
@@ -19,7 +19,6 @@ func (Session) Annotations() []schema.Annotation {
 	}
 }
 
-// Fields of the Session.
 func (Session) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("account_id").
@@ -33,7 +32,11 @@ func (Session) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Session.
 func (Session) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("account", Account.Type).
+			Ref("session").
+			Unique().
+			Field("account_id"),
+	}
 }

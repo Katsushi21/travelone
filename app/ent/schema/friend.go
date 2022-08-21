@@ -9,23 +9,23 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-type FriendShip struct {
+type Friend struct {
 	ent.Schema
 }
 
-func (FriendShip) Annotations() []schema.Annotation {
+func (Friend) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "FriendShips"},
+		entsql.Annotation{Table: "Friends"},
 	}
 }
 
-func (FriendShip) Mixin() []ent.Mixin {
+func (Friend) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		TimeMixin{},
 	}
 }
 
-func (FriendShip) Fields() []ent.Field {
+func (Friend) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("account_id").
 			Annotations(
@@ -38,7 +38,7 @@ func (FriendShip) Fields() []ent.Field {
 	}
 }
 
-func (FriendShip) Edges() []ent.Edge {
+func (Friend) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("account", Account.Type).
 			Required().

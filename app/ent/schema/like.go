@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -15,6 +16,7 @@ type Like struct {
 
 func (Like) Annotations() []schema.Annotation {
 	return []schema.Annotation{
+		entsql.Annotation{Table: "Friends"},
 		field.ID("account_id", "post_id"),
 	}
 }
@@ -38,7 +40,7 @@ func (Like) Edges() []ent.Edge {
 		edge.To("account", Account.Type).
 			Unique().
 			Required().
-			Field("user_id"),
+			Field("account_id"),
 		edge.To("post", Post.Type).
 			Unique().
 			Required().

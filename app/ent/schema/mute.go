@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -25,7 +26,6 @@ func (Mute) Mixin() []ent.Mixin {
 	}
 }
 
-// Fields of the Mute.
 func (Mute) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("account_id").
@@ -39,7 +39,15 @@ func (Mute) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Mute.
 func (Mute) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("account", Account.Type).
+			Required().
+			Unique().
+			Field("account_id"),
+		edge.To("mute", Mute.Type).
+			Required().
+			Unique().
+			Field("mute_id"),
+	}
 }

@@ -1,7 +1,7 @@
 //go:build ignore
 // +build ignore
 
-package ent
+package main
 
 import (
 	"log"
@@ -18,5 +18,21 @@ func main() {
 	}
 	if err := entc.Generate("./schema", &gen.Config{}, entc.Extensions(ex)); err != nil {
 		log.Fatalf("running ent codegen: %v", err)
+	}
+}
+
+func EnsureStructTag(name string) gen.Hook {
+	return func(next gen.Generator) gen.Generator {
+		return gen.GenerateFunc(func(g *gen.Graph) error {
+			for _, node := range g.Nodes {
+				for _, field := range node.Fields {
+					tag := reflect.StructTag(field.StructTag)
+					if _, ok := tag.Lookup(name); !ok {
+						return fmt.Errorf("struct tag %q is missing for field %s.%s", name, node.Name, field.Name)
+					}
+				}
+			}
+			return next.Generate(g)
+		})
 	}
 }

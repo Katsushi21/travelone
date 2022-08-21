@@ -39,6 +39,14 @@ func (Comment) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("BODY"),
 			),
+		field.String("account_id").
+			Annotations(
+				entgql.OrderField("ACCOUNT_ID"),
+			),
+		field.String("post_id").
+			Annotations(
+				entgql.OrderField("POST_ID"),
+			),
 	}
 }
 
@@ -46,9 +54,11 @@ func (Comment) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("post", Post.Type).
 			Ref("comments").
-			Unique(),
+			Unique().
+			Field("post_id"),
 		edge.From("account", Account.Type).
 			Ref("comments").
-			Unique(),
+			Unique().
+			Field("account_id"),
 	}
 }

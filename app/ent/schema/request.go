@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -49,5 +50,14 @@ func (Request) Fields() []ent.Field {
 }
 
 func (Request) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("account", Account.Type).
+			Required().
+			Unique().
+			Field("account_id"),
+		edge.To("request", Account.Type).
+			Required().
+			Unique().
+			Field("request_id"),
+	}
 }
