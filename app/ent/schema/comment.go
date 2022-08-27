@@ -39,11 +39,11 @@ func (Comment) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("BODY"),
 			),
-		field.String("account_id").
+		field.UUID("account_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("ACCOUNT_ID"),
 			),
-		field.String("post_id").
+		field.UUID("post_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("POST_ID"),
 			),

@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 type Session struct {
@@ -21,7 +22,7 @@ func (Session) Annotations() []schema.Annotation {
 
 func (Session) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("account_id").
+		field.UUID("account_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("ACCOUNT_ID"),
 			),
@@ -36,6 +37,7 @@ func (Session) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("account", Account.Type).
 			Ref("session").
+			Required().
 			Unique().
 			Field("account_id"),
 	}

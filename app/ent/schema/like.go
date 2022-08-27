@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // Like holds the schema definition for the Like entity.
@@ -24,11 +25,11 @@ func (Like) Annotations() []schema.Annotation {
 // Fields of the Like.
 func (Like) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("account_id").
+		field.UUID("account_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("ACCOUNT_ID"),
 			),
-		field.String("post_id").
+		field.UUID("post_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("POST_ID"),
 			),

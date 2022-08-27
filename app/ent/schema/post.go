@@ -46,7 +46,7 @@ func (Post) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("IMG"),
 			),
-		field.String("account_id").
+		field.UUID("account_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("ACCOUNT_ID"),
 			),

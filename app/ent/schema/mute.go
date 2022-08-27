@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // Mute holds the schema definition for the Mute entity.
@@ -28,11 +29,11 @@ func (Mute) Mixin() []ent.Mixin {
 
 func (Mute) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("account_id").
+		field.UUID("account_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("ACCOUNT_ID"),
 			),
-		field.String("mute_id").
+		field.UUID("mute_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("MUTE_ID"),
 			),
@@ -45,7 +46,7 @@ func (Mute) Edges() []ent.Edge {
 			Required().
 			Unique().
 			Field("account_id"),
-		edge.To("mute", Mute.Type).
+		edge.To("mute", Account.Type).
 			Required().
 			Unique().
 			Field("mute_id"),

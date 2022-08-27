@@ -46,7 +46,7 @@ func (Marker) Fields() []ent.Field {
 			Annotations(
 				entgql.OrderField("LNG"),
 			),
-		field.String("post_id").
+		field.UUID("post_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("POST_ID"),
 			),

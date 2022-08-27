@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 type Friend struct {
@@ -27,11 +28,11 @@ func (Friend) Mixin() []ent.Mixin {
 
 func (Friend) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("account_id").
+		field.UUID("account_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("ACCOUNT_ID"),
 			),
-		field.String("friend_id").
+		field.UUID("friend_id", uuid.UUID{}).
 			Annotations(
 				entgql.OrderField("FRIEND_ID"),
 			),
