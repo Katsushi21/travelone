@@ -54,10 +54,12 @@ func (Comment) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("post", Post.Type).
 			Ref("comments").
+			Required().
 			Unique().
 			Field("post_id"),
 		edge.From("account", Account.Type).
 			Ref("comments").
+			Required().
 			Unique().
 			Field("account_id"),
 	}

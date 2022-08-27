@@ -60,6 +60,7 @@ func (Post) Edges() []ent.Edge {
 			Unique(),
 		edge.From("account", Account.Type).
 			Ref("posts").
+			Required().
 			Unique().
 			Field("account_id"),
 	}

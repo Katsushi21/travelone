@@ -57,6 +57,7 @@ func (Marker) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("post", Post.Type).
 			Ref("marker").
+			Required().
 			Unique().
 			Field("post_id"),
 	}
