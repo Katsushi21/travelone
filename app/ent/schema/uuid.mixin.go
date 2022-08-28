@@ -17,6 +17,7 @@ func (UuidMixin) Fields() []ent.Field {
 		field.UUID("id", uuid.UUID{}).
 			Immutable().
 			Default(uuid.New).
+			StorageKey("oid").
 			Annotations(
 				entgql.OrderField("ID"),
 			),

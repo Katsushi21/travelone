@@ -18,7 +18,6 @@ type Like struct {
 func (Like) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Friends"},
-		field.ID("account_id", "post_id"),
 	}
 }
 
