@@ -7,7 +7,6 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/google/uuid"
 )
 
 type Account struct {
@@ -22,18 +21,13 @@ func (Account) Annotations() []schema.Annotation {
 
 func (Account) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }
 
 func (Account) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("id", uuid.UUID{}).
-			Immutable().
-			Default(uuid.New).
-			Annotations(
-				entgql.OrderField("ID"),
-			),
 		field.String("email").
 			MaxLen(100).
 			NotEmpty().
@@ -88,10 +82,10 @@ func (Account) Edges() []ent.Edge {
 		edge.To("posts", Post.Type),
 		edge.To("comments", Comment.Type),
 		edge.To("friends", Account.Type).
-			Through("Friends", Friend.Type),
+			Through("friendships", Friend.Type),
 		edge.To("mutes", Mute.Type),
-		edge.To("requests", Request.Type).
-			Through("Requests", Friend.Type),
+		edge.To("requests", Account.Type).
+			Through("requestTargets", Request.Type),
 		edge.To("likes", Like.Type),
 		edge.To("session", Session.Type),
 	}

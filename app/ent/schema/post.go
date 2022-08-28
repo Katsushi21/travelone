@@ -22,18 +22,13 @@ func (Post) Annotations() []schema.Annotation {
 
 func (Post) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }
 
 func (Post) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("id", uuid.UUID{}).
-			Immutable().
-			Default(uuid.New).
-			Annotations(
-				entgql.OrderField("ID"),
-			),
 		field.String("title").
 			Annotations(
 				entgql.OrderField("TITLE"),

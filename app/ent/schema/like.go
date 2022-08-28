@@ -22,7 +22,12 @@ func (Like) Annotations() []schema.Annotation {
 	}
 }
 
-// Fields of the Like.
+func (Like) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
+	}
+}
+
 func (Like) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("account_id", uuid.UUID{}).
