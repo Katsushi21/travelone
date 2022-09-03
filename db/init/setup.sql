@@ -1,1 +1,1 @@
-CREATE DATABASE traveling_alone
+CREATE DATABASE travelone
