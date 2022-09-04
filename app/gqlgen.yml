@@ -14,7 +14,7 @@ resolver:
   dir: ./resolver
 
 autobind:
-  - 'github.com/Katsushi21/travelone/ent'
+  - github.com/Katsushi21/travelone/ent
 
 models:
   ID:
