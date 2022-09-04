@@ -1,7 +1,7 @@
 ###############
 # Marker
 ###############
-type Marker {
+type Marker implements Node {
   id: ID!
   postId: ID!
   title: String!

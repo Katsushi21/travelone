@@ -1,7 +1,7 @@
 ###############
 # Comment
 ###############
-type Comment {
+type Comment implements Node {
   id: ID!
   postId: ID!
   accountId: ID!

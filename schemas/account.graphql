@@ -1,7 +1,7 @@
 ###############
 # Account
 ###############
-type Account {
+type Account implements Node {
   id: ID!
   email: String!
   password: String!

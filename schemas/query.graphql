@@ -32,4 +32,10 @@ type Query {
   # Session
   ###############
   sessionByAccountId(accountId: ID!): Session!
+
+  ###############
+  # Node
+  ###############
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
 }

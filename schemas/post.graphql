@@ -1,7 +1,7 @@
 ###############
 # Post
 ###############
-type Post {
+type Post implements Node {
   id: ID!
   accountId: ID!
   title: String!
