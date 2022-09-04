@@ -23,6 +23,7 @@ func (Mute) Annotations() []schema.Annotation {
 
 func (Mute) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }

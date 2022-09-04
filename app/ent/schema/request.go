@@ -22,6 +22,7 @@ func (Request) Annotations() []schema.Annotation {
 
 func (Request) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }

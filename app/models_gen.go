@@ -6,29 +6,9 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 )
-
-type Account struct {
-	ID           string        `json:"id"`
-	Email        string        `json:"email"`
-	Password     string        `json:"password"`
-	Type         AccountType   `json:"type"`
-	Name         string        `json:"name"`
-	Age          int           `json:"age"`
-	Gender       AccountGender `json:"gender"`
-	Avatar       string        `json:"avatar"`
-	Introduction string        `json:"introduction"`
-	CreatedAt    time.Time     `json:"createdAt"`
-	UpdatedAt    time.Time     `json:"updatedAt"`
-	Friend       []*Friend     `json:"friend"`
-	Mute         []*Mute       `json:"mute"`
-	Post         []*Post       `json:"post"`
-	Like         []*Like       `json:"like"`
-	Comment      []*Comment    `json:"comment"`
-}
 
 type AccountInput struct {
 	Email        string        `json:"email"`
@@ -41,17 +21,6 @@ type AccountInput struct {
 	Introduction string        `json:"introduction"`
 }
 
-type Comment struct {
-	ID        string    `json:"id"`
-	PostID    string    `json:"postId"`
-	AccountID string    `json:"accountId"`
-	Body      string    `json:"body"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Post      *Post     `json:"post"`
-	Account   *Account  `json:"account"`
-}
-
 type CommentInput struct {
 	PostID    string `json:"postId"`
 	AccountID string `json:"accountId"`
@@ -62,23 +31,9 @@ type File struct {
 	Path string `json:"path"`
 }
 
-type Friend struct {
-	AccountID string   `json:"accountId"`
-	FriendID  string   `json:"friendId"`
-	Friend    *Account `json:"friend"`
-}
-
 type FriendInput struct {
 	AccountID string `json:"accountId"`
 	FriendID  string `json:"friendId"`
-}
-
-type Like struct {
-	PostID    string    `json:"postId"`
-	AccountID string    `json:"accountId"`
-	CreatedAt time.Time `json:"createdAt"`
-	Post      *Post     `json:"post"`
-	Account   *Account  `json:"account"`
 }
 
 type LikeInput struct {
@@ -91,17 +46,6 @@ type LoginInput struct {
 	Password string `json:"password"`
 }
 
-type Marker struct {
-	ID        string    `json:"id"`
-	PostID    string    `json:"postId"`
-	Title     string    `json:"title"`
-	Lat       string    `json:"lat"`
-	Lng       string    `json:"lng"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Post      *Post     `json:"post"`
-}
-
 type MarkerInput struct {
 	PostID *string `json:"postId"`
 	Title  string  `json:"title"`
@@ -109,29 +53,9 @@ type MarkerInput struct {
 	Lng    string  `json:"lng"`
 }
 
-type Mute struct {
-	AccountID string   `json:"accountId"`
-	MuteID    string   `json:"muteId"`
-	Mute      *Account `json:"mute"`
-}
-
 type MuteInput struct {
 	AccountID string `json:"accountId"`
 	MuteID    string `json:"muteId"`
-}
-
-type Post struct {
-	ID        string     `json:"id"`
-	AccountID string     `json:"accountId"`
-	Title     string     `json:"title"`
-	Body      string     `json:"body"`
-	Img       string     `json:"img"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	Account   *Account   `json:"account"`
-	Marker    *Marker    `json:"marker"`
-	Like      []*Like    `json:"like"`
-	Comment   []*Comment `json:"comment"`
 }
 
 type PostInput struct {
@@ -141,24 +65,10 @@ type PostInput struct {
 	Img       string `json:"img"`
 }
 
-type Request struct {
-	AccountID       string        `json:"accountId"`
-	TargetAccountID string        `json:"targetAccountId"`
-	Status          RequestStatus `json:"status"`
-	Account         *Account      `json:"account"`
-	TargetAccount   *Account      `json:"targetAccount"`
-}
-
 type RequestInput struct {
 	AccountID       string         `json:"accountId"`
 	TargetAccountID string         `json:"targetAccountId"`
 	Status          *RequestStatus `json:"status"`
-}
-
-type Session struct {
-	AccountID string    `json:"accountId"`
-	Session   string    `json:"session"`
-	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type SessionInput struct {

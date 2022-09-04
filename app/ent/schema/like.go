@@ -10,19 +10,19 @@ import (
 	"github.com/google/uuid"
 )
 
-// Like holds the schema definition for the Like entity.
 type Like struct {
 	ent.Schema
 }
 
 func (Like) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "Friends"},
+		entsql.Annotation{Table: "Likes"},
 	}
 }
 
 func (Like) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }

@@ -22,6 +22,7 @@ func (Friend) Annotations() []schema.Annotation {
 
 func (Friend) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }

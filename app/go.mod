@@ -10,7 +10,9 @@ require (
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-gonic/gin v1.7.7
 	github.com/google/uuid v1.3.0
+	github.com/hashicorp/go-multierror v1.1.1
 	github.com/vektah/gqlparser/v2 v2.4.3-0.20220508162109-d3d9eb001575
+	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
 	gorm.io/driver/postgres v1.3.1
 	gorm.io/gorm v1.23.3
 )
@@ -31,6 +33,7 @@ require (
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -53,6 +56,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
+	github.com/vmihailenco/tagparser v0.1.2 // indirect
 	github.com/wader/gormstore/v2 v2.0.0 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
