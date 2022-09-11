@@ -33,6 +33,13 @@ func (Session) Mixin() []ent.Mixin {
 	}
 }
 
+func (Session) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		UuidMixin{},
+		TimeMixin{},
+	}
+}
+
 func (Session) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("account_id", uuid.UUID{}).

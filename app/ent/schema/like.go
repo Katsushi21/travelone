@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Like holds the schema definition for the Like entity.
 type Like struct {
 	ent.Schema
 }

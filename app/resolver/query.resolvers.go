@@ -8,46 +8,47 @@ import (
 	"fmt"
 
 	"github.com/Katsushi21/travelone"
+	"github.com/Katsushi21/travelone/ent"
 )
 
-// AccountPageInfo is the resolver for the accountPageInfo field.
-func (r *queryResolver) AccountPageInfo(ctx context.Context, id string) (*travelone.Account, error) {
+func (r *queryResolver) AccountPageInfo(ctx context.Context, id string) (*ent.Account, error) {
 	panic(fmt.Errorf("not implemented: AccountPageInfo - accountPageInfo"))
 }
 
-// MyPageInfo is the resolver for the myPageInfo field.
-func (r *queryResolver) MyPageInfo(ctx context.Context, id string) (*travelone.Account, error) {
+func (r *queryResolver) MyPageInfo(ctx context.Context, id string) (*ent.Account, error) {
 	panic(fmt.Errorf("not implemented: MyPageInfo - myPageInfo"))
 }
 
-// LikesByPost is the resolver for the likesByPost field.
-func (r *queryResolver) LikesByPost(ctx context.Context, postID string) ([]*travelone.Like, error) {
+func (r *queryResolver) LikesByPost(ctx context.Context, postID string) ([]*ent.Like, error) {
 	panic(fmt.Errorf("not implemented: LikesByPost - likesByPost"))
 }
 
-// AllMarkers is the resolver for the allMarkers field.
-func (r *queryResolver) AllMarkers(ctx context.Context) ([]*travelone.Marker, error) {
+func (r *queryResolver) AllMarkers(ctx context.Context) ([]*ent.Marker, error) {
 	panic(fmt.Errorf("not implemented: AllMarkers - allMarkers"))
 }
 
-// AllPosts is the resolver for the allPosts field.
-func (r *queryResolver) AllPosts(ctx context.Context) ([]*travelone.Post, error) {
+func (r *queryResolver) AllPosts(ctx context.Context) ([]*ent.Post, error) {
 	panic(fmt.Errorf("not implemented: AllPosts - allPosts"))
 }
 
-// RequestsByAccountID is the resolver for the requestsByAccountId field.
-func (r *queryResolver) RequestsByAccountID(ctx context.Context, accountID string) ([]*travelone.Request, error) {
+func (r *queryResolver) RequestsByAccountID(ctx context.Context, accountID string) ([]*ent.Request, error) {
 	panic(fmt.Errorf("not implemented: RequestsByAccountID - requestsByAccountId"))
 }
 
-// RequestsByTargetID is the resolver for the requestsByTargetId field.
-func (r *queryResolver) RequestsByTargetID(ctx context.Context, targetAccountID string) ([]*travelone.Request, error) {
+func (r *queryResolver) RequestsByTargetID(ctx context.Context, targetAccountID string) ([]*ent.Request, error) {
 	panic(fmt.Errorf("not implemented: RequestsByTargetID - requestsByTargetId"))
 }
 
-// SessionByAccountID is the resolver for the sessionByAccountId field.
-func (r *queryResolver) SessionByAccountID(ctx context.Context, accountID string) (*travelone.Session, error) {
+func (r *queryResolver) SessionByAccountID(ctx context.Context, accountID string) (*ent.Session, error) {
 	panic(fmt.Errorf("not implemented: SessionByAccountID - sessionByAccountId"))
+}
+
+func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Query returns travelone.QueryResolver implementation.
