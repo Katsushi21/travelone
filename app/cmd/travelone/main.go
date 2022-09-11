@@ -6,18 +6,16 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/Katsushi21/travelone/database"
+	"github.com/Katsushi21/travelone/ent"
 	"github.com/Katsushi21/travelone/middleware"
+	"github.com/Katsushi21/travelone/resolvers"
 	"github.com/gin-contrib/sessions"
-	gormsessions "github.com/gin-contrib/sessions/gorm"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func graphqlHandler(db *gorm.DB) gin.HandlerFunc {
+func graphqlHandler(client *ent.Client) gin.HandlerFunc {
 	h := handler.NewDefaultServer(
-		graphql.NewExecutableSchema(
-			graphql.Config{Resolvers: &graphql.Resolver{DB: db}},
-		),
+		resolvers.NewSchema(client),
 	)
 
 	return func(c *gin.Context) {
@@ -26,19 +24,16 @@ func graphqlHandler(db *gorm.DB) gin.HandlerFunc {
 }
 
 func main() {
-	db := database.Connect()
 
 	log, _ := os.Create(os.Getenv("SERVER_LOG"))
 	gin.DefaultWriter = io.MultiWriter(log, os.Stdout)
 
-	store := gormsessions.NewStore(db, true, []byte("secret"))
-
 	r := gin.Default()
-	r.Use(sessions.Sessions("travelone", store))
 	r.Use(middleware.CorsConfig())
 	r.Use(middleware.GinContextToContextMiddleware())
 
-	r.POST("/graphql", graphqlHandler(db))
+	client := database.Connect()
+	r.POST("/graphql", graphqlHandler(client))
 	r.GET("/increment", func(c *gin.Context) {
 		session := sessions.Default(c)
 		var count int

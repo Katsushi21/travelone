@@ -1,0 +1,99 @@
+###############
+# scalar
+###############
+scalar Time
+scalar Upload
+
+type Mutation {
+  ###############
+  # Account
+  ###############
+  # CREATE
+  createAccount(input: CreateAccountInput!): Account!
+  # UPDATE
+  updateAccount(id: ID!, input: UpdateAccountInput!): Account!
+  # DELETE
+  deleteAccount(id: ID!): Account!
+  # LOGIN
+  loginQuery(email: String!, password: String!): Account!
+
+  ###############
+  # Comment
+  ###############
+  # CREATE
+  createComment(input: CreateCommentInput!): Comment!
+  # UPDATE
+  updateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  # DELETE
+  deleteComment(id: ID!): Comment!
+
+  ###############
+  # File
+  ###############
+  # UPLOAD
+  # uploadFile(input: UploadFile!): File!
+
+  ###############
+  # Friend
+  ###############
+  # CREATE
+  createFriend(input: CreateFriendInput!): Friend!
+  # DELETE
+  deleteFriend(accountID: ID!, friendID: ID!): Friend!
+
+  ###############
+  # Like
+  ###############
+  # CREATE
+  createLike(input: CreateLikeInput!): Like!
+  # DELETE
+  deleteLike(accountID: ID!, postID: ID!): Like!
+
+  ###############
+  # Marker
+  ###############
+  # CREATE
+  createMarker(input: CreateMarkerInput!): Marker!
+  # UPDATE
+  updateMarker(id: ID!, input: UpdateMarkerInput!): Marker!
+  # DELETE
+  deleteMarker(id: ID!): Marker!
+
+  ###############
+  # Mute
+  ###############
+  # CREATE
+  createMute(input: CreateMuteInput!): Mute!
+  # DELETE
+  deleteMute(accountID: ID!, muteID: ID!): Mute!
+
+  ###############
+  # Post
+  ###############
+  # CREATE
+  createPost(input: CreatePostInput!): Post!
+  # UPDATE
+  updatePost(id: ID!, input: UpdatePostInput!): Post!
+  # DELETE
+  deletePost(id: ID!): Post!
+
+  ###############
+  # Request
+  ###############
+  # CREATE
+  createRequest(input: CreateRequestInput!): Request!
+  # UPDATE
+  updateRequest(input: UpdateRequestInput!): Request!
+  # DELETE
+  deleteRequest(accountID: ID!, requestID: ID!): Request!
+
+  ###############
+  # Session
+  ###############
+  # CREATE
+  createSession(input: CreateSessionInput!): Session!
+  # UPDATE
+  updateSession(input: UpdateSessionInput!): Session!
+  # DELETE
+  deleteSession(session: String!, accountID: ID!): Session!
+}

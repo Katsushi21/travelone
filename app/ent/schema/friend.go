@@ -17,11 +17,15 @@ type Friend struct {
 func (Friend) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Friends"},
+		entgql.RelayConnection(),
+		entgql.QueryField(),
+		entgql.Mutations(entgql.MutationCreate()),
 	}
 }
 
 func (Friend) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		UuidMixin{},
 		TimeMixin{},
 	}
 }

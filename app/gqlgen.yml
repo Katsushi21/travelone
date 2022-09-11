@@ -1,25 +1,26 @@
 schema:
-  - ../schemas/*.graphql
-
-# exec:
-#   filename: graphql/generated.go
-#   package: graphql
-
-# model:
-#   filename: models/models_gen.go
-#   package: models
+  - ./travelone.graphql
+  - ./ent.graphql
 
 resolver:
   layout: follow-schema
-  dir: ./resolver
+  dir: ./resolvers
 
 autobind:
   - github.com/Katsushi21/travelone/ent
+  - github.com/Katsushi21/travelone/ent/account
+  - github.com/Katsushi21/travelone/ent/comment
+  - github.com/Katsushi21/travelone/ent/friend
+  - github.com/Katsushi21/travelone/ent/like
+  - github.com/Katsushi21/travelone/ent/marker
+  - github.com/Katsushi21/travelone/ent/mute
+  - github.com/Katsushi21/travelone/ent/post
+  - github.com/Katsushi21/travelone/ent/request
+  - github.com/Katsushi21/travelone/ent/session
 
 models:
   ID:
     model:
-      - github.com/99designs/gqlgen/graphql.String
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
@@ -28,3 +29,6 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+  Node:
+    model:
+      - github.com/Katsushi21/travelone/ent.Noder

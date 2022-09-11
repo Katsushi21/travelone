@@ -16,6 +16,12 @@ type Account struct {
 func (Account) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Accounts"},
+		entgql.RelayConnection(),
+		entgql.QueryField(),
+		entgql.Mutations(
+			entgql.MutationCreate(),
+			entgql.MutationUpdate(),
+		),
 	}
 }
 

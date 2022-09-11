@@ -17,6 +17,19 @@ type Session struct {
 func (Session) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Sessions"},
+		entgql.RelayConnection(),
+		entgql.QueryField(),
+		entgql.Mutations(
+			entgql.MutationCreate(),
+			entgql.MutationUpdate(),
+		),
+	}
+}
+
+func (Session) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		UuidMixin{},
+		TimeMixin{},
 	}
 }
 

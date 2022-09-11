@@ -1,17 +1,17 @@
 package database
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
-	"time"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	"entgo.io/ent/dialect"
+	"github.com/Katsushi21/travelone/ent"
+	"github.com/Katsushi21/travelone/ent/migrate"
 )
 
-func Connect() *gorm.DB {
+func Connect() *ent.Client {
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")
 	dbname := os.Getenv("POSTGRES_DBNAME")
@@ -20,38 +20,16 @@ func Connect() *gorm.DB {
 		"travel-db.com", 5432, user, dbname, password,
 	)
 
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
-		logger.Config{
-			SlowThreshold:             time.Second,
-			LogLevel:                  logger.Silent,
-			IgnoreRecordNotFoundError: true,
-			Colorful:                  true,
-		},
-	)
-
-	db, err := gorm.Open(
-		postgres.Open(dsn),
-		&gorm.Config{
-			PrepareStmt: true,
-			Logger:      newLogger,
-		},
-	)
+	client, err := ent.Open(dialect.Postgres, dsn)
 	if err != nil {
-		panic("failed to connect database")
+		log.Fatal("opening ent client", err)
+	}
+	if err := client.Schema.Create(
+		context.Background(),
+		migrate.WithGlobalUniqueID(true),
+	); err != nil {
+		log.Fatal("opening ent client", err)
 	}
 
-	db.AutoMigrate(
-		Account{},
-		Comment{},
-		Marker{},
-		Post{},
-		Request{},
-		Friend{},
-		Mute{},
-		Like{},
-		Session{},
-	)
-
-	return db
+	return client
 }
