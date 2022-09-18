@@ -9,17 +9,18 @@ import (
 
 	"github.com/Katsushi21/travelone"
 	"github.com/Katsushi21/travelone/ent"
+	"github.com/google/uuid"
 )
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, input ent.CreateAccountInput) (*ent.Account, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateAccount(ctx context.Context, id int, input ent.UpdateAccountInput) (*ent.Account, error) {
+func (r *mutationResolver) UpdateAccount(ctx context.Context, id uuid.UUID, input ent.UpdateAccountInput) (*ent.Account, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteAccount(ctx context.Context, id int) (*ent.Account, error) {
+func (r *mutationResolver) DeleteAccount(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -31,11 +32,11 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input ent.CreateCo
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateComment(ctx context.Context, id int, input ent.UpdateCommentInput) (*ent.Comment, error) {
+func (r *mutationResolver) UpdateComment(ctx context.Context, id uuid.UUID, input ent.UpdateCommentInput) (*ent.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteComment(ctx context.Context, id int) (*ent.Comment, error) {
+func (r *mutationResolver) DeleteComment(ctx context.Context, id uuid.UUID) (*ent.Comment, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -43,7 +44,7 @@ func (r *mutationResolver) CreateFriend(ctx context.Context, input ent.CreateFri
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteFriend(ctx context.Context, accountID int, friendID int) (*ent.Friend, error) {
+func (r *mutationResolver) DeleteFriend(ctx context.Context, accountID uuid.UUID, friendID uuid.UUID) (*ent.Friend, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -51,7 +52,7 @@ func (r *mutationResolver) CreateLike(ctx context.Context, input ent.CreateLikeI
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteLike(ctx context.Context, accountID int, postID int) (*ent.Like, error) {
+func (r *mutationResolver) DeleteLike(ctx context.Context, accountID uuid.UUID, postID uuid.UUID) (*ent.Like, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -59,11 +60,11 @@ func (r *mutationResolver) CreateMarker(ctx context.Context, input ent.CreateMar
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateMarker(ctx context.Context, id int, input ent.UpdateMarkerInput) (*ent.Marker, error) {
+func (r *mutationResolver) UpdateMarker(ctx context.Context, id uuid.UUID, input ent.UpdateMarkerInput) (*ent.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteMarker(ctx context.Context, id int) (*ent.Marker, error) {
+func (r *mutationResolver) DeleteMarker(ctx context.Context, id uuid.UUID) (*ent.Marker, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -71,7 +72,7 @@ func (r *mutationResolver) CreateMute(ctx context.Context, input ent.CreateMuteI
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteMute(ctx context.Context, accountID int, muteID int) (*ent.Mute, error) {
+func (r *mutationResolver) DeleteMute(ctx context.Context, accountID uuid.UUID, muteID uuid.UUID) (*ent.Mute, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -79,11 +80,11 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input ent.CreatePostI
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdatePost(ctx context.Context, id int, input ent.UpdatePostInput) (*ent.Post, error) {
+func (r *mutationResolver) UpdatePost(ctx context.Context, id uuid.UUID, input ent.UpdatePostInput) (*ent.Post, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeletePost(ctx context.Context, id int) (*ent.Post, error) {
+func (r *mutationResolver) DeletePost(ctx context.Context, id uuid.UUID) (*ent.Post, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -95,7 +96,7 @@ func (r *mutationResolver) UpdateRequest(ctx context.Context, input ent.UpdateRe
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteRequest(ctx context.Context, accountID int, requestID int) (*ent.Request, error) {
+func (r *mutationResolver) DeleteRequest(ctx context.Context, accountID uuid.UUID, requestID uuid.UUID) (*ent.Request, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
@@ -107,7 +108,7 @@ func (r *mutationResolver) UpdateSession(ctx context.Context, input ent.UpdateSe
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteSession(ctx context.Context, session string, accountID int) (*ent.Session, error) {
+func (r *mutationResolver) DeleteSession(ctx context.Context, session string, accountID uuid.UUID) (*ent.Session, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

@@ -17,6 +17,8 @@ import (
 	"github.com/Katsushi21/travelone/ent"
 	"github.com/Katsushi21/travelone/ent/account"
 	"github.com/Katsushi21/travelone/ent/request"
+	"github.com/Katsushi21/travelone/ent/schema/uuidgql"
+	"github.com/google/uuid"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -39,41 +41,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Account() AccountResolver
-	Comment() CommentResolver
-	Friend() FriendResolver
-	Like() LikeResolver
-	Marker() MarkerResolver
 	Mutation() MutationResolver
-	Mute() MuteResolver
-	Post() PostResolver
 	Query() QueryResolver
-	Request() RequestResolver
-	Session() SessionResolver
-	AccountWhereInput() AccountWhereInputResolver
-	CommentWhereInput() CommentWhereInputResolver
-	CreateAccountInput() CreateAccountInputResolver
-	CreateCommentInput() CreateCommentInputResolver
-	CreateFriendInput() CreateFriendInputResolver
-	CreateLikeInput() CreateLikeInputResolver
-	CreateMarkerInput() CreateMarkerInputResolver
-	CreateMuteInput() CreateMuteInputResolver
-	CreatePostInput() CreatePostInputResolver
-	CreateRequestInput() CreateRequestInputResolver
-	CreateSessionInput() CreateSessionInputResolver
-	FriendWhereInput() FriendWhereInputResolver
-	LikeWhereInput() LikeWhereInputResolver
-	MarkerWhereInput() MarkerWhereInputResolver
-	MuteWhereInput() MuteWhereInputResolver
-	PostWhereInput() PostWhereInputResolver
-	RequestWhereInput() RequestWhereInputResolver
-	SessionWhereInput() SessionWhereInputResolver
-	UpdateAccountInput() UpdateAccountInputResolver
-	UpdateCommentInput() UpdateCommentInputResolver
-	UpdateMarkerInput() UpdateMarkerInputResolver
-	UpdatePostInput() UpdatePostInputResolver
-	UpdateRequestInput() UpdateRequestInputResolver
-	UpdateSessionInput() UpdateSessionInputResolver
 }
 
 type DirectiveRoot struct {
@@ -210,20 +179,20 @@ type ComplexityRoot struct {
 		CreatePost    func(childComplexity int, input ent.CreatePostInput) int
 		CreateRequest func(childComplexity int, input ent.CreateRequestInput) int
 		CreateSession func(childComplexity int, input ent.CreateSessionInput) int
-		DeleteAccount func(childComplexity int, id int) int
-		DeleteComment func(childComplexity int, id int) int
-		DeleteFriend  func(childComplexity int, accountID int, friendID int) int
-		DeleteLike    func(childComplexity int, accountID int, postID int) int
-		DeleteMarker  func(childComplexity int, id int) int
-		DeleteMute    func(childComplexity int, accountID int, muteID int) int
-		DeletePost    func(childComplexity int, id int) int
-		DeleteRequest func(childComplexity int, accountID int, requestID int) int
-		DeleteSession func(childComplexity int, session string, accountID int) int
+		DeleteAccount func(childComplexity int, id uuid.UUID) int
+		DeleteComment func(childComplexity int, id uuid.UUID) int
+		DeleteFriend  func(childComplexity int, accountID uuid.UUID, friendID uuid.UUID) int
+		DeleteLike    func(childComplexity int, accountID uuid.UUID, postID uuid.UUID) int
+		DeleteMarker  func(childComplexity int, id uuid.UUID) int
+		DeleteMute    func(childComplexity int, accountID uuid.UUID, muteID uuid.UUID) int
+		DeletePost    func(childComplexity int, id uuid.UUID) int
+		DeleteRequest func(childComplexity int, accountID uuid.UUID, requestID uuid.UUID) int
+		DeleteSession func(childComplexity int, session string, accountID uuid.UUID) int
 		LoginQuery    func(childComplexity int, email string, password string) int
-		UpdateAccount func(childComplexity int, id int, input ent.UpdateAccountInput) int
-		UpdateComment func(childComplexity int, id int, input ent.UpdateCommentInput) int
-		UpdateMarker  func(childComplexity int, id int, input ent.UpdateMarkerInput) int
-		UpdatePost    func(childComplexity int, id int, input ent.UpdatePostInput) int
+		UpdateAccount func(childComplexity int, id uuid.UUID, input ent.UpdateAccountInput) int
+		UpdateComment func(childComplexity int, id uuid.UUID, input ent.UpdateCommentInput) int
+		UpdateMarker  func(childComplexity int, id uuid.UUID, input ent.UpdateMarkerInput) int
+		UpdatePost    func(childComplexity int, id uuid.UUID, input ent.UpdatePostInput) int
 		UpdateRequest func(childComplexity int, input ent.UpdateRequestInput) int
 		UpdateSession func(childComplexity int, input ent.UpdateSessionInput) int
 	}
@@ -287,8 +256,8 @@ type ComplexityRoot struct {
 		Likes    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.LikeOrder, where *ent.LikeWhereInput) int
 		Markers  func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MarkerOrder, where *ent.MarkerWhereInput) int
 		Mutes    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.MuteOrder, where *ent.MuteWhereInput) int
-		Node     func(childComplexity int, id int) int
-		Nodes    func(childComplexity int, ids []int) int
+		Node     func(childComplexity int, id uuid.UUID) int
+		Nodes    func(childComplexity int, ids []uuid.UUID) int
 		Posts    func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.PostOrder, where *ent.PostWhereInput) int
 		Requests func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.RequestOrder, where *ent.RequestWhereInput) int
 		Sessions func(childComplexity int, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SessionOrder, where *ent.SessionWhereInput) int
@@ -337,73 +306,36 @@ type ComplexityRoot struct {
 	}
 }
 
-type AccountResolver interface {
-	ID(ctx context.Context, obj *ent.Account) (int, error)
-}
-type CommentResolver interface {
-	ID(ctx context.Context, obj *ent.Comment) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Comment) (int, error)
-	PostID(ctx context.Context, obj *ent.Comment) (int, error)
-}
-type FriendResolver interface {
-	ID(ctx context.Context, obj *ent.Friend) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Friend) (int, error)
-	FriendID(ctx context.Context, obj *ent.Friend) (int, error)
-}
-type LikeResolver interface {
-	ID(ctx context.Context, obj *ent.Like) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Like) (int, error)
-	PostID(ctx context.Context, obj *ent.Like) (int, error)
-}
-type MarkerResolver interface {
-	ID(ctx context.Context, obj *ent.Marker) (int, error)
-
-	PostID(ctx context.Context, obj *ent.Marker) (int, error)
-}
 type MutationResolver interface {
 	CreateAccount(ctx context.Context, input ent.CreateAccountInput) (*ent.Account, error)
-	UpdateAccount(ctx context.Context, id int, input ent.UpdateAccountInput) (*ent.Account, error)
-	DeleteAccount(ctx context.Context, id int) (*ent.Account, error)
+	UpdateAccount(ctx context.Context, id uuid.UUID, input ent.UpdateAccountInput) (*ent.Account, error)
+	DeleteAccount(ctx context.Context, id uuid.UUID) (*ent.Account, error)
 	LoginQuery(ctx context.Context, email string, password string) (*ent.Account, error)
 	CreateComment(ctx context.Context, input ent.CreateCommentInput) (*ent.Comment, error)
-	UpdateComment(ctx context.Context, id int, input ent.UpdateCommentInput) (*ent.Comment, error)
-	DeleteComment(ctx context.Context, id int) (*ent.Comment, error)
+	UpdateComment(ctx context.Context, id uuid.UUID, input ent.UpdateCommentInput) (*ent.Comment, error)
+	DeleteComment(ctx context.Context, id uuid.UUID) (*ent.Comment, error)
 	CreateFriend(ctx context.Context, input ent.CreateFriendInput) (*ent.Friend, error)
-	DeleteFriend(ctx context.Context, accountID int, friendID int) (*ent.Friend, error)
+	DeleteFriend(ctx context.Context, accountID uuid.UUID, friendID uuid.UUID) (*ent.Friend, error)
 	CreateLike(ctx context.Context, input ent.CreateLikeInput) (*ent.Like, error)
-	DeleteLike(ctx context.Context, accountID int, postID int) (*ent.Like, error)
+	DeleteLike(ctx context.Context, accountID uuid.UUID, postID uuid.UUID) (*ent.Like, error)
 	CreateMarker(ctx context.Context, input ent.CreateMarkerInput) (*ent.Marker, error)
-	UpdateMarker(ctx context.Context, id int, input ent.UpdateMarkerInput) (*ent.Marker, error)
-	DeleteMarker(ctx context.Context, id int) (*ent.Marker, error)
+	UpdateMarker(ctx context.Context, id uuid.UUID, input ent.UpdateMarkerInput) (*ent.Marker, error)
+	DeleteMarker(ctx context.Context, id uuid.UUID) (*ent.Marker, error)
 	CreateMute(ctx context.Context, input ent.CreateMuteInput) (*ent.Mute, error)
-	DeleteMute(ctx context.Context, accountID int, muteID int) (*ent.Mute, error)
+	DeleteMute(ctx context.Context, accountID uuid.UUID, muteID uuid.UUID) (*ent.Mute, error)
 	CreatePost(ctx context.Context, input ent.CreatePostInput) (*ent.Post, error)
-	UpdatePost(ctx context.Context, id int, input ent.UpdatePostInput) (*ent.Post, error)
-	DeletePost(ctx context.Context, id int) (*ent.Post, error)
+	UpdatePost(ctx context.Context, id uuid.UUID, input ent.UpdatePostInput) (*ent.Post, error)
+	DeletePost(ctx context.Context, id uuid.UUID) (*ent.Post, error)
 	CreateRequest(ctx context.Context, input ent.CreateRequestInput) (*ent.Request, error)
 	UpdateRequest(ctx context.Context, input ent.UpdateRequestInput) (*ent.Request, error)
-	DeleteRequest(ctx context.Context, accountID int, requestID int) (*ent.Request, error)
+	DeleteRequest(ctx context.Context, accountID uuid.UUID, requestID uuid.UUID) (*ent.Request, error)
 	CreateSession(ctx context.Context, input ent.CreateSessionInput) (*ent.Session, error)
 	UpdateSession(ctx context.Context, input ent.UpdateSessionInput) (*ent.Session, error)
-	DeleteSession(ctx context.Context, session string, accountID int) (*ent.Session, error)
-}
-type MuteResolver interface {
-	ID(ctx context.Context, obj *ent.Mute) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Mute) (int, error)
-	MuteID(ctx context.Context, obj *ent.Mute) (int, error)
-}
-type PostResolver interface {
-	ID(ctx context.Context, obj *ent.Post) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Post) (int, error)
+	DeleteSession(ctx context.Context, session string, accountID uuid.UUID) (*ent.Session, error)
 }
 type QueryResolver interface {
-	Node(ctx context.Context, id int) (ent.Noder, error)
-	Nodes(ctx context.Context, ids []int) ([]ent.Noder, error)
+	Node(ctx context.Context, id uuid.UUID) (ent.Noder, error)
+	Nodes(ctx context.Context, ids []uuid.UUID) ([]ent.Noder, error)
 	Accounts(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.AccountOrder, where *ent.AccountWhereInput) (*ent.AccountConnection, error)
 	Comments(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.CommentOrder, where *ent.CommentWhereInput) (*ent.CommentConnection, error)
 	Friends(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.FriendOrder, where *ent.FriendWhereInput) (*ent.FriendConnection, error)
@@ -413,230 +345,6 @@ type QueryResolver interface {
 	Posts(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.PostOrder, where *ent.PostWhereInput) (*ent.PostConnection, error)
 	Requests(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.RequestOrder, where *ent.RequestWhereInput) (*ent.RequestConnection, error)
 	Sessions(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int, orderBy *ent.SessionOrder, where *ent.SessionWhereInput) (*ent.SessionConnection, error)
-}
-type RequestResolver interface {
-	ID(ctx context.Context, obj *ent.Request) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Request) (int, error)
-	RequestID(ctx context.Context, obj *ent.Request) (int, error)
-}
-type SessionResolver interface {
-	ID(ctx context.Context, obj *ent.Session) (int, error)
-
-	AccountID(ctx context.Context, obj *ent.Session) (int, error)
-}
-
-type AccountWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.AccountWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.AccountWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.AccountWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.AccountWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.AccountWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.AccountWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.AccountWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.AccountWhereInput, data *int) error
-}
-type CommentWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.CommentWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.CommentWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	AccountIDNeq(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	AccountIDIn(ctx context.Context, obj *ent.CommentWhereInput, data []int) error
-	AccountIDNotIn(ctx context.Context, obj *ent.CommentWhereInput, data []int) error
-	PostID(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	PostIDNeq(ctx context.Context, obj *ent.CommentWhereInput, data *int) error
-	PostIDIn(ctx context.Context, obj *ent.CommentWhereInput, data []int) error
-	PostIDNotIn(ctx context.Context, obj *ent.CommentWhereInput, data []int) error
-}
-type CreateAccountInputResolver interface {
-	PostIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-	CommentIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-	FriendIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-	MuteIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-	RequestIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-	LikeIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-	SessionIDs(ctx context.Context, obj *ent.CreateAccountInput, data []int) error
-}
-type CreateCommentInputResolver interface {
-	PostID(ctx context.Context, obj *ent.CreateCommentInput, data int) error
-	AccountID(ctx context.Context, obj *ent.CreateCommentInput, data int) error
-}
-type CreateFriendInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.CreateFriendInput, data int) error
-	FriendID(ctx context.Context, obj *ent.CreateFriendInput, data int) error
-}
-type CreateLikeInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.CreateLikeInput, data int) error
-	PostID(ctx context.Context, obj *ent.CreateLikeInput, data int) error
-}
-type CreateMarkerInputResolver interface {
-	PostID(ctx context.Context, obj *ent.CreateMarkerInput, data int) error
-}
-type CreateMuteInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.CreateMuteInput, data int) error
-	MuteID(ctx context.Context, obj *ent.CreateMuteInput, data int) error
-}
-type CreatePostInputResolver interface {
-	CommentIDs(ctx context.Context, obj *ent.CreatePostInput, data []int) error
-	MarkerID(ctx context.Context, obj *ent.CreatePostInput, data *int) error
-	AccountID(ctx context.Context, obj *ent.CreatePostInput, data int) error
-}
-type CreateRequestInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.CreateRequestInput, data int) error
-	RequestID(ctx context.Context, obj *ent.CreateRequestInput, data int) error
-}
-type CreateSessionInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.CreateSessionInput, data int) error
-}
-type FriendWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.FriendWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.FriendWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.FriendWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.FriendWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.FriendWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.FriendWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.FriendWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.FriendWhereInput, data *int) error
-}
-type LikeWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.LikeWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.LikeWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	AccountIDNeq(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	AccountIDIn(ctx context.Context, obj *ent.LikeWhereInput, data []int) error
-	AccountIDNotIn(ctx context.Context, obj *ent.LikeWhereInput, data []int) error
-	PostID(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	PostIDNeq(ctx context.Context, obj *ent.LikeWhereInput, data *int) error
-	PostIDIn(ctx context.Context, obj *ent.LikeWhereInput, data []int) error
-	PostIDNotIn(ctx context.Context, obj *ent.LikeWhereInput, data []int) error
-}
-type MarkerWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.MarkerWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.MarkerWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-
-	PostID(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	PostIDNeq(ctx context.Context, obj *ent.MarkerWhereInput, data *int) error
-	PostIDIn(ctx context.Context, obj *ent.MarkerWhereInput, data []int) error
-	PostIDNotIn(ctx context.Context, obj *ent.MarkerWhereInput, data []int) error
-}
-type MuteWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.MuteWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.MuteWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	AccountIDNeq(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	AccountIDIn(ctx context.Context, obj *ent.MuteWhereInput, data []int) error
-	AccountIDNotIn(ctx context.Context, obj *ent.MuteWhereInput, data []int) error
-	MuteID(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	MuteIDNeq(ctx context.Context, obj *ent.MuteWhereInput, data *int) error
-	MuteIDIn(ctx context.Context, obj *ent.MuteWhereInput, data []int) error
-	MuteIDNotIn(ctx context.Context, obj *ent.MuteWhereInput, data []int) error
-}
-type PostWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.PostWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.PostWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	AccountIDNeq(ctx context.Context, obj *ent.PostWhereInput, data *int) error
-	AccountIDIn(ctx context.Context, obj *ent.PostWhereInput, data []int) error
-	AccountIDNotIn(ctx context.Context, obj *ent.PostWhereInput, data []int) error
-}
-type RequestWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.RequestWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.RequestWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.RequestWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.RequestWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.RequestWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.RequestWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.RequestWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.RequestWhereInput, data *int) error
-}
-type SessionWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	IDNeq(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	IDIn(ctx context.Context, obj *ent.SessionWhereInput, data []int) error
-	IDNotIn(ctx context.Context, obj *ent.SessionWhereInput, data []int) error
-	IDGt(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	IDGte(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	IDLt(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	IDLte(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	AccountIDNeq(ctx context.Context, obj *ent.SessionWhereInput, data *int) error
-	AccountIDIn(ctx context.Context, obj *ent.SessionWhereInput, data []int) error
-	AccountIDNotIn(ctx context.Context, obj *ent.SessionWhereInput, data []int) error
-}
-type UpdateAccountInputResolver interface {
-	AddPostIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemovePostIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	AddCommentIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemoveCommentIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	AddFriendIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemoveFriendIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	AddMuteIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemoveMuteIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	AddRequestIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemoveRequestIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	AddLikeIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemoveLikeIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	AddSessionIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-	RemoveSessionIDs(ctx context.Context, obj *ent.UpdateAccountInput, data []int) error
-}
-type UpdateCommentInputResolver interface {
-	PostID(ctx context.Context, obj *ent.UpdateCommentInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.UpdateCommentInput, data *int) error
-}
-type UpdateMarkerInputResolver interface {
-	PostID(ctx context.Context, obj *ent.UpdateMarkerInput, data *int) error
-}
-type UpdatePostInputResolver interface {
-	AddCommentIDs(ctx context.Context, obj *ent.UpdatePostInput, data []int) error
-	RemoveCommentIDs(ctx context.Context, obj *ent.UpdatePostInput, data []int) error
-
-	MarkerID(ctx context.Context, obj *ent.UpdatePostInput, data *int) error
-
-	AccountID(ctx context.Context, obj *ent.UpdatePostInput, data *int) error
-}
-type UpdateRequestInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.UpdateRequestInput, data *int) error
-
-	RequestID(ctx context.Context, obj *ent.UpdateRequestInput, data *int) error
-}
-type UpdateSessionInputResolver interface {
-	AccountID(ctx context.Context, obj *ent.UpdateSessionInput, data *int) error
 }
 
 type executableSchema struct {
@@ -1297,7 +1005,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteAccount(childComplexity, args["id"].(int)), true
+		return e.complexity.Mutation.DeleteAccount(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteComment":
 		if e.complexity.Mutation.DeleteComment == nil {
@@ -1309,7 +1017,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteComment(childComplexity, args["id"].(int)), true
+		return e.complexity.Mutation.DeleteComment(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteFriend":
 		if e.complexity.Mutation.DeleteFriend == nil {
@@ -1321,7 +1029,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteFriend(childComplexity, args["accountID"].(int), args["friendID"].(int)), true
+		return e.complexity.Mutation.DeleteFriend(childComplexity, args["accountID"].(uuid.UUID), args["friendID"].(uuid.UUID)), true
 
 	case "Mutation.deleteLike":
 		if e.complexity.Mutation.DeleteLike == nil {
@@ -1333,7 +1041,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteLike(childComplexity, args["accountID"].(int), args["postID"].(int)), true
+		return e.complexity.Mutation.DeleteLike(childComplexity, args["accountID"].(uuid.UUID), args["postID"].(uuid.UUID)), true
 
 	case "Mutation.deleteMarker":
 		if e.complexity.Mutation.DeleteMarker == nil {
@@ -1345,7 +1053,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteMarker(childComplexity, args["id"].(int)), true
+		return e.complexity.Mutation.DeleteMarker(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteMute":
 		if e.complexity.Mutation.DeleteMute == nil {
@@ -1357,7 +1065,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteMute(childComplexity, args["accountID"].(int), args["muteID"].(int)), true
+		return e.complexity.Mutation.DeleteMute(childComplexity, args["accountID"].(uuid.UUID), args["muteID"].(uuid.UUID)), true
 
 	case "Mutation.deletePost":
 		if e.complexity.Mutation.DeletePost == nil {
@@ -1369,7 +1077,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeletePost(childComplexity, args["id"].(int)), true
+		return e.complexity.Mutation.DeletePost(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteRequest":
 		if e.complexity.Mutation.DeleteRequest == nil {
@@ -1381,7 +1089,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteRequest(childComplexity, args["accountID"].(int), args["requestID"].(int)), true
+		return e.complexity.Mutation.DeleteRequest(childComplexity, args["accountID"].(uuid.UUID), args["requestID"].(uuid.UUID)), true
 
 	case "Mutation.deleteSession":
 		if e.complexity.Mutation.DeleteSession == nil {
@@ -1393,7 +1101,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSession(childComplexity, args["session"].(string), args["accountID"].(int)), true
+		return e.complexity.Mutation.DeleteSession(childComplexity, args["session"].(string), args["accountID"].(uuid.UUID)), true
 
 	case "Mutation.loginQuery":
 		if e.complexity.Mutation.LoginQuery == nil {
@@ -1417,7 +1125,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateAccount(childComplexity, args["id"].(int), args["input"].(ent.UpdateAccountInput)), true
+		return e.complexity.Mutation.UpdateAccount(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateAccountInput)), true
 
 	case "Mutation.updateComment":
 		if e.complexity.Mutation.UpdateComment == nil {
@@ -1429,7 +1137,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateComment(childComplexity, args["id"].(int), args["input"].(ent.UpdateCommentInput)), true
+		return e.complexity.Mutation.UpdateComment(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateCommentInput)), true
 
 	case "Mutation.updateMarker":
 		if e.complexity.Mutation.UpdateMarker == nil {
@@ -1441,7 +1149,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMarker(childComplexity, args["id"].(int), args["input"].(ent.UpdateMarkerInput)), true
+		return e.complexity.Mutation.UpdateMarker(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateMarkerInput)), true
 
 	case "Mutation.updatePost":
 		if e.complexity.Mutation.UpdatePost == nil {
@@ -1453,7 +1161,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdatePost(childComplexity, args["id"].(int), args["input"].(ent.UpdatePostInput)), true
+		return e.complexity.Mutation.UpdatePost(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdatePostInput)), true
 
 	case "Mutation.updateRequest":
 		if e.complexity.Mutation.UpdateRequest == nil {
@@ -1778,7 +1486,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Node(childComplexity, args["id"].(int)), true
+		return e.complexity.Query.Node(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Query.nodes":
 		if e.complexity.Query.Nodes == nil {
@@ -1790,7 +1498,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]int)), true
+		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]uuid.UUID)), true
 
 	case "Query.posts":
 		if e.complexity.Query.Posts == nil {
@@ -3800,10 +3508,10 @@ func (ec *executionContext) field_Mutation_createSession_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3815,10 +3523,10 @@ func (ec *executionContext) field_Mutation_deleteAccount_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3830,19 +3538,19 @@ func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_deleteFriend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["accountID"] = arg0
-	var arg1 int
+	var arg1 uuid.UUID
 	if tmp, ok := rawArgs["friendID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("friendID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3854,19 +3562,19 @@ func (ec *executionContext) field_Mutation_deleteFriend_args(ctx context.Context
 func (ec *executionContext) field_Mutation_deleteLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["accountID"] = arg0
-	var arg1 int
+	var arg1 uuid.UUID
 	if tmp, ok := rawArgs["postID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3878,10 +3586,10 @@ func (ec *executionContext) field_Mutation_deleteLike_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deleteMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3893,19 +3601,19 @@ func (ec *executionContext) field_Mutation_deleteMarker_args(ctx context.Context
 func (ec *executionContext) field_Mutation_deleteMute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["accountID"] = arg0
-	var arg1 int
+	var arg1 uuid.UUID
 	if tmp, ok := rawArgs["muteID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3917,10 +3625,10 @@ func (ec *executionContext) field_Mutation_deleteMute_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deletePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3932,19 +3640,19 @@ func (ec *executionContext) field_Mutation_deletePost_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["accountID"] = arg0
-	var arg1 int
+	var arg1 uuid.UUID
 	if tmp, ok := rawArgs["requestID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3965,10 +3673,10 @@ func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Contex
 		}
 	}
 	args["session"] = arg0
-	var arg1 int
+	var arg1 uuid.UUID
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4004,10 +3712,10 @@ func (ec *executionContext) field_Mutation_loginQuery_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4028,10 +3736,10 @@ func (ec *executionContext) field_Mutation_updateAccount_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4052,10 +3760,10 @@ func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4076,10 +3784,10 @@ func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context
 func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4505,10 +4213,10 @@ func (ec *executionContext) field_Query_mutes_args(ctx context.Context, rawArgs 
 func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 uuid.UUID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4520,10 +4228,10 @@ func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs m
 func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []int
+	var arg0 []uuid.UUID
 	if tmp, ok := rawArgs["ids"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
-		arg0, err = ec.unmarshalNID2ᚕintᚄ(ctx, tmp)
+		arg0, err = ec.unmarshalNID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4764,7 +4472,7 @@ func (ec *executionContext) _Account_id(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Account().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4776,17 +4484,17 @@ func (ec *executionContext) _Account_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Account_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Account",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -6093,7 +5801,7 @@ func (ec *executionContext) _Comment_id(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Comment().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6105,17 +5813,17 @@ func (ec *executionContext) _Comment_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Comment_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Comment",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -6269,7 +5977,7 @@ func (ec *executionContext) _Comment_accountID(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Comment().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6281,17 +5989,17 @@ func (ec *executionContext) _Comment_accountID(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Comment_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Comment",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -6313,7 +6021,7 @@ func (ec *executionContext) _Comment_postID(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Comment().PostID(rctx, obj)
+		return obj.PostID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6325,17 +6033,17 @@ func (ec *executionContext) _Comment_postID(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Comment_postID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Comment",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -6527,8 +6235,8 @@ func (ec *executionContext) fieldContext_CommentConnection_edges(ctx context.Con
 	fc = &graphql.FieldContext{
 		Object:     "CommentConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "node":
@@ -6577,8 +6285,8 @@ func (ec *executionContext) fieldContext_CommentConnection_pageInfo(ctx context.
 	fc = &graphql.FieldContext{
 		Object:     "CommentConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "hasNextPage":
@@ -6757,7 +6465,7 @@ func (ec *executionContext) _Friend_id(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Friend().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6769,17 +6477,17 @@ func (ec *executionContext) _Friend_id(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Friend_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Friend",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -6889,7 +6597,7 @@ func (ec *executionContext) _Friend_accountID(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Friend().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6901,17 +6609,17 @@ func (ec *executionContext) _Friend_accountID(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Friend_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Friend",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -6933,7 +6641,7 @@ func (ec *executionContext) _Friend_friendID(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Friend().FriendID(rctx, obj)
+		return obj.FriendID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6945,17 +6653,17 @@ func (ec *executionContext) _Friend_friendID(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Friend_friendID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Friend",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -7395,7 +7103,7 @@ func (ec *executionContext) _Like_id(ctx context.Context, field graphql.Collecte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Like().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7407,17 +7115,17 @@ func (ec *executionContext) _Like_id(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Like_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Like",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -7504,7 +7212,7 @@ func (ec *executionContext) fieldContext_Like_updatedAt(ctx context.Context, fie
 	fc = &graphql.FieldContext{
 		Object:     "Like",
 		Field:      field,
-		IsMethod:   true,
+		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
@@ -7527,7 +7235,7 @@ func (ec *executionContext) _Like_accountID(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Like().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7539,17 +7247,17 @@ func (ec *executionContext) _Like_accountID(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Like_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Like",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -7571,7 +7279,7 @@ func (ec *executionContext) _Like_postID(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Like().PostID(rctx, obj)
+		return obj.PostID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7583,17 +7291,17 @@ func (ec *executionContext) _Like_postID(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Like_postID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Like",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -8013,7 +7721,7 @@ func (ec *executionContext) _Marker_id(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Marker().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8025,17 +7733,17 @@ func (ec *executionContext) _Marker_id(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Marker_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Marker",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -8277,7 +7985,7 @@ func (ec *executionContext) _Marker_postID(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Marker().PostID(rctx, obj)
+		return obj.PostID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8289,17 +7997,17 @@ func (ec *executionContext) _Marker_postID(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Marker_postID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Marker",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -8732,7 +8440,7 @@ func (ec *executionContext) _Mutation_updateAccount(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateAccount(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdateAccountInput))
+		return ec.resolvers.Mutation().UpdateAccount(rctx, fc.Args["id"].(uuid.UUID), fc.Args["input"].(ent.UpdateAccountInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8829,7 +8537,7 @@ func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteAccount(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Mutation().DeleteAccount(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9096,7 +8804,7 @@ func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateComment(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdateCommentInput))
+		return ec.resolvers.Mutation().UpdateComment(rctx, fc.Args["id"].(uuid.UUID), fc.Args["input"].(ent.UpdateCommentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9169,7 +8877,7 @@ func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteComment(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Mutation().DeleteComment(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9313,7 +9021,7 @@ func (ec *executionContext) _Mutation_deleteFriend(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteFriend(rctx, fc.Args["accountID"].(int), fc.Args["friendID"].(int))
+		return ec.resolvers.Mutation().DeleteFriend(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["friendID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9455,7 +9163,7 @@ func (ec *executionContext) _Mutation_deleteLike(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteLike(rctx, fc.Args["accountID"].(int), fc.Args["postID"].(int))
+		return ec.resolvers.Mutation().DeleteLike(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["postID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9599,7 +9307,7 @@ func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMarker(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdateMarkerInput))
+		return ec.resolvers.Mutation().UpdateMarker(rctx, fc.Args["id"].(uuid.UUID), fc.Args["input"].(ent.UpdateMarkerInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9672,7 +9380,7 @@ func (ec *executionContext) _Mutation_deleteMarker(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteMarker(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Mutation().DeleteMarker(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9816,7 +9524,7 @@ func (ec *executionContext) _Mutation_deleteMute(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteMute(rctx, fc.Args["accountID"].(int), fc.Args["muteID"].(int))
+		return ec.resolvers.Mutation().DeleteMute(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["muteID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9964,7 +9672,7 @@ func (ec *executionContext) _Mutation_updatePost(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdatePost(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdatePostInput))
+		return ec.resolvers.Mutation().UpdatePost(rctx, fc.Args["id"].(uuid.UUID), fc.Args["input"].(ent.UpdatePostInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10041,7 +9749,7 @@ func (ec *executionContext) _Mutation_deletePost(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeletePost(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Mutation().DeletePost(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10264,7 +9972,7 @@ func (ec *executionContext) _Mutation_deleteRequest(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteRequest(rctx, fc.Args["accountID"].(int), fc.Args["requestID"].(int))
+		return ec.resolvers.Mutation().DeleteRequest(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["requestID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10475,7 +10183,7 @@ func (ec *executionContext) _Mutation_deleteSession(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSession(rctx, fc.Args["session"].(string), fc.Args["accountID"].(int))
+		return ec.resolvers.Mutation().DeleteSession(rctx, fc.Args["session"].(string), fc.Args["accountID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10544,7 +10252,7 @@ func (ec *executionContext) _Mute_id(ctx context.Context, field graphql.Collecte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mute().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10556,17 +10264,17 @@ func (ec *executionContext) _Mute_id(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mute_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mute",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -10609,8 +10317,8 @@ func (ec *executionContext) fieldContext_Mute_createdAt(ctx context.Context, fie
 	fc = &graphql.FieldContext{
 		Object:     "Mute",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
 		},
@@ -10676,7 +10384,7 @@ func (ec *executionContext) _Mute_accountID(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mute().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10688,17 +10396,17 @@ func (ec *executionContext) _Mute_accountID(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mute_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mute",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -10720,7 +10428,7 @@ func (ec *executionContext) _Mute_muteID(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mute().MuteID(rctx, obj)
+		return obj.MuteID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10732,17 +10440,17 @@ func (ec *executionContext) _Mute_muteID(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mute_muteID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mute",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -11352,7 +11060,7 @@ func (ec *executionContext) _Post_id(ctx context.Context, field graphql.Collecte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Post().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11364,17 +11072,17 @@ func (ec *executionContext) _Post_id(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Post_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Post",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -11505,7 +11213,7 @@ func (ec *executionContext) fieldContext_Post_title(ctx context.Context, field g
 	fc = &graphql.FieldContext{
 		Object:     "Post",
 		Field:      field,
-		IsMethod:   true,
+		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
@@ -11616,7 +11324,7 @@ func (ec *executionContext) _Post_accountID(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Post().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11628,17 +11336,17 @@ func (ec *executionContext) _Post_accountID(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Post_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Post",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -12116,7 +11824,7 @@ func (ec *executionContext) _Query_node(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Node(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Query().Node(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12168,7 +11876,7 @@ func (ec *executionContext) _Query_nodes(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Nodes(rctx, fc.Args["ids"].([]int))
+		return ec.resolvers.Query().Nodes(rctx, fc.Args["ids"].([]uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12776,113 +12484,6 @@ func (ec *executionContext) fieldContext_Query_sessions(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_node(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Node(rctx, fc.Args["id"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(ent.Noder)
-	fc.Result = res
-	return ec.marshalONode2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐNoder(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("FieldContext.Child cannot be called on type INTERFACE")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_node_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_nodes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_nodes(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Nodes(rctx, fc.Args["ids"].([]string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]ent.Noder)
-	fc.Result = res
-	return ec.marshalNNode2ᚕgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐNoder(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_nodes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("FieldContext.Child cannot be called on type INTERFACE")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_nodes_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -13026,7 +12627,7 @@ func (ec *executionContext) _Request_id(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13038,17 +12639,17 @@ func (ec *executionContext) _Request_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Request",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -13091,8 +12692,8 @@ func (ec *executionContext) fieldContext_Request_createdAt(ctx context.Context, 
 	fc = &graphql.FieldContext{
 		Object:     "Request",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
 		},
@@ -13158,7 +12759,7 @@ func (ec *executionContext) _Request_accountID(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13170,17 +12771,17 @@ func (ec *executionContext) _Request_accountID(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Request",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -13202,7 +12803,7 @@ func (ec *executionContext) _Request_requestID(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().RequestID(rctx, obj)
+		return obj.RequestID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13214,17 +12815,17 @@ func (ec *executionContext) _Request_requestID(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_requestID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Request",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -13246,7 +12847,7 @@ func (ec *executionContext) _Request_status(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Request().Status(rctx, obj)
+		return obj.Status, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13267,8 +12868,8 @@ func (ec *executionContext) fieldContext_Request_status(ctx context.Context, fie
 	fc = &graphql.FieldContext{
 		Object:     "Request",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type RequestStatus does not have child fields")
 		},
@@ -13530,8 +13131,8 @@ func (ec *executionContext) fieldContext_RequestConnection_pageInfo(ctx context.
 	fc = &graphql.FieldContext{
 		Object:     "RequestConnection",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "hasNextPage":
@@ -13710,7 +13311,7 @@ func (ec *executionContext) _Session_id(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Session().ID(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13722,17 +13323,17 @@ func (ec *executionContext) _Session_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Session_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Session",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -13842,7 +13443,7 @@ func (ec *executionContext) _Session_accountID(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Session().AccountID(rctx, obj)
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13854,17 +13455,17 @@ func (ec *executionContext) _Session_accountID(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(uuid.UUID)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Session_accountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Session",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -16091,88 +15692,64 @@ func (ec *executionContext) unmarshalInputAccountWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.AccountWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -17173,88 +16750,64 @@ func (ec *executionContext) unmarshalInputCommentWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -17493,88 +17046,64 @@ func (ec *executionContext) unmarshalInputCommentWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().AccountIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().AccountIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().AccountIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().PostIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().PostIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CommentWhereInput().PostIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "hasPost":
@@ -17708,77 +17237,56 @@ func (ec *executionContext) unmarshalInputCreateAccountInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().PostIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "commentIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("commentIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.CommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().CommentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "friendIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("friendIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.FriendIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().FriendIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "muteIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.MuteIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().MuteIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "requestIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RequestIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().RequestIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "likeIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("likeIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.LikeIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().LikeIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "sessionIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sessionIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.SessionIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateAccountInput().SessionIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -17824,22 +17332,16 @@ func (ec *executionContext) unmarshalInputCreateCommentInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.PostID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateCommentInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateCommentInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -17877,22 +17379,16 @@ func (ec *executionContext) unmarshalInputCreateFriendInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateFriendInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "friendID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("friendID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.FriendID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateFriendInput().FriendID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -17930,22 +17426,16 @@ func (ec *executionContext) unmarshalInputCreateLikeInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateLikeInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.PostID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateLikeInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -18007,11 +17497,8 @@ func (ec *executionContext) unmarshalInputCreateMarkerInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.PostID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateMarkerInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -18049,22 +17536,16 @@ func (ec *executionContext) unmarshalInputCreateMuteInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateMuteInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "muteID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.MuteID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateMuteInput().MuteID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -18126,33 +17607,24 @@ func (ec *executionContext) unmarshalInputCreatePostInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("commentIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.CommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreatePostInput().CommentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "markerID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("markerID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.MarkerID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreatePostInput().MarkerID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreatePostInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -18198,22 +17670,16 @@ func (ec *executionContext) unmarshalInputCreateRequestInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateRequestInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "requestID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.RequestID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateRequestInput().RequestID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -18259,11 +17725,8 @@ func (ec *executionContext) unmarshalInputCreateSessionInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			it.AccountID, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.CreateSessionInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -18344,88 +17807,64 @@ func (ec *executionContext) unmarshalInputFriendWhereInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FriendWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -18634,88 +18073,64 @@ func (ec *executionContext) unmarshalInputLikeWhereInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -18850,88 +18265,64 @@ func (ec *executionContext) unmarshalInputLikeWhereInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().AccountIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().AccountIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().AccountIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().PostIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().PostIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.LikeWhereInput().PostIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "hasAccount":
@@ -19044,88 +18435,64 @@ func (ec *executionContext) unmarshalInputMarkerWhereInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -19572,44 +18939,32 @@ func (ec *executionContext) unmarshalInputMarkerWhereInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().PostIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().PostIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "postIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.PostIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MarkerWhereInput().PostIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "hasPost":
@@ -19706,88 +19061,64 @@ func (ec *executionContext) unmarshalInputMuteWhereInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -19922,88 +19253,64 @@ func (ec *executionContext) unmarshalInputMuteWhereInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().AccountIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().AccountIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().AccountIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "muteID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.MuteID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().MuteID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "muteIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.MuteIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().MuteIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "muteIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.MuteIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().MuteIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "muteIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.MuteIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.MuteWhereInput().MuteIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "hasAccount":
@@ -20116,88 +19423,64 @@ func (ec *executionContext) unmarshalInputPostWhereInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -20644,44 +19927,32 @@ func (ec *executionContext) unmarshalInputPostWhereInput(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().AccountIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().AccountIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.PostWhereInput().AccountIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "hasComments":
@@ -20810,88 +20081,64 @@ func (ec *executionContext) unmarshalInputRequestWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.RequestWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -21132,88 +20379,64 @@ func (ec *executionContext) unmarshalInputSessionWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.ID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().ID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.IDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDGt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idGTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDGTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDGte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLT":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLT, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDLt(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "idLTE":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.IDLTE, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "createdAt":
@@ -21348,44 +20571,32 @@ func (ec *executionContext) unmarshalInputSessionWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNEQ":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().AccountIDNeq(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().AccountIDIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "accountIDNotIn":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AccountIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.SessionWhereInput().AccountIDNotIn(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "session":
@@ -21599,154 +20810,112 @@ func (ec *executionContext) unmarshalInputUpdateAccountInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addPostIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddPostIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddPostIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removePostIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removePostIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemovePostIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemovePostIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "addCommentIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addCommentIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddCommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddCommentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeCommentIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeCommentIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveCommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemoveCommentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "addFriendIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addFriendIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddFriendIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddFriendIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeFriendIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeFriendIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveFriendIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemoveFriendIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "addMuteIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addMuteIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddMuteIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddMuteIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeMuteIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeMuteIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveMuteIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemoveMuteIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "addRequestIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addRequestIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddRequestIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddRequestIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeRequestIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeRequestIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveRequestIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemoveRequestIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "addLikeIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addLikeIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddLikeIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddLikeIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeLikeIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeLikeIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveLikeIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemoveLikeIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "addSessionIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addSessionIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddSessionIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().AddSessionIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeSessionIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeSessionIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveSessionIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateAccountInput().RemoveSessionIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -21792,11 +20961,8 @@ func (ec *executionContext) unmarshalInputUpdateCommentInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateCommentInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "clearAccount":
@@ -21811,11 +20977,8 @@ func (ec *executionContext) unmarshalInputUpdateCommentInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateCommentInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -21877,11 +21040,8 @@ func (ec *executionContext) unmarshalInputUpdateMarkerInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.PostID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateMarkerInput().PostID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -21935,22 +21095,16 @@ func (ec *executionContext) unmarshalInputUpdatePostInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addCommentIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.AddCommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdatePostInput().AddCommentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "removeCommentIDs":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeCommentIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.RemoveCommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdatePostInput().RemoveCommentIDs(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "clearMarker":
@@ -21965,11 +21119,8 @@ func (ec *executionContext) unmarshalInputUpdatePostInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("markerID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.MarkerID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdatePostInput().MarkerID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "clearAccount":
@@ -21984,11 +21135,8 @@ func (ec *executionContext) unmarshalInputUpdatePostInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdatePostInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -22034,11 +21182,8 @@ func (ec *executionContext) unmarshalInputUpdateRequestInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateRequestInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		case "clearRequest":
@@ -22053,11 +21198,8 @@ func (ec *executionContext) unmarshalInputUpdateRequestInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.RequestID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateRequestInput().RequestID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -22103,11 +21245,8 @@ func (ec *executionContext) unmarshalInputUpdateSessionInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
 			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.UpdateSessionInput().AccountID(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -22189,25 +21328,12 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Account")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Account_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Account_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Account_createdAt(ctx, field, obj)
@@ -22470,11 +21596,6 @@ func (ec *executionContext) _AccountConnection(ctx context.Context, sel ast.Sele
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -22529,24 +21650,12 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Comment")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Comment_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Comment_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Comment_createdAt(ctx, field, obj)
@@ -22569,45 +21678,19 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Comment_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Comment_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "postID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Comment_postID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Comment_postID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "post":
 			field := field
 
@@ -22741,25 +21824,12 @@ func (ec *executionContext) _Friend(ctx context.Context, sel ast.SelectionSet, o
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Friend")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Friend_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Friend_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Friend_createdAt(ctx, field, obj)
@@ -22775,45 +21845,19 @@ func (ec *executionContext) _Friend(ctx context.Context, sel ast.SelectionSet, o
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Friend_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Friend_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "friendID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Friend_friendID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Friend_friendID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "account":
 			field := field
 
@@ -22893,11 +21937,6 @@ func (ec *executionContext) _FriendConnection(ctx context.Context, sel ast.Selec
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -22952,24 +21991,12 @@ func (ec *executionContext) _Like(ctx context.Context, sel ast.SelectionSet, obj
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Like")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Like_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Like_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Like_createdAt(ctx, field, obj)
@@ -22985,45 +22012,19 @@ func (ec *executionContext) _Like(ctx context.Context, sel ast.SelectionSet, obj
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Like_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Like_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "postID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Like_postID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Like_postID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "account":
 			field := field
 
@@ -23103,11 +22104,6 @@ func (ec *executionContext) _LikeConnection(ctx context.Context, sel ast.Selecti
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23162,24 +22158,12 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Marker")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Marker_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Marker_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Marker_createdAt(ctx, field, obj)
@@ -23216,25 +22200,12 @@ func (ec *executionContext) _Marker(ctx context.Context, sel ast.SelectionSet, o
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "postID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Marker_postID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Marker_postID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "post":
 			field := field
 
@@ -23326,11 +22297,6 @@ func (ec *executionContext) _MarkerEdge(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23608,25 +22574,12 @@ func (ec *executionContext) _Mute(ctx context.Context, sel ast.SelectionSet, obj
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mute")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Mute_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Mute_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Mute_createdAt(ctx, field, obj)
@@ -23642,45 +22595,19 @@ func (ec *executionContext) _Mute(ctx context.Context, sel ast.SelectionSet, obj
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Mute_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Mute_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "muteID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Mute_muteID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Mute_muteID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "account":
 			field := field
 
@@ -23760,11 +22687,6 @@ func (ec *executionContext) _MuteConnection(ctx context.Context, sel ast.Selecti
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23862,24 +22784,12 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Post")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Post_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Post_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Post_createdAt(ctx, field, obj)
@@ -23916,25 +22826,12 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Post_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Post_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "comments":
 			field := field
 
@@ -24060,11 +22957,6 @@ func (ec *executionContext) _PostEdge(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -24345,49 +23237,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "node":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_node(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "nodes":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_nodes(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
 		case "__type":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -24422,25 +23271,12 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Request")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Request_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Request_createdAt(ctx, field, obj)
@@ -24456,58 +23292,26 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Request_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "requestID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Request_requestID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Request_requestID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "status":
-			field := field
 
 			out.Values[i] = ec._Request_status(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "account":
 			field := field
 
@@ -24587,11 +23391,6 @@ func (ec *executionContext) _RequestConnection(ctx context.Context, sel ast.Sele
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -24646,25 +23445,12 @@ func (ec *executionContext) _Session(ctx context.Context, sel ast.SelectionSet, 
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Session")
 		case "id":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Session_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Session_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "createdAt":
 
 			out.Values[i] = ec._Session_createdAt(ctx, field, obj)
@@ -24680,25 +23466,12 @@ func (ec *executionContext) _Session(ctx context.Context, sel ast.SelectionSet, 
 				atomic.AddUint32(&invalids, 1)
 			}
 		case "accountID":
-			field := field
 
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Session_accountID(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
+			out.Values[i] = ec._Session_accountID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
 			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		case "session":
 
 			out.Values[i] = ec._Session_session(ctx, field, obj)
@@ -24795,7 +23568,7 @@ func (ec *executionContext) _SessionEdge(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._SessionEdge_cursor(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -25363,13 +24136,13 @@ func (ec *executionContext) unmarshalNFriendWhereInput2ᚖgithubᚗcomᚋKatsush
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNID2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
+func (ec *executionContext) unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v interface{}) (uuid.UUID, error) {
+	res, err := uuidgql.UnmarshalUUID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
+func (ec *executionContext) marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, sel ast.SelectionSet, v uuid.UUID) graphql.Marshaler {
+	res := uuidgql.MarshalUUID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -25378,16 +24151,16 @@ func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.Selectio
 	return res
 }
 
-func (ec *executionContext) unmarshalNID2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {
+func (ec *executionContext) unmarshalNID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, v interface{}) ([]uuid.UUID, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]int, len(vSlice))
+	res := make([]uuid.UUID, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2int(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -25395,10 +24168,10 @@ func (ec *executionContext) unmarshalNID2ᚕintᚄ(ctx context.Context, v interf
 	return res, nil
 }
 
-func (ec *executionContext) marshalNID2ᚕintᚄ(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
+func (ec *executionContext) marshalNID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, sel ast.SelectionSet, v []uuid.UUID) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNID2int(ctx, sel, v[i])
+		ret[i] = ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -26716,7 +25489,7 @@ func (ec *executionContext) unmarshalOFriendWhereInput2ᚖgithubᚗcomᚋKatsush
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOID2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {
+func (ec *executionContext) unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, v interface{}) ([]uuid.UUID, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -26725,10 +25498,10 @@ func (ec *executionContext) unmarshalOID2ᚕintᚄ(ctx context.Context, v interf
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]int, len(vSlice))
+	res := make([]uuid.UUID, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2int(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -26736,13 +25509,13 @@ func (ec *executionContext) unmarshalOID2ᚕintᚄ(ctx context.Context, v interf
 	return res, nil
 }
 
-func (ec *executionContext) marshalOID2ᚕintᚄ(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
+func (ec *executionContext) marshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, sel ast.SelectionSet, v []uuid.UUID) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNID2int(ctx, sel, v[i])
+		ret[i] = ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -26754,19 +25527,19 @@ func (ec *executionContext) marshalOID2ᚕintᚄ(ctx context.Context, sel ast.Se
 	return ret
 }
 
-func (ec *executionContext) unmarshalOID2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+func (ec *executionContext) unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v interface{}) (*uuid.UUID, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := graphql.UnmarshalInt(v)
+	res, err := uuidgql.UnmarshalUUID(v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOID2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+func (ec *executionContext) marshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, sel ast.SelectionSet, v *uuid.UUID) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	res := graphql.MarshalInt(*v)
+	res := uuidgql.MarshalUUID(*v)
 	return res
 }
 
