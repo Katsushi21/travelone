@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 
+	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/Katsushi21/travelone/database"
 	"github.com/Katsushi21/travelone/ent"
@@ -17,6 +18,7 @@ func graphqlHandler(client *ent.Client) gin.HandlerFunc {
 	h := handler.NewDefaultServer(
 		resolvers.NewSchema(client),
 	)
+	h.Use(entgql.Transactioner{TxOpener: client})
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)

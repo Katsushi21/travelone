@@ -39,7 +39,7 @@ type Mutation {
   # CREATE
   createFriend(input: CreateFriendInput!): Friend!
   # DELETE
-  deleteFriend(accountID: ID!, friendID: ID!): Friend!
+  deleteFriend(id: ID!): Friend!
 
   ###############
   # Like
@@ -47,7 +47,7 @@ type Mutation {
   # CREATE
   createLike(input: CreateLikeInput!): Like!
   # DELETE
-  deleteLike(accountID: ID!, postID: ID!): Like!
+  deleteLike(id: ID!): Like!
 
   ###############
   # Marker
@@ -65,7 +65,7 @@ type Mutation {
   # CREATE
   createMute(input: CreateMuteInput!): Mute!
   # DELETE
-  deleteMute(accountID: ID!, muteID: ID!): Mute!
+  deleteMute(id: ID!): Mute!
 
   ###############
   # Post
@@ -83,9 +83,9 @@ type Mutation {
   # CREATE
   createRequest(input: CreateRequestInput!): Request!
   # UPDATE
-  updateRequest(input: UpdateRequestInput!): Request!
+  updateRequest(id: ID!, input: UpdateRequestInput!): Request!
   # DELETE
-  deleteRequest(accountID: ID!, requestID: ID!): Request!
+  deleteRequest(id: ID!): Request!
 
   ###############
   # Session
@@ -93,7 +93,7 @@ type Mutation {
   # CREATE
   createSession(input: CreateSessionInput!): Session!
   # UPDATE
-  updateSession(input: UpdateSessionInput!): Session!
+  updateSession(id: ID!, input: UpdateSessionInput!): Session!
   # DELETE
-  deleteSession(session: String!, accountID: ID!): Session!
+  deleteSession(id: ID!): Session!
 }

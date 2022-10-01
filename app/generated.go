@@ -181,20 +181,20 @@ type ComplexityRoot struct {
 		CreateSession func(childComplexity int, input ent.CreateSessionInput) int
 		DeleteAccount func(childComplexity int, id uuid.UUID) int
 		DeleteComment func(childComplexity int, id uuid.UUID) int
-		DeleteFriend  func(childComplexity int, accountID uuid.UUID, friendID uuid.UUID) int
-		DeleteLike    func(childComplexity int, accountID uuid.UUID, postID uuid.UUID) int
+		DeleteFriend  func(childComplexity int, id uuid.UUID) int
+		DeleteLike    func(childComplexity int, id uuid.UUID) int
 		DeleteMarker  func(childComplexity int, id uuid.UUID) int
-		DeleteMute    func(childComplexity int, accountID uuid.UUID, muteID uuid.UUID) int
+		DeleteMute    func(childComplexity int, id uuid.UUID) int
 		DeletePost    func(childComplexity int, id uuid.UUID) int
-		DeleteRequest func(childComplexity int, accountID uuid.UUID, requestID uuid.UUID) int
-		DeleteSession func(childComplexity int, session string, accountID uuid.UUID) int
+		DeleteRequest func(childComplexity int, id uuid.UUID) int
+		DeleteSession func(childComplexity int, id uuid.UUID) int
 		LoginQuery    func(childComplexity int, email string, password string) int
 		UpdateAccount func(childComplexity int, id uuid.UUID, input ent.UpdateAccountInput) int
 		UpdateComment func(childComplexity int, id uuid.UUID, input ent.UpdateCommentInput) int
 		UpdateMarker  func(childComplexity int, id uuid.UUID, input ent.UpdateMarkerInput) int
 		UpdatePost    func(childComplexity int, id uuid.UUID, input ent.UpdatePostInput) int
-		UpdateRequest func(childComplexity int, input ent.UpdateRequestInput) int
-		UpdateSession func(childComplexity int, input ent.UpdateSessionInput) int
+		UpdateRequest func(childComplexity int, id uuid.UUID, input ent.UpdateRequestInput) int
+		UpdateSession func(childComplexity int, id uuid.UUID, input ent.UpdateSessionInput) int
 	}
 
 	Mute struct {
@@ -315,23 +315,23 @@ type MutationResolver interface {
 	UpdateComment(ctx context.Context, id uuid.UUID, input ent.UpdateCommentInput) (*ent.Comment, error)
 	DeleteComment(ctx context.Context, id uuid.UUID) (*ent.Comment, error)
 	CreateFriend(ctx context.Context, input ent.CreateFriendInput) (*ent.Friend, error)
-	DeleteFriend(ctx context.Context, accountID uuid.UUID, friendID uuid.UUID) (*ent.Friend, error)
+	DeleteFriend(ctx context.Context, id uuid.UUID) (*ent.Friend, error)
 	CreateLike(ctx context.Context, input ent.CreateLikeInput) (*ent.Like, error)
-	DeleteLike(ctx context.Context, accountID uuid.UUID, postID uuid.UUID) (*ent.Like, error)
+	DeleteLike(ctx context.Context, id uuid.UUID) (*ent.Like, error)
 	CreateMarker(ctx context.Context, input ent.CreateMarkerInput) (*ent.Marker, error)
 	UpdateMarker(ctx context.Context, id uuid.UUID, input ent.UpdateMarkerInput) (*ent.Marker, error)
 	DeleteMarker(ctx context.Context, id uuid.UUID) (*ent.Marker, error)
 	CreateMute(ctx context.Context, input ent.CreateMuteInput) (*ent.Mute, error)
-	DeleteMute(ctx context.Context, accountID uuid.UUID, muteID uuid.UUID) (*ent.Mute, error)
+	DeleteMute(ctx context.Context, id uuid.UUID) (*ent.Mute, error)
 	CreatePost(ctx context.Context, input ent.CreatePostInput) (*ent.Post, error)
 	UpdatePost(ctx context.Context, id uuid.UUID, input ent.UpdatePostInput) (*ent.Post, error)
 	DeletePost(ctx context.Context, id uuid.UUID) (*ent.Post, error)
 	CreateRequest(ctx context.Context, input ent.CreateRequestInput) (*ent.Request, error)
-	UpdateRequest(ctx context.Context, input ent.UpdateRequestInput) (*ent.Request, error)
-	DeleteRequest(ctx context.Context, accountID uuid.UUID, requestID uuid.UUID) (*ent.Request, error)
+	UpdateRequest(ctx context.Context, id uuid.UUID, input ent.UpdateRequestInput) (*ent.Request, error)
+	DeleteRequest(ctx context.Context, id uuid.UUID) (*ent.Request, error)
 	CreateSession(ctx context.Context, input ent.CreateSessionInput) (*ent.Session, error)
-	UpdateSession(ctx context.Context, input ent.UpdateSessionInput) (*ent.Session, error)
-	DeleteSession(ctx context.Context, session string, accountID uuid.UUID) (*ent.Session, error)
+	UpdateSession(ctx context.Context, id uuid.UUID, input ent.UpdateSessionInput) (*ent.Session, error)
+	DeleteSession(ctx context.Context, id uuid.UUID) (*ent.Session, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id uuid.UUID) (ent.Noder, error)
@@ -1029,7 +1029,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteFriend(childComplexity, args["accountID"].(uuid.UUID), args["friendID"].(uuid.UUID)), true
+		return e.complexity.Mutation.DeleteFriend(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteLike":
 		if e.complexity.Mutation.DeleteLike == nil {
@@ -1041,7 +1041,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteLike(childComplexity, args["accountID"].(uuid.UUID), args["postID"].(uuid.UUID)), true
+		return e.complexity.Mutation.DeleteLike(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteMarker":
 		if e.complexity.Mutation.DeleteMarker == nil {
@@ -1065,7 +1065,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteMute(childComplexity, args["accountID"].(uuid.UUID), args["muteID"].(uuid.UUID)), true
+		return e.complexity.Mutation.DeleteMute(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deletePost":
 		if e.complexity.Mutation.DeletePost == nil {
@@ -1089,7 +1089,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteRequest(childComplexity, args["accountID"].(uuid.UUID), args["requestID"].(uuid.UUID)), true
+		return e.complexity.Mutation.DeleteRequest(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.deleteSession":
 		if e.complexity.Mutation.DeleteSession == nil {
@@ -1101,7 +1101,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSession(childComplexity, args["session"].(string), args["accountID"].(uuid.UUID)), true
+		return e.complexity.Mutation.DeleteSession(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Mutation.loginQuery":
 		if e.complexity.Mutation.LoginQuery == nil {
@@ -1173,7 +1173,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateRequest(childComplexity, args["input"].(ent.UpdateRequestInput)), true
+		return e.complexity.Mutation.UpdateRequest(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateRequestInput)), true
 
 	case "Mutation.updateSession":
 		if e.complexity.Mutation.UpdateSession == nil {
@@ -1185,7 +1185,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateSession(childComplexity, args["input"].(ent.UpdateSessionInput)), true
+		return e.complexity.Mutation.UpdateSession(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateSessionInput)), true
 
 	case "Mute.account":
 		if e.complexity.Mute.Account == nil {
@@ -1846,7 +1846,7 @@ type Mutation {
   # CREATE
   createFriend(input: CreateFriendInput!): Friend!
   # DELETE
-  deleteFriend(accountID: ID!, friendID: ID!): Friend!
+  deleteFriend(id: ID!): Friend!
 
   ###############
   # Like
@@ -1854,7 +1854,7 @@ type Mutation {
   # CREATE
   createLike(input: CreateLikeInput!): Like!
   # DELETE
-  deleteLike(accountID: ID!, postID: ID!): Like!
+  deleteLike(id: ID!): Like!
 
   ###############
   # Marker
@@ -1872,7 +1872,7 @@ type Mutation {
   # CREATE
   createMute(input: CreateMuteInput!): Mute!
   # DELETE
-  deleteMute(accountID: ID!, muteID: ID!): Mute!
+  deleteMute(id: ID!): Mute!
 
   ###############
   # Post
@@ -1890,9 +1890,9 @@ type Mutation {
   # CREATE
   createRequest(input: CreateRequestInput!): Request!
   # UPDATE
-  updateRequest(input: UpdateRequestInput!): Request!
+  updateRequest(id: ID!, input: UpdateRequestInput!): Request!
   # DELETE
-  deleteRequest(accountID: ID!, requestID: ID!): Request!
+  deleteRequest(id: ID!): Request!
 
   ###############
   # Session
@@ -1900,9 +1900,9 @@ type Mutation {
   # CREATE
   createSession(input: CreateSessionInput!): Session!
   # UPDATE
-  updateSession(input: UpdateSessionInput!): Session!
+  updateSession(id: ID!, input: UpdateSessionInput!): Session!
   # DELETE
-  deleteSession(session: String!, accountID: ID!): Session!
+  deleteSession(id: ID!): Session!
 }
 `, BuiltIn: false},
 	{Name: "./ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
@@ -3539,23 +3539,14 @@ func (ec *executionContext) field_Mutation_deleteFriend_args(ctx context.Context
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["accountID"] = arg0
-	var arg1 uuid.UUID
-	if tmp, ok := rawArgs["friendID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("friendID"))
-		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["friendID"] = arg1
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -3563,23 +3554,14 @@ func (ec *executionContext) field_Mutation_deleteLike_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["accountID"] = arg0
-	var arg1 uuid.UUID
-	if tmp, ok := rawArgs["postID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["postID"] = arg1
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -3602,23 +3584,14 @@ func (ec *executionContext) field_Mutation_deleteMute_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["accountID"] = arg0
-	var arg1 uuid.UUID
-	if tmp, ok := rawArgs["muteID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteID"))
-		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["muteID"] = arg1
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -3641,47 +3614,29 @@ func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Contex
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["accountID"] = arg0
-	var arg1 uuid.UUID
-	if tmp, ok := rawArgs["requestID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestID"))
-		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["requestID"] = arg1
+	args["id"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["session"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("session"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["session"] = arg0
-	var arg1 uuid.UUID
-	if tmp, ok := rawArgs["accountID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg1, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["accountID"] = arg1
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -3808,30 +3763,48 @@ func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.UpdateRequestInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateRequestInput2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐUpdateRequestInput(ctx, tmp)
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["id"] = arg0
+	var arg1 ent.UpdateRequestInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateRequestInput2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐUpdateRequestInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_updateSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.UpdateSessionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateSessionInput2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐUpdateSessionInput(ctx, tmp)
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["id"] = arg0
+	var arg1 ent.UpdateSessionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateSessionInput2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐUpdateSessionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -9021,7 +8994,7 @@ func (ec *executionContext) _Mutation_deleteFriend(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteFriend(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["friendID"].(uuid.UUID))
+		return ec.resolvers.Mutation().DeleteFriend(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9163,7 +9136,7 @@ func (ec *executionContext) _Mutation_deleteLike(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteLike(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["postID"].(uuid.UUID))
+		return ec.resolvers.Mutation().DeleteLike(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9524,7 +9497,7 @@ func (ec *executionContext) _Mutation_deleteMute(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteMute(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["muteID"].(uuid.UUID))
+		return ec.resolvers.Mutation().DeleteMute(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9899,7 +9872,7 @@ func (ec *executionContext) _Mutation_updateRequest(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateRequest(rctx, fc.Args["input"].(ent.UpdateRequestInput))
+		return ec.resolvers.Mutation().UpdateRequest(rctx, fc.Args["id"].(uuid.UUID), fc.Args["input"].(ent.UpdateRequestInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9972,7 +9945,7 @@ func (ec *executionContext) _Mutation_deleteRequest(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteRequest(rctx, fc.Args["accountID"].(uuid.UUID), fc.Args["requestID"].(uuid.UUID))
+		return ec.resolvers.Mutation().DeleteRequest(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10114,7 +10087,7 @@ func (ec *executionContext) _Mutation_updateSession(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateSession(rctx, fc.Args["input"].(ent.UpdateSessionInput))
+		return ec.resolvers.Mutation().UpdateSession(rctx, fc.Args["id"].(uuid.UUID), fc.Args["input"].(ent.UpdateSessionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10183,7 +10156,7 @@ func (ec *executionContext) _Mutation_deleteSession(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSession(rctx, fc.Args["session"].(string), fc.Args["accountID"].(uuid.UUID))
+		return ec.resolvers.Mutation().DeleteSession(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
