@@ -21,7 +21,13 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, id uuid.UUID, inpu
 }
 
 func (r *mutationResolver) DeleteAccount(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	return r.client.Account.DeleteOneID(id).Exec(ctx)
+	account, err := r.client.Account.Get(ctx, id)
+	if err != nil {
+		return account, err
+	}
+
+	err = r.client.Account.DeleteOneID(id).Exec(ctx)
+	return account, err
 }
 
 func (r *mutationResolver) LoginQuery(ctx context.Context, email string, password string) (*ent.Account, error) {
@@ -37,7 +43,13 @@ func (r *mutationResolver) UpdateComment(ctx context.Context, id uuid.UUID, inpu
 }
 
 func (r *mutationResolver) DeleteComment(ctx context.Context, id uuid.UUID) (*ent.Comment, error) {
-	panic(fmt.Errorf("not implemented"))
+	comment, err := r.client.Comment.Get(ctx, id)
+	if err != nil {
+		return comment, err
+	}
+
+	err = r.client.Comment.DeleteOneID(id).Exec(ctx)
+	return comment, err
 }
 
 func (r *mutationResolver) CreateFriend(ctx context.Context, input ent.CreateFriendInput) (*ent.Friend, error) {
