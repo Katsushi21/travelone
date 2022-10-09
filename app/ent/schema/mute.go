@@ -18,9 +18,6 @@ type Mute struct {
 func (Mute) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Mutes"},
-		entgql.RelayConnection(),
-		entgql.QueryField(),
-		entgql.Mutations(entgql.MutationCreate()),
 	}
 }
 

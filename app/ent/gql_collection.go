@@ -183,9 +183,6 @@ func newAccountPaginateArgs(rv map[string]interface{}) *accountPaginateArgs {
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*AccountWhereInput); ok {
-		args.opts = append(args.opts, WithAccountFilter(v.Filter))
-	}
 	return args
 }
 
@@ -274,9 +271,6 @@ func newCommentPaginateArgs(rv map[string]interface{}) *commentPaginateArgs {
 				args.opts = append(args.opts, WithCommentOrder(v))
 			}
 		}
-	}
-	if v, ok := rv[whereField].(*CommentWhereInput); ok {
-		args.opts = append(args.opts, WithCommentFilter(v.Filter))
 	}
 	return args
 }
@@ -367,9 +361,6 @@ func newFriendPaginateArgs(rv map[string]interface{}) *friendPaginateArgs {
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*FriendWhereInput); ok {
-		args.opts = append(args.opts, WithFriendFilter(v.Filter))
-	}
 	return args
 }
 
@@ -459,9 +450,6 @@ func newLikePaginateArgs(rv map[string]interface{}) *likePaginateArgs {
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*LikeWhereInput); ok {
-		args.opts = append(args.opts, WithLikeFilter(v.Filter))
-	}
 	return args
 }
 
@@ -540,9 +528,6 @@ func newMarkerPaginateArgs(rv map[string]interface{}) *markerPaginateArgs {
 				args.opts = append(args.opts, WithMarkerOrder(v))
 			}
 		}
-	}
-	if v, ok := rv[whereField].(*MarkerWhereInput); ok {
-		args.opts = append(args.opts, WithMarkerFilter(v.Filter))
 	}
 	return args
 }
@@ -632,9 +617,6 @@ func newMutePaginateArgs(rv map[string]interface{}) *mutePaginateArgs {
 				args.opts = append(args.opts, WithMuteOrder(v))
 			}
 		}
-	}
-	if v, ok := rv[whereField].(*MuteWhereInput); ok {
-		args.opts = append(args.opts, WithMuteFilter(v.Filter))
 	}
 	return args
 }
@@ -737,9 +719,6 @@ func newPostPaginateArgs(rv map[string]interface{}) *postPaginateArgs {
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*PostWhereInput); ok {
-		args.opts = append(args.opts, WithPostFilter(v.Filter))
-	}
 	return args
 }
 
@@ -829,9 +808,6 @@ func newRequestPaginateArgs(rv map[string]interface{}) *requestPaginateArgs {
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*RequestWhereInput); ok {
-		args.opts = append(args.opts, WithRequestFilter(v.Filter))
-	}
 	return args
 }
 
@@ -910,9 +886,6 @@ func newSessionPaginateArgs(rv map[string]interface{}) *sessionPaginateArgs {
 				args.opts = append(args.opts, WithSessionOrder(v))
 			}
 		}
-	}
-	if v, ok := rv[whereField].(*SessionWhereInput); ok {
-		args.opts = append(args.opts, WithSessionFilter(v.Filter))
 	}
 	return args
 }

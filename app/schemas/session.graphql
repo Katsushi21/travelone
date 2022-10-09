@@ -1,0 +1,27 @@
+###############
+# Session
+###############
+type Session {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  accountID: ID!
+  session: String!
+  account: Account!
+}
+
+###############
+# Input
+###############
+input CreateSessionInput {
+  createdAt: Time
+  updatedAt: Time
+  session: String!
+  accountID: ID!
+}
+
+input UpdateSessionInput {
+  updatedAt: Time
+  session: String
+  accountID: ID
+}

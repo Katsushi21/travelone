@@ -1,0 +1,22 @@
+###############
+# Friend
+###############
+type Friend {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  accountID: ID!
+  friendID: ID!
+  account: Account!
+  friend: Account!
+}
+
+###############
+# Input
+###############
+input CreateFriendInput {
+  createdAt: Time
+  updatedAt: Time
+  accountID: ID!
+  friendID: ID!
+}

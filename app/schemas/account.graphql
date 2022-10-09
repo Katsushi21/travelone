@@ -1,0 +1,73 @@
+###############
+# Account
+###############
+type Account {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  email: String!
+  password: String!
+  type: Type!
+  name: String!
+  age: Int!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+  posts: [Post!]
+  comments: [Comment!]
+  friends: [Account!]
+  mutes: [Mute!]
+  requests: [Account!]
+  likes: [Like!]
+  session: [Session!]
+  friendships: [Friend!]
+  requesttargets: [Request!]
+}
+
+###############
+# Enum
+###############
+enum Type {
+  active
+  inactive
+  admin
+}
+
+enum Gender {
+  male
+  female
+  none
+}
+
+###############
+# Input
+###############
+input CreateAccountInput {
+  createdAt: Time
+  updatedAt: Time
+  email: String!
+  password: String!
+  type: Type!
+  name: String
+  age: Int!
+  gender: Gender!
+  avatar: String!
+  introduction: String!
+}
+
+input UpdateAccountInput {
+  updatedAt: Time
+  email: String
+  password: String
+  type: Type
+  name: String
+  age: Int
+  gender: Gender
+  avatar: String
+  introduction: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}

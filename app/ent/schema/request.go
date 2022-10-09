@@ -17,12 +17,6 @@ type Request struct {
 func (Request) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Requests"},
-		entgql.RelayConnection(),
-		entgql.QueryField(),
-		entgql.Mutations(
-			entgql.MutationCreate(),
-			entgql.MutationUpdate(),
-		),
 	}
 }
 

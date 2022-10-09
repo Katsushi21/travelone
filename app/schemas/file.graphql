@@ -1,0 +1,13 @@
+###############
+# File
+###############
+type File {
+  path: String!
+}
+
+###############
+# Input
+###############
+input UploadFile {
+  content: Upload!
+}

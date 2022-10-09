@@ -1,0 +1,22 @@
+###############
+# Like
+###############
+type Like {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  accountID: ID!
+  postID: ID!
+  account: Account!
+  post: Post!
+}
+
+###############
+# Input
+###############
+input CreateLikeInput {
+  createdAt: Time
+  updatedAt: Time
+  accountID: ID!
+  postID: ID!
+}

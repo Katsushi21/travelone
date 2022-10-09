@@ -19,7 +19,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"active", "inactive", "admin"}},
 		{Name: "name", Type: field.TypeString, Default: "guest"},
 		{Name: "age", Type: field.TypeInt},
-		{Name: "gender", Type: field.TypeEnum, Enums: []string{"male", "female"}},
+		{Name: "gender", Type: field.TypeEnum, Enums: []string{"male", "female", "none"}},
 		{Name: "avatar", Type: field.TypeString},
 		{Name: "introduction", Type: field.TypeString},
 	}

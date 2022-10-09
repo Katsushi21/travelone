@@ -1,0 +1,43 @@
+###############
+# Request
+###############
+type Request {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  accountID: ID!
+  requestID: ID!
+  status: Status!
+  account: Account!
+  request: Account!
+}
+
+###############
+# Enum
+###############
+enum Status {
+  inProcess
+  accept
+  deny
+  breakInProcess
+  breakAccept
+  breakDeny
+}
+
+###############
+# Input
+###############
+input CreateRequestInput {
+  createdAt: Time
+  updatedAt: Time
+  status: Status!
+  accountID: ID!
+  requestID: ID!
+}
+
+input UpdateRequestInput {
+  updatedAt: Time
+  status: Status
+  accountID: ID
+  requestID: ID
+}

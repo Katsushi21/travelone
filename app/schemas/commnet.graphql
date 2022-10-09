@@ -1,0 +1,31 @@
+###############
+# Comment
+###############
+type Comment {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  body: String!
+  accountID: ID!
+  postID: ID!
+  post: Post!
+  account: Account!
+}
+
+###############
+# Input
+###############
+input CreateCommentInput {
+  createdAt: Time
+  updatedAt: Time
+  body: String!
+  postID: ID!
+  accountID: ID!
+}
+
+input UpdateCommentInput {
+  updatedAt: Time
+  body: String
+  postID: ID
+  accountID: ID
+}

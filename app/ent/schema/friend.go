@@ -17,9 +17,6 @@ type Friend struct {
 func (Friend) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Friends"},
-		entgql.RelayConnection(),
-		entgql.QueryField(),
-		entgql.Mutations(entgql.MutationCreate()),
 	}
 }
 

@@ -17,12 +17,6 @@ type Marker struct {
 func (Marker) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Markers"},
-		entgql.RelayConnection(),
-		entgql.QueryField(),
-		entgql.Mutations(
-			entgql.MutationCreate(),
-			entgql.MutationUpdate(),
-		),
 	}
 }
 

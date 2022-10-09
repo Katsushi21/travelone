@@ -16,12 +16,6 @@ type Account struct {
 func (Account) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "Accounts"},
-		entgql.RelayConnection(),
-		entgql.QueryField(),
-		entgql.Mutations(
-			entgql.MutationCreate(),
-			entgql.MutationUpdate(),
-		),
 	}
 }
 
@@ -68,6 +62,7 @@ func (Account) Fields() []ent.Field {
 			Values(
 				"male",
 				"female",
+				"none",
 			).
 			Annotations(
 				entgql.OrderField("GENDER"),
