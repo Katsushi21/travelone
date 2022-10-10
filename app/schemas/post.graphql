@@ -23,7 +23,6 @@ input CreatePostInput {
   title: String!
   body: String!
   img: String!
-  commentIDs: [ID!]
   markerID: ID
   accountID: ID!
 }

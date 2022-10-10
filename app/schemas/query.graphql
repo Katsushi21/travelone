@@ -2,34 +2,33 @@ type Query {
   ###############
   # Account
   ###############
-  accountPageInfo(id: ID!): Account!
-
-  myPageInfo(id: ID!): Account!
+  queryAccountByID(id: ID!): Account!
+  queryAccountByMyID(id: ID!): Account!
+  queryAccountByLoginInput(input: LoginInput!): Account!
 
   ###############
   # Like
   ###############
-  likesByPost(postId: ID!): [Like!]!
+  queryLikesByPostID(postID: ID!): [Like!]!
 
   ###############
   # Marker
   ###############
-  allMarkers: [Marker!]!
+  queryMarkers: [Marker!]!
 
   ###############
   # Post
   ###############
-  allPosts: [Post!]!
+  queryPosts: [Post!]!
 
   ###############
   # Request
   ###############
-  requestsByAccountId(accountId: ID!): [Request!]!
-
-  requestsByTargetId(targetAccountId: ID!): [Request!]!
+  queryRequestsByAccountID(accountID: ID!): [Request!]!
+  queryRequestsByRequestID(RequestID: ID!): [Request!]!
 
   ###############
   # Session
   ###############
-  sessionByAccountId(accountId: ID!): Session!
+  querySessionByAccountID(ID: ID!): Session!
 }

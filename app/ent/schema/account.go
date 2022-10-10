@@ -50,7 +50,6 @@ func (Account) Fields() []ent.Field {
 				entgql.OrderField("ACCOUNT_TYPE"),
 			),
 		field.String("name").
-			Default("guest").
 			Annotations(
 				entgql.OrderField("NAME"),
 			),

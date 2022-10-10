@@ -48,7 +48,7 @@ input CreateAccountInput {
   email: String!
   password: String!
   type: Type!
-  name: String
+  name: String!
   age: Int!
   gender: Gender!
   avatar: String!

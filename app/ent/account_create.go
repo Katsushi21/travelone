@@ -80,14 +80,6 @@ func (ac *AccountCreate) SetName(s string) *AccountCreate {
 	return ac
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (ac *AccountCreate) SetNillableName(s *string) *AccountCreate {
-	if s != nil {
-		ac.SetName(*s)
-	}
-	return ac
-}
-
 // SetAge sets the "age" field.
 func (ac *AccountCreate) SetAge(i int) *AccountCreate {
 	ac.mutation.SetAge(i)
@@ -345,10 +337,6 @@ func (ac *AccountCreate) defaults() {
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
 		v := account.DefaultUpdatedAt()
 		ac.mutation.SetUpdatedAt(v)
-	}
-	if _, ok := ac.mutation.Name(); !ok {
-		v := account.DefaultName
-		ac.mutation.SetName(v)
 	}
 	if _, ok := ac.mutation.ID(); !ok {
 		v := account.DefaultID()

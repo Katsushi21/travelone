@@ -8,8 +8,6 @@ type Mutation {
   updateAccount(id: ID!, input: UpdateAccountInput!): Account!
   # DELETE
   deleteAccount(id: ID!): Account!
-  # LOGIN
-  loginQuery(email: String!, password: String!): Account!
 
   ###############
   # Comment

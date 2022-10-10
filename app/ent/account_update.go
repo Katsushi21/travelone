@@ -66,14 +66,6 @@ func (au *AccountUpdate) SetName(s string) *AccountUpdate {
 	return au
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (au *AccountUpdate) SetNillableName(s *string) *AccountUpdate {
-	if s != nil {
-		au.SetName(*s)
-	}
-	return au
-}
-
 // SetAge sets the "age" field.
 func (au *AccountUpdate) SetAge(i int) *AccountUpdate {
 	au.mutation.ResetAge()
@@ -1190,14 +1182,6 @@ func (auo *AccountUpdateOne) SetType(a account.Type) *AccountUpdateOne {
 // SetName sets the "name" field.
 func (auo *AccountUpdateOne) SetName(s string) *AccountUpdateOne {
 	auo.mutation.SetName(s)
-	return auo
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableName(s *string) *AccountUpdateOne {
-	if s != nil {
-		auo.SetName(*s)
-	}
 	return auo
 }
 

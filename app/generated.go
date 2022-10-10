@@ -138,7 +138,6 @@ type ComplexityRoot struct {
 		DeletePost    func(childComplexity int, id uuid.UUID) int
 		DeleteRequest func(childComplexity int, id uuid.UUID) int
 		DeleteSession func(childComplexity int, id uuid.UUID) int
-		LoginQuery    func(childComplexity int, email string, password string) int
 		UpdateAccount func(childComplexity int, id uuid.UUID, input model.UpdateAccountInput) int
 		UpdateComment func(childComplexity int, id uuid.UUID, input model.UpdateCommentInput) int
 		UpdateMarker  func(childComplexity int, id uuid.UUID, input model.UpdateMarkerInput) int
@@ -171,14 +170,15 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AccountPageInfo     func(childComplexity int, id uuid.UUID) int
-		AllMarkers          func(childComplexity int) int
-		AllPosts            func(childComplexity int) int
-		LikesByPost         func(childComplexity int, postID uuid.UUID) int
-		MyPageInfo          func(childComplexity int, id uuid.UUID) int
-		RequestsByAccountID func(childComplexity int, accountID uuid.UUID) int
-		RequestsByTargetID  func(childComplexity int, targetAccountID uuid.UUID) int
-		SessionByAccountID  func(childComplexity int, accountID uuid.UUID) int
+		QueryAccountByID         func(childComplexity int, id uuid.UUID) int
+		QueryAccountByLoginInput func(childComplexity int, input model.LoginInput) int
+		QueryAccountByMyID       func(childComplexity int, id uuid.UUID) int
+		QueryLikesByPostID       func(childComplexity int, postID uuid.UUID) int
+		QueryMarkers             func(childComplexity int) int
+		QueryPosts               func(childComplexity int) int
+		QueryRequestsByAccountID func(childComplexity int, accountID uuid.UUID) int
+		QueryRequestsByRequestID func(childComplexity int, requestID uuid.UUID) int
+		QuerySessionByAccountID  func(childComplexity int, id uuid.UUID) int
 	}
 
 	Request struct {
@@ -206,7 +206,6 @@ type MutationResolver interface {
 	CreateAccount(ctx context.Context, input model.CreateAccountInput) (*ent.Account, error)
 	UpdateAccount(ctx context.Context, id uuid.UUID, input model.UpdateAccountInput) (*ent.Account, error)
 	DeleteAccount(ctx context.Context, id uuid.UUID) (*ent.Account, error)
-	LoginQuery(ctx context.Context, email string, password string) (*ent.Account, error)
 	CreateComment(ctx context.Context, input model.CreateCommentInput) (*ent.Comment, error)
 	UpdateComment(ctx context.Context, id uuid.UUID, input model.UpdateCommentInput) (*ent.Comment, error)
 	DeleteComment(ctx context.Context, id uuid.UUID) (*ent.Comment, error)
@@ -230,14 +229,15 @@ type MutationResolver interface {
 	DeleteSession(ctx context.Context, id uuid.UUID) (*ent.Session, error)
 }
 type QueryResolver interface {
-	AccountPageInfo(ctx context.Context, id uuid.UUID) (*ent.Account, error)
-	MyPageInfo(ctx context.Context, id uuid.UUID) (*ent.Account, error)
-	LikesByPost(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error)
-	AllMarkers(ctx context.Context) ([]*ent.Marker, error)
-	AllPosts(ctx context.Context) ([]*ent.Post, error)
-	RequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error)
-	RequestsByTargetID(ctx context.Context, targetAccountID uuid.UUID) ([]*ent.Request, error)
-	SessionByAccountID(ctx context.Context, accountID uuid.UUID) (*ent.Session, error)
+	QueryAccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error)
+	QueryAccountByMyID(ctx context.Context, id uuid.UUID) (*ent.Account, error)
+	QueryAccountByLoginInput(ctx context.Context, input model.LoginInput) (*ent.Account, error)
+	QueryLikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error)
+	QueryMarkers(ctx context.Context) ([]*ent.Marker, error)
+	QueryPosts(ctx context.Context) ([]*ent.Post, error)
+	QueryRequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error)
+	QueryRequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error)
+	QuerySessionByAccountID(ctx context.Context, id uuid.UUID) (*ent.Session, error)
 }
 
 type executableSchema struct {
@@ -828,18 +828,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteSession(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.loginQuery":
-		if e.complexity.Mutation.LoginQuery == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_loginQuery_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.LoginQuery(childComplexity, args["email"].(string), args["password"].(string)), true
-
 	case "Mutation.updateAccount":
 		if e.complexity.Mutation.UpdateAccount == nil {
 			break
@@ -1031,91 +1019,103 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Post.UpdatedAt(childComplexity), true
 
-	case "Query.accountPageInfo":
-		if e.complexity.Query.AccountPageInfo == nil {
+	case "Query.queryAccountByID":
+		if e.complexity.Query.QueryAccountByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_accountPageInfo_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_queryAccountByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AccountPageInfo(childComplexity, args["id"].(uuid.UUID)), true
+		return e.complexity.Query.QueryAccountByID(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Query.allMarkers":
-		if e.complexity.Query.AllMarkers == nil {
+	case "Query.queryAccountByLoginInput":
+		if e.complexity.Query.QueryAccountByLoginInput == nil {
 			break
 		}
 
-		return e.complexity.Query.AllMarkers(childComplexity), true
-
-	case "Query.allPosts":
-		if e.complexity.Query.AllPosts == nil {
-			break
-		}
-
-		return e.complexity.Query.AllPosts(childComplexity), true
-
-	case "Query.likesByPost":
-		if e.complexity.Query.LikesByPost == nil {
-			break
-		}
-
-		args, err := ec.field_Query_likesByPost_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_queryAccountByLoginInput_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.LikesByPost(childComplexity, args["postId"].(uuid.UUID)), true
+		return e.complexity.Query.QueryAccountByLoginInput(childComplexity, args["input"].(model.LoginInput)), true
 
-	case "Query.myPageInfo":
-		if e.complexity.Query.MyPageInfo == nil {
+	case "Query.queryAccountByMyID":
+		if e.complexity.Query.QueryAccountByMyID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_myPageInfo_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_queryAccountByMyID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.MyPageInfo(childComplexity, args["id"].(uuid.UUID)), true
+		return e.complexity.Query.QueryAccountByMyID(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Query.requestsByAccountId":
-		if e.complexity.Query.RequestsByAccountID == nil {
+	case "Query.queryLikesByPostID":
+		if e.complexity.Query.QueryLikesByPostID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_requestsByAccountId_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_queryLikesByPostID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.RequestsByAccountID(childComplexity, args["accountId"].(uuid.UUID)), true
+		return e.complexity.Query.QueryLikesByPostID(childComplexity, args["postID"].(uuid.UUID)), true
 
-	case "Query.requestsByTargetId":
-		if e.complexity.Query.RequestsByTargetID == nil {
+	case "Query.queryMarkers":
+		if e.complexity.Query.QueryMarkers == nil {
 			break
 		}
 
-		args, err := ec.field_Query_requestsByTargetId_args(context.TODO(), rawArgs)
+		return e.complexity.Query.QueryMarkers(childComplexity), true
+
+	case "Query.queryPosts":
+		if e.complexity.Query.QueryPosts == nil {
+			break
+		}
+
+		return e.complexity.Query.QueryPosts(childComplexity), true
+
+	case "Query.queryRequestsByAccountID":
+		if e.complexity.Query.QueryRequestsByAccountID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_queryRequestsByAccountID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.RequestsByTargetID(childComplexity, args["targetAccountId"].(uuid.UUID)), true
+		return e.complexity.Query.QueryRequestsByAccountID(childComplexity, args["accountID"].(uuid.UUID)), true
 
-	case "Query.sessionByAccountId":
-		if e.complexity.Query.SessionByAccountID == nil {
+	case "Query.queryRequestsByRequestID":
+		if e.complexity.Query.QueryRequestsByRequestID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_sessionByAccountId_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_queryRequestsByRequestID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.SessionByAccountID(childComplexity, args["accountId"].(uuid.UUID)), true
+		return e.complexity.Query.QueryRequestsByRequestID(childComplexity, args["RequestID"].(uuid.UUID)), true
+
+	case "Query.querySessionByAccountID":
+		if e.complexity.Query.QuerySessionByAccountID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_querySessionByAccountID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.QuerySessionByAccountID(childComplexity, args["ID"].(uuid.UUID)), true
 
 	case "Request.account":
 		if e.complexity.Request.Account == nil {
@@ -1350,7 +1350,7 @@ input CreateAccountInput {
   email: String!
   password: String!
   type: Type!
-  name: String
+  name: String!
   age: Int!
   gender: Gender!
   avatar: String!
@@ -1510,8 +1510,6 @@ input UpdateMarkerInput {
   updateAccount(id: ID!, input: UpdateAccountInput!): Account!
   # DELETE
   deleteAccount(id: ID!): Account!
-  # LOGIN
-  loginQuery(email: String!, password: String!): Account!
 
   ###############
   # Comment
@@ -1642,7 +1640,6 @@ input CreatePostInput {
   title: String!
   body: String!
   img: String!
-  commentIDs: [ID!]
   markerID: ID
   accountID: ID!
 }
@@ -1660,36 +1657,35 @@ input UpdatePostInput {
   ###############
   # Account
   ###############
-  accountPageInfo(id: ID!): Account!
-
-  myPageInfo(id: ID!): Account!
+  queryAccountByID(id: ID!): Account!
+  queryAccountByMyID(id: ID!): Account!
+  queryAccountByLoginInput(input: LoginInput!): Account!
 
   ###############
   # Like
   ###############
-  likesByPost(postId: ID!): [Like!]!
+  queryLikesByPostID(postID: ID!): [Like!]!
 
   ###############
   # Marker
   ###############
-  allMarkers: [Marker!]!
+  queryMarkers: [Marker!]!
 
   ###############
   # Post
   ###############
-  allPosts: [Post!]!
+  queryPosts: [Post!]!
 
   ###############
   # Request
   ###############
-  requestsByAccountId(accountId: ID!): [Request!]!
-
-  requestsByTargetId(targetAccountId: ID!): [Request!]!
+  queryRequestsByAccountID(accountID: ID!): [Request!]!
+  queryRequestsByRequestID(RequestID: ID!): [Request!]!
 
   ###############
   # Session
   ###############
-  sessionByAccountId(accountId: ID!): Session!
+  querySessionByAccountID(ID: ID!): Session!
 }
 `, BuiltIn: false},
 	{Name: "schemas/request.graphql", Input: `###############
@@ -2047,30 +2043,6 @@ func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_loginQuery_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["email"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["email"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["password"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["password"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_updateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2230,7 +2202,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_accountPageInfo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryAccountByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2245,22 +2217,22 @@ func (ec *executionContext) field_Query_accountPageInfo_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_likesByPost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryAccountByLoginInput_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["postId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postId"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+	var arg0 model.LoginInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNLoginInput2githubᚗcomᚋKatsushi21ᚋtraveloneᚋmodelᚐLoginInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["postId"] = arg0
+	args["input"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_myPageInfo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryAccountByMyID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2275,48 +2247,63 @@ func (ec *executionContext) field_Query_myPageInfo_args(ctx context.Context, raw
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_requestsByAccountId_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryLikesByPostID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
+	if tmp, ok := rawArgs["postID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["accountId"] = arg0
+	args["postID"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_requestsByTargetId_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryRequestsByAccountID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["targetAccountId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetAccountId"))
+	if tmp, ok := rawArgs["accountID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["targetAccountId"] = arg0
+	args["accountID"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_sessionByAccountId_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_queryRequestsByRequestID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
+	if tmp, ok := rawArgs["RequestID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestID"))
 		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["accountId"] = arg0
+	args["RequestID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_querySessionByAccountID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["ID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["ID"] = arg0
 	return args, nil
 }
 
@@ -5304,103 +5291,6 @@ func (ec *executionContext) fieldContext_Mutation_deleteAccount(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_loginQuery(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_loginQuery(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().LoginQuery(rctx, fc.Args["email"].(string), fc.Args["password"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ent.Account)
-	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_loginQuery(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Account_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Account_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Account_updatedAt(ctx, field)
-			case "email":
-				return ec.fieldContext_Account_email(ctx, field)
-			case "password":
-				return ec.fieldContext_Account_password(ctx, field)
-			case "type":
-				return ec.fieldContext_Account_type(ctx, field)
-			case "name":
-				return ec.fieldContext_Account_name(ctx, field)
-			case "age":
-				return ec.fieldContext_Account_age(ctx, field)
-			case "gender":
-				return ec.fieldContext_Account_gender(ctx, field)
-			case "avatar":
-				return ec.fieldContext_Account_avatar(ctx, field)
-			case "introduction":
-				return ec.fieldContext_Account_introduction(ctx, field)
-			case "posts":
-				return ec.fieldContext_Account_posts(ctx, field)
-			case "comments":
-				return ec.fieldContext_Account_comments(ctx, field)
-			case "friends":
-				return ec.fieldContext_Account_friends(ctx, field)
-			case "mutes":
-				return ec.fieldContext_Account_mutes(ctx, field)
-			case "requests":
-				return ec.fieldContext_Account_requests(ctx, field)
-			case "likes":
-				return ec.fieldContext_Account_likes(ctx, field)
-			case "session":
-				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_loginQuery_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createComment(ctx, field)
 	if err != nil {
@@ -7826,8 +7716,8 @@ func (ec *executionContext) fieldContext_Post_account(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_accountPageInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_accountPageInfo(ctx, field)
+func (ec *executionContext) _Query_queryAccountByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryAccountByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7840,7 +7730,7 @@ func (ec *executionContext) _Query_accountPageInfo(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AccountPageInfo(rctx, fc.Args["id"].(uuid.UUID))
+		return ec.resolvers.Query().QueryAccountByID(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7857,7 +7747,7 @@ func (ec *executionContext) _Query_accountPageInfo(ctx context.Context, field gr
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_accountPageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryAccountByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -7916,15 +7806,15 @@ func (ec *executionContext) fieldContext_Query_accountPageInfo(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_accountPageInfo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_queryAccountByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_myPageInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_myPageInfo(ctx, field)
+func (ec *executionContext) _Query_queryAccountByMyID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryAccountByMyID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7937,7 +7827,7 @@ func (ec *executionContext) _Query_myPageInfo(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MyPageInfo(rctx, fc.Args["id"].(uuid.UUID))
+		return ec.resolvers.Query().QueryAccountByMyID(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7954,7 +7844,7 @@ func (ec *executionContext) _Query_myPageInfo(ctx context.Context, field graphql
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_myPageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryAccountByMyID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8013,15 +7903,15 @@ func (ec *executionContext) fieldContext_Query_myPageInfo(ctx context.Context, f
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_myPageInfo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_queryAccountByMyID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_likesByPost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_likesByPost(ctx, field)
+func (ec *executionContext) _Query_queryAccountByLoginInput(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryAccountByLoginInput(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8034,7 +7924,104 @@ func (ec *executionContext) _Query_likesByPost(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().LikesByPost(rctx, fc.Args["postId"].(uuid.UUID))
+		return ec.resolvers.Query().QueryAccountByLoginInput(rctx, fc.Args["input"].(model.LoginInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_queryAccountByLoginInput(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Account_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Account_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Account_updatedAt(ctx, field)
+			case "email":
+				return ec.fieldContext_Account_email(ctx, field)
+			case "password":
+				return ec.fieldContext_Account_password(ctx, field)
+			case "type":
+				return ec.fieldContext_Account_type(ctx, field)
+			case "name":
+				return ec.fieldContext_Account_name(ctx, field)
+			case "age":
+				return ec.fieldContext_Account_age(ctx, field)
+			case "gender":
+				return ec.fieldContext_Account_gender(ctx, field)
+			case "avatar":
+				return ec.fieldContext_Account_avatar(ctx, field)
+			case "introduction":
+				return ec.fieldContext_Account_introduction(ctx, field)
+			case "posts":
+				return ec.fieldContext_Account_posts(ctx, field)
+			case "comments":
+				return ec.fieldContext_Account_comments(ctx, field)
+			case "friends":
+				return ec.fieldContext_Account_friends(ctx, field)
+			case "mutes":
+				return ec.fieldContext_Account_mutes(ctx, field)
+			case "requests":
+				return ec.fieldContext_Account_requests(ctx, field)
+			case "likes":
+				return ec.fieldContext_Account_likes(ctx, field)
+			case "session":
+				return ec.fieldContext_Account_session(ctx, field)
+			case "friendships":
+				return ec.fieldContext_Account_friendships(ctx, field)
+			case "requesttargets":
+				return ec.fieldContext_Account_requesttargets(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_queryAccountByLoginInput_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_queryLikesByPostID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryLikesByPostID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().QueryLikesByPostID(rctx, fc.Args["postID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8051,7 +8038,7 @@ func (ec *executionContext) _Query_likesByPost(ctx context.Context, field graphq
 	return ec.marshalNLike2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_likesByPost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryLikesByPostID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8084,15 +8071,15 @@ func (ec *executionContext) fieldContext_Query_likesByPost(ctx context.Context, 
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_likesByPost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_queryLikesByPostID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_allMarkers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_allMarkers(ctx, field)
+func (ec *executionContext) _Query_queryMarkers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryMarkers(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8105,7 +8092,7 @@ func (ec *executionContext) _Query_allMarkers(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AllMarkers(rctx)
+		return ec.resolvers.Query().QueryMarkers(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8122,7 +8109,7 @@ func (ec *executionContext) _Query_allMarkers(ctx context.Context, field graphql
 	return ec.marshalNMarker2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarkerᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_allMarkers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryMarkers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8153,8 +8140,8 @@ func (ec *executionContext) fieldContext_Query_allMarkers(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_allPosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_allPosts(ctx, field)
+func (ec *executionContext) _Query_queryPosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryPosts(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8167,7 +8154,7 @@ func (ec *executionContext) _Query_allPosts(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AllPosts(rctx)
+		return ec.resolvers.Query().QueryPosts(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8184,7 +8171,7 @@ func (ec *executionContext) _Query_allPosts(ctx context.Context, field graphql.C
 	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_allPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8219,8 +8206,8 @@ func (ec *executionContext) fieldContext_Query_allPosts(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_requestsByAccountId(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_requestsByAccountId(ctx, field)
+func (ec *executionContext) _Query_queryRequestsByAccountID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryRequestsByAccountID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8233,7 +8220,7 @@ func (ec *executionContext) _Query_requestsByAccountId(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RequestsByAccountID(rctx, fc.Args["accountId"].(uuid.UUID))
+		return ec.resolvers.Query().QueryRequestsByAccountID(rctx, fc.Args["accountID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8250,7 +8237,7 @@ func (ec *executionContext) _Query_requestsByAccountId(ctx context.Context, fiel
 	return ec.marshalNRequest2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_requestsByAccountId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryRequestsByAccountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8285,15 +8272,15 @@ func (ec *executionContext) fieldContext_Query_requestsByAccountId(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_requestsByAccountId_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_queryRequestsByAccountID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_requestsByTargetId(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_requestsByTargetId(ctx, field)
+func (ec *executionContext) _Query_queryRequestsByRequestID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_queryRequestsByRequestID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8306,7 +8293,7 @@ func (ec *executionContext) _Query_requestsByTargetId(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RequestsByTargetID(rctx, fc.Args["targetAccountId"].(uuid.UUID))
+		return ec.resolvers.Query().QueryRequestsByRequestID(rctx, fc.Args["RequestID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8323,7 +8310,7 @@ func (ec *executionContext) _Query_requestsByTargetId(ctx context.Context, field
 	return ec.marshalNRequest2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_requestsByTargetId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_queryRequestsByRequestID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8358,15 +8345,15 @@ func (ec *executionContext) fieldContext_Query_requestsByTargetId(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_requestsByTargetId_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_queryRequestsByRequestID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_sessionByAccountId(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_sessionByAccountId(ctx, field)
+func (ec *executionContext) _Query_querySessionByAccountID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_querySessionByAccountID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8379,7 +8366,7 @@ func (ec *executionContext) _Query_sessionByAccountId(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SessionByAccountID(rctx, fc.Args["accountId"].(uuid.UUID))
+		return ec.resolvers.Query().QuerySessionByAccountID(rctx, fc.Args["ID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8396,7 +8383,7 @@ func (ec *executionContext) _Query_sessionByAccountId(ctx context.Context, field
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSession(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_sessionByAccountId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_querySessionByAccountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8427,7 +8414,7 @@ func (ec *executionContext) fieldContext_Query_sessionByAccountId(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_sessionByAccountId_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_querySessionByAccountID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -11131,7 +11118,7 @@ func (ec *executionContext) unmarshalInputCreateAccountInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -11478,14 +11465,6 @@ func (ec *executionContext) unmarshalInputCreatePostInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
 			it.Img, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "commentIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("commentIDs"))
-			it.CommentIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12723,15 +12702,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "loginQuery":
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_loginQuery(ctx, field)
-			})
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "createComment":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -13171,7 +13141,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "accountPageInfo":
+		case "queryAccountByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13180,7 +13150,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_accountPageInfo(ctx, field)
+				res = ec._Query_queryAccountByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13194,7 +13164,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "myPageInfo":
+		case "queryAccountByMyID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13203,7 +13173,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_myPageInfo(ctx, field)
+				res = ec._Query_queryAccountByMyID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13217,7 +13187,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "likesByPost":
+		case "queryAccountByLoginInput":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13226,7 +13196,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_likesByPost(ctx, field)
+				res = ec._Query_queryAccountByLoginInput(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13240,7 +13210,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "allMarkers":
+		case "queryLikesByPostID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13249,7 +13219,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_allMarkers(ctx, field)
+				res = ec._Query_queryLikesByPostID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13263,7 +13233,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "allPosts":
+		case "queryMarkers":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13272,7 +13242,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_allPosts(ctx, field)
+				res = ec._Query_queryMarkers(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13286,7 +13256,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "requestsByAccountId":
+		case "queryPosts":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13295,7 +13265,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_requestsByAccountId(ctx, field)
+				res = ec._Query_queryPosts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13309,7 +13279,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "requestsByTargetId":
+		case "queryRequestsByAccountID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13318,7 +13288,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_requestsByTargetId(ctx, field)
+				res = ec._Query_queryRequestsByAccountID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -13332,7 +13302,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "sessionByAccountId":
+		case "queryRequestsByRequestID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -13341,7 +13311,30 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_sessionByAccountId(ctx, field)
+				res = ec._Query_queryRequestsByRequestID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "querySessionByAccountID":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_querySessionByAccountID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -14075,6 +14068,11 @@ func (ec *executionContext) marshalNLike2ᚖgithubᚗcomᚋKatsushi21ᚋtravelon
 	return ec._Like(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNLoginInput2githubᚗcomᚋKatsushi21ᚋtraveloneᚋmodelᚐLoginInput(ctx context.Context, v interface{}) (model.LoginInput, error) {
+	res, err := ec.unmarshalInputLoginInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNMarker2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarker(ctx context.Context, sel ast.SelectionSet, v ent.Marker) graphql.Marshaler {
 	return ec._Marker(ctx, sel, &v)
 }
@@ -14806,44 +14804,6 @@ func (ec *executionContext) marshalOGender2ᚖgithubᚗcomᚋKatsushi21ᚋtravel
 		return graphql.Null
 	}
 	return v
-}
-
-func (ec *executionContext) unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, v interface{}) ([]uuid.UUID, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]uuid.UUID, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, sel ast.SelectionSet, v []uuid.UUID) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v interface{}) (*uuid.UUID, error) {

@@ -57,10 +57,6 @@ func init() {
 			return nil
 		}
 	}()
-	// accountDescName is the schema descriptor for name field.
-	accountDescName := accountFields[3].Descriptor()
-	// account.DefaultName holds the default value on creation for the name field.
-	account.DefaultName = accountDescName.Default.(string)
 	// accountDescAge is the schema descriptor for age field.
 	accountDescAge := accountFields[4].Descriptor()
 	// account.AgeValidator is a validator for the "age" field. It is called by the builders before save.

@@ -5,43 +5,69 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Katsushi21/travelone"
 	"github.com/Katsushi21/travelone/ent"
+	"github.com/Katsushi21/travelone/ent/account"
+	"github.com/Katsushi21/travelone/ent/like"
+	"github.com/Katsushi21/travelone/ent/request"
+	"github.com/Katsushi21/travelone/model"
 	"github.com/google/uuid"
 )
 
-func (r *queryResolver) AccountPageInfo(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryAccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
+	return r.client.Account.Get(ctx, id)
 }
 
-func (r *queryResolver) MyPageInfo(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryAccountByMyID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
+	return r.client.Account.Get(ctx, id)
 }
 
-func (r *queryResolver) LikesByPost(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryAccountByLoginInput(ctx context.Context, input model.LoginInput) (*ent.Account, error) {
+	return r.client.Account.
+		Query().
+		Where(
+			account.Email(input.Email),
+			account.Password(input.Password),
+		).
+		Only(ctx)
 }
 
-func (r *queryResolver) AllMarkers(ctx context.Context) ([]*ent.Marker, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryLikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error) {
+	return r.client.Like.
+		Query().
+		Where(like.PostID(postID)).
+		All(ctx)
 }
 
-func (r *queryResolver) AllPosts(ctx context.Context) ([]*ent.Post, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryMarkers(ctx context.Context) ([]*ent.Marker, error) {
+	return r.client.Marker.
+		Query().
+		All(ctx)
 }
 
-func (r *queryResolver) RequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryPosts(ctx context.Context) ([]*ent.Post, error) {
+	return r.client.Post.
+		Query().
+		All(ctx)
 }
 
-func (r *queryResolver) RequestsByTargetID(ctx context.Context, targetAccountID uuid.UUID) ([]*ent.Request, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryRequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error) {
+	return r.client.Request.
+		Query().
+		Where(request.AccountID(accountID)).
+		All(ctx)
 }
 
-func (r *queryResolver) SessionByAccountID(ctx context.Context, accountID uuid.UUID) (*ent.Session, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) QueryRequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error) {
+	return r.client.Request.
+		Query().
+		Where(request.RequestID(requestID)).
+		All(ctx)
+}
+
+func (r *queryResolver) QuerySessionByAccountID(ctx context.Context, id uuid.UUID) (*ent.Session, error) {
+	return r.client.Session.Get(ctx, id)
 }
 
 // Query returns travelone.QueryResolver implementation.

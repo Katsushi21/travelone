@@ -17,7 +17,7 @@ var (
 		{Name: "email", Type: field.TypeString, Unique: true, Size: 100},
 		{Name: "password", Type: field.TypeString},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"active", "inactive", "admin"}},
-		{Name: "name", Type: field.TypeString, Default: "guest"},
+		{Name: "name", Type: field.TypeString},
 		{Name: "age", Type: field.TypeInt},
 		{Name: "gender", Type: field.TypeEnum, Enums: []string{"male", "female", "none"}},
 		{Name: "avatar", Type: field.TypeString},

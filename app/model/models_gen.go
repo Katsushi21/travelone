@@ -17,7 +17,7 @@ type CreateAccountInput struct {
 	Email        string         `json:"email"`
 	Password     string         `json:"password"`
 	Type         account.Type   `json:"type"`
-	Name         *string        `json:"name"`
+	Name         string         `json:"name"`
 	Age          int            `json:"age"`
 	Gender       account.Gender `json:"gender"`
 	Avatar       string         `json:"avatar"`
@@ -63,14 +63,13 @@ type CreateMuteInput struct {
 }
 
 type CreatePostInput struct {
-	CreatedAt  *time.Time  `json:"createdAt"`
-	UpdatedAt  *time.Time  `json:"updatedAt"`
-	Title      string      `json:"title"`
-	Body       string      `json:"body"`
-	Img        string      `json:"img"`
-	CommentIDs []uuid.UUID `json:"commentIDs"`
-	MarkerID   *uuid.UUID  `json:"markerID"`
-	AccountID  uuid.UUID   `json:"accountID"`
+	CreatedAt *time.Time `json:"createdAt"`
+	UpdatedAt *time.Time `json:"updatedAt"`
+	Title     string     `json:"title"`
+	Body      string     `json:"body"`
+	Img       string     `json:"img"`
+	MarkerID  *uuid.UUID `json:"markerID"`
+	AccountID uuid.UUID  `json:"accountID"`
 }
 
 type CreateRequestInput struct {
