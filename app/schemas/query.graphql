@@ -1,10 +1,9 @@
-type Query {
+extend type Query {
   ###############
   # Account
   ###############
   queryAccountByID(id: ID!): Account!
   queryAccountByMyID(id: ID!): Account!
-  queryAccountByLoginInput(input: LoginInput!): Account!
 
   ###############
   # Like
