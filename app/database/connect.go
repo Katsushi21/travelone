@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect"
 	"github.com/Katsushi21/travelone/ent"
 	"github.com/Katsushi21/travelone/ent/migrate"
+	_ "github.com/lib/pq"
 )
 
 func Connect() *ent.Client {
