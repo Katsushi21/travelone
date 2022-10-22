@@ -1,187 +1,187 @@
-###############
-# Account
-###############
-query accountPageInfo($id: ID!) {
-  accountPageInfo(id: $id) {
-    id
-    name
-    age
-    gender
-    avatar
-    introduction
-    post {
-      id
-      title
-      updatedAt
-      like {
-        accountId
-      }
-    }
-    friend {
-      friend {
-        id
-        name
-        avatar
-      }
-    }
-  }
-}
+# ###############
+# # Account
+# ###############
+# query accountPageInfo($id: ID!) {
+#   accountPageInfo(id: $id) {
+#     id
+#     name
+#     age
+#     gender
+#     avatar
+#     introduction
+#     post {
+#       id
+#       title
+#       updatedAt
+#       like {
+#         accountID
+#       }
+#     }
+#     friend {
+#       friend {
+#         id
+#         name
+#         avatar
+#       }
+#     }
+#   }
+# }
 
-query myPageInfo($id: ID!) {
-  myPageInfo(id: $id) {
-    id
-    email
-    password
-    type
-    name
-    age
-    gender
-    avatar
-    introduction
-    post {
-      id
-      title
-      createdAt
-      updatedAt
-      like {
-        accountId
-      }
-    }
-    like {
-      post {
-        id
-        accountId
-        title
-        updatedAt
-      }
-      account {
-        id
-        name
-        avatar
-      }
-    }
-    friend {
-      friend {
-        id
-        name
-        avatar
-      }
-    }
-    mute {
-      mute {
-        id
-        name
-        avatar
-      }
-    }
-  }
-}
+# query myPageInfo($id: ID!) {
+#   myPageInfo(id: $id) {
+#     id
+#     email
+#     password
+#     type
+#     name
+#     age
+#     gender
+#     avatar
+#     introduction
+#     post {
+#       id
+#       title
+#       createdAt
+#       updatedAt
+#       like {
+#         accountID
+#       }
+#     }
+#     like {
+#       post {
+#         id
+#         accountID
+#         title
+#         updatedAt
+#       }
+#       account {
+#         id
+#         name
+#         avatar
+#       }
+#     }
+#     friend {
+#       friend {
+#         id
+#         name
+#         avatar
+#       }
+#     }
+#     mute {
+#       mute {
+#         id
+#         name
+#         avatar
+#       }
+#     }
+#   }
+# }
 
-###############
-# Like
-###############
-query likesByPost($postId: ID!) {
-  likesByPost(postId: $postId) {
-    account {
-      id
-      name
-      avatar
-    }
-    createdAt
-  }
-}
+# ###############
+# # Like
+# ###############
+# query likesByPost($postID: ID!) {
+#   likesByPost(postID: $postID) {
+#     account {
+#       id
+#       name
+#       avatar
+#     }
+#     createdAt
+#   }
+# }
 
-###############
-# Marker
-###############
-query allMarkers {
-  allMarkers {
-    id
-    title
-    lat
-    lng
-    post {
-      id
-      title
-      body
-      img
-      account {
-        id
-        name
-        avatar
-      }
-      like {
-        accountId
-      }
-    }
-  }
-}
+# ###############
+# # Marker
+# ###############
+# query allMarkers {
+#   allMarkers {
+#     id
+#     title
+#     lat
+#     lng
+#     post {
+#       id
+#       title
+#       body
+#       img
+#       account {
+#         id
+#         name
+#         avatar
+#       }
+#       like {
+#         accountID
+#       }
+#     }
+#   }
+# }
 
-###############
-# Post
-###############
-query allPosts {
-  allPosts {
-    id
-    title
-    body
-    img
-    createdAt
-    updatedAt
-    account {
-      id
-      name
-      avatar
-    }
-    marker {
-      id
-      title
-      lat
-      lng
-    }
-    like {
-      accountId
-    }
-    comment {
-      id
-      body
-      account {
-        id
-        name
-        avatar
-      }
-    }
-  }
-}
+# ###############
+# # Post
+# ###############
+# query allPosts {
+#   allPosts {
+#     id
+#     title
+#     body
+#     img
+#     createdAt
+#     updatedAt
+#     account {
+#       id
+#       name
+#       avatar
+#     }
+#     marker {
+#       id
+#       title
+#       lat
+#       lng
+#     }
+#     like {
+#       accountID
+#     }
+#     comment {
+#       id
+#       body
+#       account {
+#         id
+#         name
+#         avatar
+#       }
+#     }
+#   }
+# }
 
-###############
-# Request
-###############
-query requestsByAccountId($accountId: ID!) {
-  requestsByAccountId(accountId: $accountId) {
-    targetAccount {
-      id
-      name
-      avatar
-    }
-  }
-}
+# ###############
+# # Request
+# ###############
+# query requestsByAccountID($accountID: ID!) {
+#   requestsByAccountID(accountID: $accountID) {
+#     targetAccount {
+#       id
+#       name
+#       avatar
+#     }
+#   }
+# }
 
-query requestsByTargetId($targetAccountId: ID!) {
-  requestsByTargetId(targetAccountId: $targetAccountId) {
-    account {
-      id
-      name
-      avatar
-    }
-  }
-}
+# query requestsByTargetID($targetAccountID: ID!) {
+#   requestsByTargetID(targetAccountID: $targetAccountID) {
+#     account {
+#       id
+#       name
+#       avatar
+#     }
+#   }
+# }
 
-###############
-# Session
-###############
-query sessionByAccountId($accountId: ID!) {
-  sessionByAccountId(accountId: $accountId) {
-    session
-  }
-}
+# ###############
+# # Session
+# ###############
+# query sessionByAccountID($accountID: ID!) {
+#   sessionByAccountID(accountID: $accountID) {
+#     session
+#   }
+# }
