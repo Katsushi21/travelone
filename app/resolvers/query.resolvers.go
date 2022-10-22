@@ -12,11 +12,11 @@ import (
 )
 
 func (r *queryResolver) QueryAccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.client.Account.Get(ctx, id)
 }
 
 func (r *queryResolver) QueryAccountByMyID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.client.Account.Get(ctx, id)
 }
 
 func (r *queryResolver) QueryLikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error) {
