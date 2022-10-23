@@ -2,9 +2,11 @@ import Image from 'next/image';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 
-import { AllPostsQuery } from '../generated/graphql';
+import { PostsQuery } from '../generated/graphql';
 
-export const Post = ({ post }: { post: AllPostsQuery['allPosts'][number] }) => {
+export const Post = ({ post }: { post: PostsQuery['posts'][number] }) => {
+  const likes = post.likes ? post.likes.length : 0;
+  const comments = post.comments ? post.comments.length : 0;
   return (
     <button>
       <div className="card w-96 bg-base-100 shadow-xl">
@@ -39,11 +41,11 @@ export const Post = ({ post }: { post: AllPostsQuery['allPosts'][number] }) => {
             <div>
               <div className="badge badge-outline mx-2 h-6 w-14 text-xl">
                 <AiOutlineHeart />
-                {post.like.length}
+                {likes}
               </div>
               <div className="badge badge-outline mx-2 h-6 w-14 text-xl">
                 <FaRegComment />
-                {post.comment.length}
+                {comments}
               </div>
             </div>
           </div>

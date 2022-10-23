@@ -1,16 +1,16 @@
-import { useAllPostsQuery } from 'src/generated/graphql';
+import { usePostsQuery } from 'src/generated/graphql';
 
 import { Post } from './Post';
 
 export const PostList = () => {
-  const [resultPosts] = useAllPostsQuery();
+  const [resultPosts] = usePostsQuery();
 
   const { data, fetching, error } = resultPosts;
 
   if (fetching) return <div>Fetching</div>;
   if (error) return <div>Error!</div>;
 
-  const postToRender = data?.allPosts;
+  const postToRender = data?.posts;
 
   return (
     <div className="flex justify-center p-10">
