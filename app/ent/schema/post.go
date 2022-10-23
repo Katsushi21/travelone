@@ -60,5 +60,6 @@ func (Post) Edges() []ent.Edge {
 			Required().
 			Unique().
 			Field("account_id"),
+		edge.To("likes", Like.Type),
 	}
 }

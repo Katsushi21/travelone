@@ -2385,6 +2385,10 @@ type PostWhereInput struct {
 	// "account" edge predicates.
 	HasAccount     *bool                `json:"hasAccount,omitempty"`
 	HasAccountWith []*AccountWhereInput `json:"hasAccountWith,omitempty"`
+
+	// "likes" edge predicates.
+	HasLikes     *bool             `json:"hasLikes,omitempty"`
+	HasLikesWith []*LikeWhereInput `json:"hasLikesWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -2713,6 +2717,24 @@ func (i *PostWhereInput) P() (predicate.Post, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, post.HasAccountWith(with...))
+	}
+	if i.HasLikes != nil {
+		p := post.HasLikes()
+		if !*i.HasLikes {
+			p = post.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasLikesWith) > 0 {
+		with := make([]predicate.Like, 0, len(i.HasLikesWith))
+		for _, w := range i.HasLikesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasLikesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, post.HasLikesWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

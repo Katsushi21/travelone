@@ -4671,6 +4671,9 @@ type PostMutation struct {
 	clearedmarker   bool
 	account         *uuid.UUID
 	clearedaccount  bool
+	likes           map[uuid.UUID]struct{}
+	removedlikes    map[uuid.UUID]struct{}
+	clearedlikes    bool
 	done            bool
 	oldValue        func(context.Context) (*Post, error)
 	predicates      []predicate.Post
@@ -5115,6 +5118,60 @@ func (m *PostMutation) ResetAccount() {
 	m.clearedaccount = false
 }
 
+// AddLikeIDs adds the "likes" edge to the Like entity by ids.
+func (m *PostMutation) AddLikeIDs(ids ...uuid.UUID) {
+	if m.likes == nil {
+		m.likes = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.likes[ids[i]] = struct{}{}
+	}
+}
+
+// ClearLikes clears the "likes" edge to the Like entity.
+func (m *PostMutation) ClearLikes() {
+	m.clearedlikes = true
+}
+
+// LikesCleared reports if the "likes" edge to the Like entity was cleared.
+func (m *PostMutation) LikesCleared() bool {
+	return m.clearedlikes
+}
+
+// RemoveLikeIDs removes the "likes" edge to the Like entity by IDs.
+func (m *PostMutation) RemoveLikeIDs(ids ...uuid.UUID) {
+	if m.removedlikes == nil {
+		m.removedlikes = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.likes, ids[i])
+		m.removedlikes[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedLikes returns the removed IDs of the "likes" edge to the Like entity.
+func (m *PostMutation) RemovedLikesIDs() (ids []uuid.UUID) {
+	for id := range m.removedlikes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// LikesIDs returns the "likes" edge IDs in the mutation.
+func (m *PostMutation) LikesIDs() (ids []uuid.UUID) {
+	for id := range m.likes {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetLikes resets all changes to the "likes" edge.
+func (m *PostMutation) ResetLikes() {
+	m.likes = nil
+	m.clearedlikes = false
+	m.removedlikes = nil
+}
+
 // Where appends a list predicates to the PostMutation builder.
 func (m *PostMutation) Where(ps ...predicate.Post) {
 	m.predicates = append(m.predicates, ps...)
@@ -5318,7 +5375,7 @@ func (m *PostMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *PostMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.comments != nil {
 		edges = append(edges, post.EdgeComments)
 	}
@@ -5327,6 +5384,9 @@ func (m *PostMutation) AddedEdges() []string {
 	}
 	if m.account != nil {
 		edges = append(edges, post.EdgeAccount)
+	}
+	if m.likes != nil {
+		edges = append(edges, post.EdgeLikes)
 	}
 	return edges
 }
@@ -5349,15 +5409,24 @@ func (m *PostMutation) AddedIDs(name string) []ent.Value {
 		if id := m.account; id != nil {
 			return []ent.Value{*id}
 		}
+	case post.EdgeLikes:
+		ids := make([]ent.Value, 0, len(m.likes))
+		for id := range m.likes {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PostMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedcomments != nil {
 		edges = append(edges, post.EdgeComments)
+	}
+	if m.removedlikes != nil {
+		edges = append(edges, post.EdgeLikes)
 	}
 	return edges
 }
@@ -5372,13 +5441,19 @@ func (m *PostMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case post.EdgeLikes:
+		ids := make([]ent.Value, 0, len(m.removedlikes))
+		for id := range m.removedlikes {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *PostMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedcomments {
 		edges = append(edges, post.EdgeComments)
 	}
@@ -5387,6 +5462,9 @@ func (m *PostMutation) ClearedEdges() []string {
 	}
 	if m.clearedaccount {
 		edges = append(edges, post.EdgeAccount)
+	}
+	if m.clearedlikes {
+		edges = append(edges, post.EdgeLikes)
 	}
 	return edges
 }
@@ -5401,6 +5479,8 @@ func (m *PostMutation) EdgeCleared(name string) bool {
 		return m.clearedmarker
 	case post.EdgeAccount:
 		return m.clearedaccount
+	case post.EdgeLikes:
+		return m.clearedlikes
 	}
 	return false
 }
@@ -5431,6 +5511,9 @@ func (m *PostMutation) ResetEdge(name string) error {
 		return nil
 	case post.EdgeAccount:
 		m.ResetAccount()
+		return nil
+	case post.EdgeLikes:
+		m.ResetLikes()
 		return nil
 	}
 	return fmt.Errorf("unknown Post edge %s", name)

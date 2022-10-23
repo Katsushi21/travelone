@@ -16,10 +16,10 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "email", Type: field.TypeString, Unique: true, Size: 100},
 		{Name: "password", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"active", "inactive", "admin"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"ACTIVE", "INACTIVE", "ADMIN"}},
 		{Name: "name", Type: field.TypeString},
 		{Name: "age", Type: field.TypeInt},
-		{Name: "gender", Type: field.TypeEnum, Enums: []string{"male", "female", "none"}},
+		{Name: "gender", Type: field.TypeEnum, Enums: []string{"MALE", "FEMALE", "NONE"}},
 		{Name: "avatar", Type: field.TypeString},
 		{Name: "introduction", Type: field.TypeString},
 	}
@@ -101,6 +101,7 @@ var (
 		{Name: "account_likes", Type: field.TypeUUID, Nullable: true},
 		{Name: "account_id", Type: field.TypeUUID},
 		{Name: "post_id", Type: field.TypeUUID},
+		{Name: "post_likes", Type: field.TypeUUID, Nullable: true},
 	}
 	// LikesTable holds the schema information for the "Likes" table.
 	LikesTable = &schema.Table{
@@ -125,6 +126,12 @@ var (
 				Columns:    []*schema.Column{LikesColumns[5]},
 				RefColumns: []*schema.Column{PostsColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "Likes_Posts_likes",
+				Columns:    []*schema.Column{LikesColumns[6]},
+				RefColumns: []*schema.Column{PostsColumns[0]},
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -216,7 +223,7 @@ var (
 		{Name: "oid", Type: field.TypeUUID},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "status", Type: field.TypeEnum, Enums: []string{"inProcess", "accept", "deny", "breakInProcess", "breakAccept", "breakDeny"}},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"IN_PROCESS", "ACCEPT", "DENY", "BREAK_IN_PROCESS", "BREAK_IN_ACCEPT", "BREAK_DENY"}},
 		{Name: "account_id", Type: field.TypeUUID},
 		{Name: "request_id", Type: field.TypeUUID},
 	}
@@ -300,6 +307,7 @@ func init() {
 	LikesTable.ForeignKeys[0].RefTable = AccountsTable
 	LikesTable.ForeignKeys[1].RefTable = AccountsTable
 	LikesTable.ForeignKeys[2].RefTable = PostsTable
+	LikesTable.ForeignKeys[3].RefTable = PostsTable
 	LikesTable.Annotation = &entsql.Annotation{
 		Table: "Likes",
 	}

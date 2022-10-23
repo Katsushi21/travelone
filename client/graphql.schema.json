@@ -390,19 +390,19 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "female",
+            "name": "FEMALE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "male",
+            "name": "MALE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "none",
+            "name": "NONE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -533,19 +533,19 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "active",
+            "name": "ACTIVE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "admin",
+            "name": "ADMIN",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "inactive",
+            "name": "INACTIVE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -4115,6 +4115,26 @@
             "deprecationReason": null
           },
           {
+            "name": "likeIDs",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "markerID",
             "description": null,
             "type": {
@@ -7005,7 +7025,7 @@
         "description": null,
         "fields": [
           {
-            "name": "createAccount",
+            "name": "CreateAccount",
             "description": null,
             "args": [
               {
@@ -7038,7 +7058,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createComment",
+            "name": "CreateComment",
             "description": null,
             "args": [
               {
@@ -7071,7 +7091,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createFriend",
+            "name": "CreateFriend",
             "description": null,
             "args": [
               {
@@ -7104,7 +7124,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createLike",
+            "name": "CreateLike",
             "description": null,
             "args": [
               {
@@ -7137,7 +7157,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createMarker",
+            "name": "CreateMarker",
             "description": null,
             "args": [
               {
@@ -7170,7 +7190,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createMute",
+            "name": "CreateMute",
             "description": null,
             "args": [
               {
@@ -7203,7 +7223,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createPost",
+            "name": "CreatePost",
             "description": null,
             "args": [
               {
@@ -7236,7 +7256,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createRequest",
+            "name": "CreateRequest",
             "description": null,
             "args": [
               {
@@ -7269,7 +7289,7 @@
             "deprecationReason": null
           },
           {
-            "name": "createSession",
+            "name": "CreateSession",
             "description": null,
             "args": [
               {
@@ -7302,7 +7322,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteAccount",
+            "name": "DeleteAccount",
             "description": null,
             "args": [
               {
@@ -7335,7 +7355,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteComment",
+            "name": "DeleteComment",
             "description": null,
             "args": [
               {
@@ -7368,7 +7388,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteFriend",
+            "name": "DeleteFriend",
             "description": null,
             "args": [
               {
@@ -7401,7 +7421,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteLike",
+            "name": "DeleteLike",
             "description": null,
             "args": [
               {
@@ -7434,7 +7454,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteMarker",
+            "name": "DeleteMarker",
             "description": null,
             "args": [
               {
@@ -7467,7 +7487,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteMute",
+            "name": "DeleteMute",
             "description": null,
             "args": [
               {
@@ -7500,7 +7520,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deletePost",
+            "name": "DeletePost",
             "description": null,
             "args": [
               {
@@ -7533,7 +7553,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteRequest",
+            "name": "DeleteRequest",
             "description": null,
             "args": [
               {
@@ -7566,7 +7586,7 @@
             "deprecationReason": null
           },
           {
-            "name": "deleteSession",
+            "name": "DeleteSession",
             "description": null,
             "args": [
               {
@@ -7599,7 +7619,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateAccount",
+            "name": "UpdateAccount",
             "description": null,
             "args": [
               {
@@ -7648,7 +7668,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateComment",
+            "name": "UpdateComment",
             "description": null,
             "args": [
               {
@@ -7697,7 +7717,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateMarker",
+            "name": "UpdateMarker",
             "description": null,
             "args": [
               {
@@ -7746,7 +7766,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updatePost",
+            "name": "UpdatePost",
             "description": null,
             "args": [
               {
@@ -7795,7 +7815,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateRequest",
+            "name": "UpdateRequest",
             "description": null,
             "args": [
               {
@@ -7844,7 +7864,7 @@
             "deprecationReason": null
           },
           {
-            "name": "updateSession",
+            "name": "UpdateSession",
             "description": null,
             "args": [
               {
@@ -8981,6 +9001,26 @@
             "deprecationReason": null
           },
           {
+            "name": "likes",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Like",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "marker",
             "description": null,
             "args": [],
@@ -9556,6 +9596,38 @@
                 "ofType": {
                   "kind": "INPUT_OBJECT",
                   "name": "CommentWhereInput",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "hasLikes",
+            "description": "likes edge predicates",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "hasLikesWith",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "LikeWhereInput",
                   "ofType": null
                 }
               }
@@ -10207,6 +10279,228 @@
         "description": null,
         "fields": [
           {
+            "name": "AccountByID",
+            "description": null,
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "AccountBySelfID",
+            "description": null,
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "LikesByPostID",
+            "description": null,
+            "args": [
+              {
+                "name": "postID",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Like",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RequestsByAccountID",
+            "description": null,
+            "args": [
+              {
+                "name": "accountID",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Request",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RequestsByRequestID",
+            "description": null,
+            "args": [
+              {
+                "name": "requestID",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Request",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SessionByID",
+            "description": null,
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Session",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "accounts",
             "description": null,
             "args": [],
@@ -10443,276 +10737,6 @@
                     "ofType": null
                   }
                 }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryAccountByID",
-            "description": null,
-            "args": [
-              {
-                "name": "id",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryAccountByMyID",
-            "description": null,
-            "args": [
-              {
-                "name": "id",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryLikesByPostID",
-            "description": null,
-            "args": [
-              {
-                "name": "postID",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Like",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryMarkers",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Marker",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryPosts",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Post",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryRequestsByAccountID",
-            "description": null,
-            "args": [
-              {
-                "name": "accountID",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "queryRequestsByRequestID",
-            "description": null,
-            "args": [
-              {
-                "name": "RequestID",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "querySessionByAccountID",
-            "description": null,
-            "args": [
-              {
-                "name": "ID",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Session",
-                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -11010,37 +11034,37 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "accept",
+            "name": "ACCEPT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "breakAccept",
+            "name": "BREAK_DENY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "breakDeny",
+            "name": "BREAK_IN_ACCEPT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "breakInProcess",
+            "name": "BREAK_IN_PROCESS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "deny",
+            "name": "DENY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "inProcess",
+            "name": "IN_PROCESS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -13206,6 +13230,26 @@
             "deprecationReason": null
           },
           {
+            "name": "addLikeIDs",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "body",
             "description": null,
             "type": {
@@ -13267,6 +13311,26 @@
           },
           {
             "name": "removeCommentIDs",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "removeLikeIDs",
             "description": null,
             "type": {
               "kind": "LIST",

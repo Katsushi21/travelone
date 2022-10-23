@@ -44,13 +44,16 @@ type PostEdges struct {
 	Marker *Marker `json:"marker,omitempty"`
 	// Account holds the value of the account edge.
 	Account *Account `json:"account,omitempty"`
+	// Likes holds the value of the likes edge.
+	Likes []*Like `json:"likes,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
 
 	namedComments map[string][]*Comment
+	namedLikes    map[string][]*Like
 }
 
 // CommentsOrErr returns the Comments value or an error if the edge
@@ -86,6 +89,15 @@ func (e PostEdges) AccountOrErr() (*Account, error) {
 		return e.Account, nil
 	}
 	return nil, &NotLoadedError{edge: "account"}
+}
+
+// LikesOrErr returns the Likes value or an error if the edge
+// was not loaded in eager-loading.
+func (e PostEdges) LikesOrErr() ([]*Like, error) {
+	if e.loadedTypes[3] {
+		return e.Likes, nil
+	}
+	return nil, &NotLoadedError{edge: "likes"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -176,6 +188,11 @@ func (po *Post) QueryAccount() *AccountQuery {
 	return (&PostClient{config: po.config}).QueryAccount(po)
 }
 
+// QueryLikes queries the "likes" edge of the Post entity.
+func (po *Post) QueryLikes() *LikeQuery {
+	return (&PostClient{config: po.config}).QueryLikes(po)
+}
+
 // Update returns a builder for updating this Post.
 // Note that you need to call Post.Unwrap() before calling this method if this Post
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -241,6 +258,30 @@ func (po *Post) appendNamedComments(name string, edges ...*Comment) {
 		po.Edges.namedComments[name] = []*Comment{}
 	} else {
 		po.Edges.namedComments[name] = append(po.Edges.namedComments[name], edges...)
+	}
+}
+
+// NamedLikes returns the Likes named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (po *Post) NamedLikes(name string) ([]*Like, error) {
+	if po.Edges.namedLikes == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := po.Edges.namedLikes[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (po *Post) appendNamedLikes(name string, edges ...*Like) {
+	if po.Edges.namedLikes == nil {
+		po.Edges.namedLikes = make(map[string][]*Like)
+	}
+	if len(edges) == 0 {
+		po.Edges.namedLikes[name] = []*Like{}
+	} else {
+		po.Edges.namedLikes[name] = append(po.Edges.namedLikes[name], edges...)
 	}
 }
 

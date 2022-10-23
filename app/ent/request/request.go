@@ -84,12 +84,12 @@ type Status string
 
 // Status values.
 const (
-	StatusInProcess      Status = "inProcess"
-	StatusAccept         Status = "accept"
-	StatusDeny           Status = "deny"
-	StatusBreakInProcess Status = "breakInProcess"
-	StatusBreakAccept    Status = "breakAccept"
-	StatusBreakDeny      Status = "breakDeny"
+	StatusIN_PROCESS       Status = "IN_PROCESS"
+	StatusACCEPT           Status = "ACCEPT"
+	StatusDENY             Status = "DENY"
+	StatusBREAK_IN_PROCESS Status = "BREAK_IN_PROCESS"
+	StatusBREAK_IN_ACCEPT  Status = "BREAK_IN_ACCEPT"
+	StatusBREAK_DENY       Status = "BREAK_DENY"
 )
 
 func (s Status) String() string {
@@ -99,7 +99,7 @@ func (s Status) String() string {
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s Status) error {
 	switch s {
-	case StatusInProcess, StatusAccept, StatusDeny, StatusBreakInProcess, StatusBreakAccept, StatusBreakDeny:
+	case StatusIN_PROCESS, StatusACCEPT, StatusDENY, StatusBREAK_IN_PROCESS, StatusBREAK_IN_ACCEPT, StatusBREAK_DENY:
 		return nil
 	default:
 		return fmt.Errorf("request: invalid enum value for status field: %q", s)

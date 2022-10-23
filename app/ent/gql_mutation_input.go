@@ -542,6 +542,7 @@ type CreatePostInput struct {
 	CommentIDs []uuid.UUID
 	MarkerID   *uuid.UUID
 	AccountID  uuid.UUID
+	LikeIDs    []uuid.UUID
 }
 
 // Mutate applies the CreatePostInput on the PostMutation builder.
@@ -562,6 +563,9 @@ func (i *CreatePostInput) Mutate(m *PostMutation) {
 		m.SetMarkerID(*v)
 	}
 	m.SetAccountID(i.AccountID)
+	if v := i.LikeIDs; len(v) > 0 {
+		m.AddLikeIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreatePostInput on the PostCreate builder.
@@ -582,6 +586,8 @@ type UpdatePostInput struct {
 	MarkerID         *uuid.UUID
 	ClearAccount     bool
 	AccountID        *uuid.UUID
+	AddLikeIDs       []uuid.UUID
+	RemoveLikeIDs    []uuid.UUID
 }
 
 // Mutate applies the UpdatePostInput on the PostMutation builder.
@@ -615,6 +621,12 @@ func (i *UpdatePostInput) Mutate(m *PostMutation) {
 	}
 	if v := i.AccountID; v != nil {
 		m.SetAccountID(*v)
+	}
+	if v := i.AddLikeIDs; len(v) > 0 {
+		m.AddLikeIDs(v...)
+	}
+	if v := i.RemoveLikeIDs; len(v) > 0 {
+		m.RemoveLikeIDs(v...)
 	}
 }
 

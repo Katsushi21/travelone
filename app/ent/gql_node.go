@@ -564,7 +564,7 @@ func (po *Post) Node(ctx context.Context) (node *Node, err error) {
 		ID:     po.ID,
 		Type:   "Post",
 		Fields: make([]*Field, 6),
-		Edges:  make([]*Edge, 3),
+		Edges:  make([]*Edge, 4),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(po.CreatedAt); err != nil {
@@ -642,6 +642,16 @@ func (po *Post) Node(ctx context.Context) (node *Node, err error) {
 	err = po.QueryAccount().
 		Select(account.FieldID).
 		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[3] = &Edge{
+		Type: "Like",
+		Name: "likes",
+	}
+	err = po.QueryLikes().
+		Select(like.FieldID).
+		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
 	}

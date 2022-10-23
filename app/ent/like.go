@@ -31,6 +31,7 @@ type Like struct {
 	// The values are being populated by the LikeQuery when eager-loading is set.
 	Edges         LikeEdges `json:"edges"`
 	account_likes *uuid.UUID
+	post_likes    *uuid.UUID
 }
 
 // LikeEdges holds the relations/edges for other nodes in the graph.
@@ -83,6 +84,8 @@ func (*Like) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(uuid.UUID)
 		case like.ForeignKeys[0]: // account_likes
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
+		case like.ForeignKeys[1]: // post_likes
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Like", columns[i])
 		}
@@ -134,6 +137,13 @@ func (l *Like) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				l.account_likes = new(uuid.UUID)
 				*l.account_likes = *value.S.(*uuid.UUID)
+			}
+		case like.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field post_likes", values[i])
+			} else if value.Valid {
+				l.post_likes = new(uuid.UUID)
+				*l.post_likes = *value.S.(*uuid.UUID)
 			}
 		}
 	}

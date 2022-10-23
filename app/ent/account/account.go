@@ -165,9 +165,9 @@ type Type string
 
 // Type values.
 const (
-	TypeActive   Type = "active"
-	TypeInactive Type = "inactive"
-	TypeAdmin    Type = "admin"
+	TypeACTIVE   Type = "ACTIVE"
+	TypeINACTIVE Type = "INACTIVE"
+	TypeADMIN    Type = "ADMIN"
 )
 
 func (_type Type) String() string {
@@ -177,7 +177,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeActive, TypeInactive, TypeAdmin:
+	case TypeACTIVE, TypeINACTIVE, TypeADMIN:
 		return nil
 	default:
 		return fmt.Errorf("account: invalid enum value for type field: %q", _type)
@@ -189,9 +189,9 @@ type Gender string
 
 // Gender values.
 const (
-	GenderMale   Gender = "male"
-	GenderFemale Gender = "female"
-	GenderNone   Gender = "none"
+	GenderMALE   Gender = "MALE"
+	GenderFEMALE Gender = "FEMALE"
+	GenderNONE   Gender = "NONE"
 )
 
 func (ge Gender) String() string {
@@ -201,7 +201,7 @@ func (ge Gender) String() string {
 // GenderValidator is a validator for the "gender" field enum values. It is called by the builders before save.
 func GenderValidator(ge Gender) error {
 	switch ge {
-	case GenderMale, GenderFemale, GenderNone:
+	case GenderMALE, GenderFEMALE, GenderNONE:
 		return nil
 	default:
 		return fmt.Errorf("account: invalid enum value for gender field: %q", ge)

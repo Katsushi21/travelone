@@ -687,6 +687,18 @@ func (po *PostQuery) collectField(ctx context.Context, op *graphql.OperationCont
 				return err
 			}
 			po.withAccount = query
+		case "likes":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &LikeQuery{config: po.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			po.WithNamedLikes(alias, func(wq *LikeQuery) {
+				*wq = *query
+			})
 		}
 	}
 	return nil

@@ -24,9 +24,9 @@ type Account implements Node {
 }
 """AccountGender is enum for the field gender"""
 enum AccountGender @goModel(model: "github.com/Katsushi21/travelone/ent/account.Gender") {
-  male
-  female
-  none
+  MALE
+  FEMALE
+  NONE
 }
 """Ordering options for Account connections"""
 input AccountOrder {
@@ -50,9 +50,9 @@ enum AccountOrderField {
 }
 """AccountType is enum for the field type"""
 enum AccountType @goModel(model: "github.com/Katsushi21/travelone/ent/account.Type") {
-  active
-  inactive
-  admin
+  ACTIVE
+  INACTIVE
+  ADMIN
 }
 """
 AccountWhereInput is used for filtering Account objects.
@@ -386,6 +386,7 @@ input CreatePostInput {
   commentIDs: [ID!]
   markerID: ID
   accountID: ID!
+  likeIDs: [ID!]
 }
 """
 CreateRequestInput is used for create Request object.
@@ -774,6 +775,7 @@ type Post implements Node {
   comments: [Comment!]
   marker: Marker
   account: Account!
+  likes: [Like!]
 }
 """Ordering options for Post connections"""
 input PostOrder {
@@ -882,6 +884,9 @@ input PostWhereInput {
   """account edge predicates"""
   hasAccount: Boolean
   hasAccountWith: [AccountWhereInput!]
+  """likes edge predicates"""
+  hasLikes: Boolean
+  hasLikesWith: [LikeWhereInput!]
 }
 type Query {
   """Fetches an object given its ID."""
@@ -931,12 +936,12 @@ enum RequestOrderField {
 }
 """RequestStatus is enum for the field status"""
 enum RequestStatus @goModel(model: "github.com/Katsushi21/travelone/ent/request.Status") {
-  inProcess
-  accept
-  deny
-  breakInProcess
-  breakAccept
-  breakDeny
+  IN_PROCESS
+  ACCEPT
+  DENY
+  BREAK_IN_PROCESS
+  BREAK_IN_ACCEPT
+  BREAK_DENY
 }
 """
 RequestWhereInput is used for filtering Request objects.
@@ -1160,6 +1165,8 @@ input UpdatePostInput {
   markerID: ID
   clearAccount: Boolean
   accountID: ID
+  addLikeIDs: [ID!]
+  removeLikeIDs: [ID!]
 }
 """
 UpdateRequestInput is used for update Request object.

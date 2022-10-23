@@ -2,7 +2,7 @@
 # Account
 ###############
 # CREATE
-mutation createAccount(
+mutation CreateAccount(
   $email: String!
   $password: String!
   $type: AccountType!
@@ -12,7 +12,7 @@ mutation createAccount(
   $avatar: String!
   $introduction: String!
 ) {
-  createAccount(
+  CreateAccount(
     input: {
       email: $email
       password: $password
@@ -36,7 +36,7 @@ mutation createAccount(
 }
 
 # UPDATE
-mutation updateAccount(
+mutation UpdateAccount(
   $id: ID!
   $email: String!
   $password: String!
@@ -47,7 +47,7 @@ mutation updateAccount(
   $avatar: String!
   $introduction: String!
 ) {
-  updateAccount(
+  UpdateAccount(
     id: $id
     input: {
       email: $email
@@ -71,8 +71,8 @@ mutation updateAccount(
   }
 }
 # DELETE
-mutation deleteAccount($id: ID!) {
-  deleteAccount(id: $id) {
+mutation DeleteAccount($id: ID!) {
+  DeleteAccount(id: $id) {
     id
     email
     type
@@ -101,8 +101,8 @@ mutation deleteAccount($id: ID!) {
 # Comment
 ###############
 # CREATE
-mutation createComment($postID: ID!, $accountID: ID!, $body: String!) {
-  createComment(
+mutation CreateComment($postID: ID!, $accountID: ID!, $body: String!) {
+  CreateComment(
     input: { postID: $postID, accountID: $accountID, body: $body }
   ) {
     id
@@ -112,13 +112,13 @@ mutation createComment($postID: ID!, $accountID: ID!, $body: String!) {
   }
 }
 # UPDATE
-mutation updateComment(
+mutation UpdateComment(
   $id: ID!
   $postID: ID!
   $accountID: ID!
   $body: String!
 ) {
-  updateComment(
+  UpdateComment(
     id: $id
     input: { postID: $postID, accountID: $accountID, body: $body }
   ) {
@@ -129,8 +129,8 @@ mutation updateComment(
   }
 }
 # DELETE
-mutation deleteComment($id: ID!) {
-  deleteComment(id: $id) {
+mutation DeleteComment($id: ID!) {
+  DeleteComment(id: $id) {
     id
     postID
     accountID
@@ -148,15 +148,17 @@ mutation deleteComment($id: ID!) {
 # Friend
 ###############
 # CREATE
-mutation createFriend($accountID: ID!, $friendID: ID!) {
-  createFriend(input: { accountID: $accountID, friendID: $friendID }) {
+mutation CreateFriend($accountID: ID!, $friendID: ID!) {
+  CreateFriend(input: { accountID: $accountID, friendID: $friendID }) {
+    id
     accountID
     friendID
   }
 }
 # DELETE
-mutation deleteFriend($id: ID!) {
-  deleteFriend(id: $id) {
+mutation DeleteFriend($id: ID!) {
+  DeleteFriend(id: $id) {
+    id
     accountID
     friendID
   }
@@ -166,15 +168,17 @@ mutation deleteFriend($id: ID!) {
 # Like
 ###############
 # CREATE
-mutation createLike($postID: ID!, $accountID: ID!) {
-  createLike(input: { postID: $postID, accountID: $accountID }) {
+mutation CreateLike($postID: ID!, $accountID: ID!) {
+  CreateLike(input: { postID: $postID, accountID: $accountID }) {
+    id
     postID
     accountID
   }
 }
 # DELETE
-mutation deleteLike($id: ID!) {
-  deleteLike(id: $id) {
+mutation DeleteLike($id: ID!) {
+  DeleteLike(id: $id) {
+    id
     postID
     accountID
   }
@@ -184,13 +188,13 @@ mutation deleteLike($id: ID!) {
 # Marker
 ###############
 # CREATE
-mutation createMarker(
+mutation CreateMarker(
   $postID: ID!
   $title: String!
   $lat: String!
   $lng: String!
 ) {
-  createMarker(
+  CreateMarker(
     input: { postID: $postID, title: $title, lat: $lat, lng: $lng }
   ) {
     id
@@ -201,8 +205,8 @@ mutation createMarker(
   }
 }
 # UPDATE
-mutation updateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
-  updateMarker(id: $id, input: { title: $title, lat: $lat, lng: $lng }) {
+mutation UpdateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
+  UpdateMarker(id: $id, input: { title: $title, lat: $lat, lng: $lng }) {
     id
     postID
     title
@@ -211,8 +215,8 @@ mutation updateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
   }
 }
 # DELETE
-mutation deleteMarker($id: ID!) {
-  deleteMarker(id: $id) {
+mutation DeleteMarker($id: ID!) {
+  DeleteMarker(id: $id) {
     id
     postID
     title
@@ -225,15 +229,17 @@ mutation deleteMarker($id: ID!) {
 # Mute
 ###############
 # CREATE
-mutation createMute($accountID: ID!, $muteID: ID!) {
-  createMute(input: { accountID: $accountID, muteID: $muteID }) {
+mutation CreateMute($accountID: ID!, $muteID: ID!) {
+  CreateMute(input: { accountID: $accountID, muteID: $muteID }) {
+    id
     accountID
     muteID
   }
 }
 # DELETE
-mutation deleteMute($id: ID!) {
-  deleteMute(id: $id) {
+mutation DeleteMute($id: ID!) {
+  DeleteMute(id: $id) {
+    id
     accountID
     muteID
   }
@@ -243,13 +249,13 @@ mutation deleteMute($id: ID!) {
 # Post
 ###############
 # CREATE
-mutation createPost(
+mutation CreatePost(
   $accountID: ID!
   $title: String!
   $body: String!
   $img: String!
 ) {
-  createPost(
+  CreatePost(
     input: { accountID: $accountID, title: $title, body: $body, img: $img }
   ) {
     id
@@ -260,14 +266,14 @@ mutation createPost(
   }
 }
 # UPDATE
-mutation updatePost(
+mutation UpdatePost(
   $id: ID!
   $accountID: ID!
   $title: String!
   $body: String!
   $img: String!
 ) {
-  updatePost(
+  UpdatePost(
     id: $id
     input: { accountID: $accountID, title: $title, body: $body, img: $img }
   ) {
@@ -279,8 +285,8 @@ mutation updatePost(
   }
 }
 # DELETE
-mutation deletePost($id: ID!) {
-  deletePost(id: $id) {
+mutation DeletePost($id: ID!) {
+  DeletePost(id: $id) {
     id
     accountID
     title
@@ -293,38 +299,41 @@ mutation deletePost($id: ID!) {
 # Request
 ###############
 # CREATE
-mutation createRequest(
+mutation CreateRequest(
   $accountID: ID!
   $requestID: ID!
   $status: RequestStatus!
 ) {
-  createRequest(
+  CreateRequest(
     input: { accountID: $accountID, requestID: $requestID, status: $status }
   ) {
+    id
     accountID
     requestID
     status
   }
 }
 # UPDATE
-mutation updateRequest(
+mutation UpdateRequest(
   $id: ID!
   $accountID: ID!
   $requestID: ID!
   $status: RequestStatus!
 ) {
-  updateRequest(
+  UpdateRequest(
     id: $id
     input: { accountID: $accountID, requestID: $requestID, status: $status }
   ) {
+    id
     accountID
     requestID
     status
   }
 }
 # DELETE
-mutation deleteRequest($id: ID!) {
-  deleteRequest(id: $id) {
+mutation DeleteRequest($id: ID!) {
+  DeleteRequest(id: $id) {
+    id
     accountID
     requestID
     status
@@ -335,21 +344,24 @@ mutation deleteRequest($id: ID!) {
 # Session
 ###############
 # CREATE
-mutation createSession($session: String!, $accountID: ID!) {
-  createSession(input: { session: $session, accountID: $accountID }) {
+mutation CreateSession($session: String!, $accountID: ID!) {
+  CreateSession(input: { session: $session, accountID: $accountID }) {
+    id
     accountID
   }
 }
 # UPDATE
-mutation updateSession($id: ID!, $session: String!, $accountID: ID!) {
-  updateSession(id: $id, input: { session: $session, accountID: $accountID }) {
+mutation UpdateSession($id: ID!, $session: String!, $accountID: ID!) {
+  UpdateSession(id: $id, input: { session: $session, accountID: $accountID }) {
+    id
     accountID
     session
   }
 }
 # DELETE
-mutation deleteSession($id: ID!) {
-  deleteSession(id: $id) {
+mutation DeleteSession($id: ID!) {
+  DeleteSession(id: $id) {
+    id
     accountID
   }
 }

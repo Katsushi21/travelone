@@ -44,9 +44,9 @@ func (Account) Fields() []ent.Field {
 			),
 		field.Enum("type").
 			Values(
-				"active",
-				"inactive",
-				"admin",
+				"ACTIVE",
+				"INACTIVE",
+				"ADMIN",
 			).
 			Annotations(
 				entgql.OrderField("ACCOUNT_TYPE"),
@@ -61,9 +61,9 @@ func (Account) Fields() []ent.Field {
 			),
 		field.Enum("gender").
 			Values(
-				"male",
-				"female",
-				"none",
+				"MALE",
+				"FEMALE",
+				"NONE",
 			).
 			Annotations(
 				entgql.OrderField("GENDER"),

@@ -44,9 +44,9 @@ export type Account = Node & {
 
 /** AccountGender is enum for the field gender */
 export enum AccountGender {
-  Female = 'female',
-  Male = 'male',
-  None = 'none'
+  Female = 'FEMALE',
+  Male = 'MALE',
+  None = 'NONE'
 }
 
 /** Ordering options for Account connections */
@@ -73,9 +73,9 @@ export enum AccountOrderField {
 
 /** AccountType is enum for the field type */
 export enum AccountType {
-  Active = 'active',
-  Admin = 'admin',
-  Inactive = 'inactive'
+  Active = 'ACTIVE',
+  Admin = 'ADMIN',
+  Inactive = 'INACTIVE'
 }
 
 /**
@@ -419,6 +419,7 @@ export type CreatePostInput = {
   commentIDs?: InputMaybe<Array<Scalars['ID']>>;
   createdAt?: InputMaybe<Scalars['Time']>;
   img: Scalars['String'];
+  likeIDs?: InputMaybe<Array<Scalars['ID']>>;
   markerID?: InputMaybe<Scalars['ID']>;
   title: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['Time']>;
@@ -710,30 +711,30 @@ export type MarkerWhereInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createAccount: Account;
-  createComment: Comment;
-  createFriend: Friend;
-  createLike: Like;
-  createMarker: Marker;
-  createMute: Mute;
-  createPost: Post;
-  createRequest: Request;
-  createSession: Session;
-  deleteAccount: Account;
-  deleteComment: Comment;
-  deleteFriend: Friend;
-  deleteLike: Like;
-  deleteMarker: Marker;
-  deleteMute: Mute;
-  deletePost: Post;
-  deleteRequest: Request;
-  deleteSession: Session;
-  updateAccount: Account;
-  updateComment: Comment;
-  updateMarker: Marker;
-  updatePost: Post;
-  updateRequest: Request;
-  updateSession: Session;
+  CreateAccount: Account;
+  CreateComment: Comment;
+  CreateFriend: Friend;
+  CreateLike: Like;
+  CreateMarker: Marker;
+  CreateMute: Mute;
+  CreatePost: Post;
+  CreateRequest: Request;
+  CreateSession: Session;
+  DeleteAccount: Account;
+  DeleteComment: Comment;
+  DeleteFriend: Friend;
+  DeleteLike: Like;
+  DeleteMarker: Marker;
+  DeleteMute: Mute;
+  DeletePost: Post;
+  DeleteRequest: Request;
+  DeleteSession: Session;
+  UpdateAccount: Account;
+  UpdateComment: Comment;
+  UpdateMarker: Marker;
+  UpdatePost: Post;
+  UpdateRequest: Request;
+  UpdateSession: Session;
 };
 
 
@@ -984,6 +985,7 @@ export type Post = Node & {
   createdAt: Scalars['Time'];
   id: Scalars['ID'];
   img: Scalars['String'];
+  likes?: Maybe<Array<Like>>;
   marker?: Maybe<Marker>;
   title: Scalars['String'];
   updatedAt: Scalars['Time'];
@@ -1047,6 +1049,9 @@ export type PostWhereInput = {
   /** comments edge predicates */
   hasComments?: InputMaybe<Scalars['Boolean']>;
   hasCommentsWith?: InputMaybe<Array<CommentWhereInput>>;
+  /** likes edge predicates */
+  hasLikes?: InputMaybe<Scalars['Boolean']>;
+  hasLikesWith?: InputMaybe<Array<LikeWhereInput>>;
   /** marker edge predicates */
   hasMarker?: InputMaybe<Scalars['Boolean']>;
   hasMarkerWith?: InputMaybe<Array<MarkerWhereInput>>;
@@ -1102,6 +1107,12 @@ export type PostWhereInput = {
 
 export type Query = {
   __typename?: 'Query';
+  AccountByID: Account;
+  AccountBySelfID: Account;
+  LikesByPostID: Array<Like>;
+  RequestsByAccountID: Array<Request>;
+  RequestsByRequestID: Array<Request>;
+  SessionByID: Session;
   accounts: Array<Account>;
   comments: Array<Comment>;
   friends: Array<Friend>;
@@ -1113,16 +1124,38 @@ export type Query = {
   /** Lookup nodes by a list of IDs. */
   nodes: Array<Maybe<Node>>;
   posts: Array<Post>;
-  queryAccountByID: Account;
-  queryAccountByMyID: Account;
-  queryLikesByPostID: Array<Like>;
-  queryMarkers: Array<Marker>;
-  queryPosts: Array<Post>;
-  queryRequestsByAccountID: Array<Request>;
-  queryRequestsByRequestID: Array<Request>;
-  querySessionByAccountID: Session;
   requests: Array<Request>;
   sessions: Array<Session>;
+};
+
+
+export type QueryAccountByIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryAccountBySelfIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryLikesByPostIdArgs = {
+  postID: Scalars['ID'];
+};
+
+
+export type QueryRequestsByAccountIdArgs = {
+  accountID: Scalars['ID'];
+};
+
+
+export type QueryRequestsByRequestIdArgs = {
+  requestID: Scalars['ID'];
+};
+
+
+export type QuerySessionByIdArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1133,36 +1166,6 @@ export type QueryNodeArgs = {
 
 export type QueryNodesArgs = {
   ids: Array<Scalars['ID']>;
-};
-
-
-export type QueryQueryAccountByIdArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryQueryAccountByMyIdArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryQueryLikesByPostIdArgs = {
-  postID: Scalars['ID'];
-};
-
-
-export type QueryQueryRequestsByAccountIdArgs = {
-  accountID: Scalars['ID'];
-};
-
-
-export type QueryQueryRequestsByRequestIdArgs = {
-  RequestID: Scalars['ID'];
-};
-
-
-export type QueryQuerySessionByAccountIdArgs = {
-  ID: Scalars['ID'];
 };
 
 export type Request = Node & {
@@ -1196,12 +1199,12 @@ export enum RequestOrderField {
 
 /** RequestStatus is enum for the field status */
 export enum RequestStatus {
-  Accept = 'accept',
-  BreakAccept = 'breakAccept',
-  BreakDeny = 'breakDeny',
-  BreakInProcess = 'breakInProcess',
-  Deny = 'deny',
-  InProcess = 'inProcess'
+  Accept = 'ACCEPT',
+  BreakDeny = 'BREAK_DENY',
+  BreakInAccept = 'BREAK_IN_ACCEPT',
+  BreakInProcess = 'BREAK_IN_PROCESS',
+  Deny = 'DENY',
+  InProcess = 'IN_PROCESS'
 }
 
 /**
@@ -1430,12 +1433,14 @@ export type UpdateMuteInput = {
 export type UpdatePostInput = {
   accountID?: InputMaybe<Scalars['ID']>;
   addCommentIDs?: InputMaybe<Array<Scalars['ID']>>;
+  addLikeIDs?: InputMaybe<Array<Scalars['ID']>>;
   body?: InputMaybe<Scalars['String']>;
   clearAccount?: InputMaybe<Scalars['Boolean']>;
   clearMarker?: InputMaybe<Scalars['Boolean']>;
   img?: InputMaybe<Scalars['String']>;
   markerID?: InputMaybe<Scalars['ID']>;
   removeCommentIDs?: InputMaybe<Array<Scalars['ID']>>;
+  removeLikeIDs?: InputMaybe<Array<Scalars['ID']>>;
   title?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['Time']>;
 };
@@ -1476,7 +1481,7 @@ export type CreateAccountMutationVariables = Exact<{
 }>;
 
 
-export type CreateAccountMutation = { __typename?: 'Mutation', createAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
+export type CreateAccountMutation = { __typename?: 'Mutation', CreateAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
 
 export type UpdateAccountMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1491,14 +1496,14 @@ export type UpdateAccountMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
+export type UpdateAccountMutation = { __typename?: 'Mutation', UpdateAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
 
 export type DeleteAccountMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
+export type DeleteAccountMutation = { __typename?: 'Mutation', DeleteAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
 
 export type CreateCommentMutationVariables = Exact<{
   postID: Scalars['ID'];
@@ -1507,7 +1512,7 @@ export type CreateCommentMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
+export type CreateCommentMutation = { __typename?: 'Mutation', CreateComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
 
 export type UpdateCommentMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1517,14 +1522,14 @@ export type UpdateCommentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCommentMutation = { __typename?: 'Mutation', updateComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
+export type UpdateCommentMutation = { __typename?: 'Mutation', UpdateComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
 
 export type DeleteCommentMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
+export type DeleteCommentMutation = { __typename?: 'Mutation', DeleteComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
 
 export type CreateFriendMutationVariables = Exact<{
   accountID: Scalars['ID'];
@@ -1532,14 +1537,14 @@ export type CreateFriendMutationVariables = Exact<{
 }>;
 
 
-export type CreateFriendMutation = { __typename?: 'Mutation', createFriend: { __typename?: 'Friend', accountID: string, friendID: string } };
+export type CreateFriendMutation = { __typename?: 'Mutation', CreateFriend: { __typename?: 'Friend', id: string, accountID: string, friendID: string } };
 
 export type DeleteFriendMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteFriendMutation = { __typename?: 'Mutation', deleteFriend: { __typename?: 'Friend', accountID: string, friendID: string } };
+export type DeleteFriendMutation = { __typename?: 'Mutation', DeleteFriend: { __typename?: 'Friend', id: string, accountID: string, friendID: string } };
 
 export type CreateLikeMutationVariables = Exact<{
   postID: Scalars['ID'];
@@ -1547,14 +1552,14 @@ export type CreateLikeMutationVariables = Exact<{
 }>;
 
 
-export type CreateLikeMutation = { __typename?: 'Mutation', createLike: { __typename?: 'Like', postID: string, accountID: string } };
+export type CreateLikeMutation = { __typename?: 'Mutation', CreateLike: { __typename?: 'Like', id: string, postID: string, accountID: string } };
 
 export type DeleteLikeMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteLikeMutation = { __typename?: 'Mutation', deleteLike: { __typename?: 'Like', postID: string, accountID: string } };
+export type DeleteLikeMutation = { __typename?: 'Mutation', DeleteLike: { __typename?: 'Like', id: string, postID: string, accountID: string } };
 
 export type CreateMarkerMutationVariables = Exact<{
   postID: Scalars['ID'];
@@ -1564,7 +1569,7 @@ export type CreateMarkerMutationVariables = Exact<{
 }>;
 
 
-export type CreateMarkerMutation = { __typename?: 'Mutation', createMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
+export type CreateMarkerMutation = { __typename?: 'Mutation', CreateMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
 
 export type UpdateMarkerMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1574,14 +1579,14 @@ export type UpdateMarkerMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMarkerMutation = { __typename?: 'Mutation', updateMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
+export type UpdateMarkerMutation = { __typename?: 'Mutation', UpdateMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
 
 export type DeleteMarkerMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteMarkerMutation = { __typename?: 'Mutation', deleteMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
+export type DeleteMarkerMutation = { __typename?: 'Mutation', DeleteMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
 
 export type CreateMuteMutationVariables = Exact<{
   accountID: Scalars['ID'];
@@ -1589,14 +1594,14 @@ export type CreateMuteMutationVariables = Exact<{
 }>;
 
 
-export type CreateMuteMutation = { __typename?: 'Mutation', createMute: { __typename?: 'Mute', accountID: string, muteID: string } };
+export type CreateMuteMutation = { __typename?: 'Mutation', CreateMute: { __typename?: 'Mute', id: string, accountID: string, muteID: string } };
 
 export type DeleteMuteMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteMuteMutation = { __typename?: 'Mutation', deleteMute: { __typename?: 'Mute', accountID: string, muteID: string } };
+export type DeleteMuteMutation = { __typename?: 'Mutation', DeleteMute: { __typename?: 'Mute', id: string, accountID: string, muteID: string } };
 
 export type CreatePostMutationVariables = Exact<{
   accountID: Scalars['ID'];
@@ -1606,7 +1611,7 @@ export type CreatePostMutationVariables = Exact<{
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
+export type CreatePostMutation = { __typename?: 'Mutation', CreatePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
 
 export type UpdatePostMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1617,14 +1622,14 @@ export type UpdatePostMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
+export type UpdatePostMutation = { __typename?: 'Mutation', UpdatePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
 
 export type DeletePostMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeletePostMutation = { __typename?: 'Mutation', deletePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
+export type DeletePostMutation = { __typename?: 'Mutation', DeletePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
 
 export type CreateRequestMutationVariables = Exact<{
   accountID: Scalars['ID'];
@@ -1633,7 +1638,7 @@ export type CreateRequestMutationVariables = Exact<{
 }>;
 
 
-export type CreateRequestMutation = { __typename?: 'Mutation', createRequest: { __typename?: 'Request', accountID: string, requestID: string, status: RequestStatus } };
+export type CreateRequestMutation = { __typename?: 'Mutation', CreateRequest: { __typename?: 'Request', id: string, accountID: string, requestID: string, status: RequestStatus } };
 
 export type UpdateRequestMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1643,14 +1648,14 @@ export type UpdateRequestMutationVariables = Exact<{
 }>;
 
 
-export type UpdateRequestMutation = { __typename?: 'Mutation', updateRequest: { __typename?: 'Request', accountID: string, requestID: string, status: RequestStatus } };
+export type UpdateRequestMutation = { __typename?: 'Mutation', UpdateRequest: { __typename?: 'Request', id: string, accountID: string, requestID: string, status: RequestStatus } };
 
 export type DeleteRequestMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteRequestMutation = { __typename?: 'Mutation', deleteRequest: { __typename?: 'Request', accountID: string, requestID: string, status: RequestStatus } };
+export type DeleteRequestMutation = { __typename?: 'Mutation', DeleteRequest: { __typename?: 'Request', id: string, accountID: string, requestID: string, status: RequestStatus } };
 
 export type CreateSessionMutationVariables = Exact<{
   session: Scalars['String'];
@@ -1658,7 +1663,7 @@ export type CreateSessionMutationVariables = Exact<{
 }>;
 
 
-export type CreateSessionMutation = { __typename?: 'Mutation', createSession: { __typename?: 'Session', accountID: string } };
+export type CreateSessionMutation = { __typename?: 'Mutation', CreateSession: { __typename?: 'Session', id: string, accountID: string } };
 
 export type UpdateSessionMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1667,14 +1672,66 @@ export type UpdateSessionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateSessionMutation = { __typename?: 'Mutation', updateSession: { __typename?: 'Session', accountID: string, session: string } };
+export type UpdateSessionMutation = { __typename?: 'Mutation', UpdateSession: { __typename?: 'Session', id: string, accountID: string, session: string } };
 
 export type DeleteSessionMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type DeleteSessionMutation = { __typename?: 'Mutation', deleteSession: { __typename?: 'Session', accountID: string } };
+export type DeleteSessionMutation = { __typename?: 'Mutation', DeleteSession: { __typename?: 'Session', id: string, accountID: string } };
+
+export type AccountByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type AccountByIdQuery = { __typename?: 'Query', AccountByID: { __typename?: 'Account', id: string, name: string, age: number, gender: AccountGender, avatar: string, introduction: string, posts?: Array<{ __typename?: 'Post', id: string, title: string, updatedAt: any, likes?: Array<{ __typename?: 'Like', accountID: string }> | null }> | null, friends?: Array<{ __typename?: 'Account', friends?: Array<{ __typename?: 'Account', id: string, name: string, avatar: string }> | null }> | null } };
+
+export type AccountBySelfIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type AccountBySelfIdQuery = { __typename?: 'Query', AccountBySelfID: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string, posts?: Array<{ __typename?: 'Post', id: string, title: string, createdAt: any, updatedAt: any, likes?: Array<{ __typename?: 'Like', accountID: string }> | null }> | null, likes?: Array<{ __typename?: 'Like', post: { __typename?: 'Post', id: string, accountID: string, title: string, updatedAt: any }, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> | null, friends?: Array<{ __typename?: 'Account', friends?: Array<{ __typename?: 'Account', id: string, name: string, avatar: string }> | null }> | null, mutes?: Array<{ __typename?: 'Mute', mute: { __typename?: 'Account', id: string, name: string, avatar: string } }> | null } };
+
+export type LikesByPostIdQueryVariables = Exact<{
+  postID: Scalars['ID'];
+}>;
+
+
+export type LikesByPostIdQuery = { __typename?: 'Query', LikesByPostID: Array<{ __typename?: 'Like', id: string, createdAt: any, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> };
+
+export type MarkersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: string, title: string, lat: string, lng: string, post: { __typename?: 'Post', id: string, title: string, body: string, img: string, account: { __typename?: 'Account', id: string, name: string, avatar: string }, likes?: Array<{ __typename?: 'Like', accountID: string }> | null } }> };
+
+export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: string, title: string, body: string, img: string, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, avatar: string }, marker?: { __typename?: 'Marker', id: string, title: string, lat: string, lng: string } | null, likes?: Array<{ __typename?: 'Like', id: string, accountID: string }> | null, comments?: Array<{ __typename?: 'Comment', id: string, body: string, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> | null }> };
+
+export type RequestsByAccountIdQueryVariables = Exact<{
+  accountID: Scalars['ID'];
+}>;
+
+
+export type RequestsByAccountIdQuery = { __typename?: 'Query', RequestsByAccountID: Array<{ __typename?: 'Request', id: string, createdAt: any, updatedAt: any, request: { __typename?: 'Account', id: string, name: string, avatar: string } }> };
+
+export type RequestsByRequestIdQueryVariables = Exact<{
+  requestID: Scalars['ID'];
+}>;
+
+
+export type RequestsByRequestIdQuery = { __typename?: 'Query', RequestsByRequestID: Array<{ __typename?: 'Request', id: string, createdAt: any, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> };
+
+export type SessionByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type SessionByIdQuery = { __typename?: 'Query', SessionByID: { __typename?: 'Session', id: string, session: string } };
 
 import { IntrospectionQuery } from 'graphql';
 export default {
@@ -2345,7 +2402,7 @@ export default {
         "name": "Mutation",
         "fields": [
           {
-            "name": "createAccount",
+            "name": "CreateAccount",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2368,7 +2425,7 @@ export default {
             ]
           },
           {
-            "name": "createComment",
+            "name": "CreateComment",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2391,7 +2448,7 @@ export default {
             ]
           },
           {
-            "name": "createFriend",
+            "name": "CreateFriend",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2414,7 +2471,7 @@ export default {
             ]
           },
           {
-            "name": "createLike",
+            "name": "CreateLike",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2437,7 +2494,7 @@ export default {
             ]
           },
           {
-            "name": "createMarker",
+            "name": "CreateMarker",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2460,7 +2517,7 @@ export default {
             ]
           },
           {
-            "name": "createMute",
+            "name": "CreateMute",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2483,7 +2540,7 @@ export default {
             ]
           },
           {
-            "name": "createPost",
+            "name": "CreatePost",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2506,7 +2563,7 @@ export default {
             ]
           },
           {
-            "name": "createRequest",
+            "name": "CreateRequest",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2529,7 +2586,7 @@ export default {
             ]
           },
           {
-            "name": "createSession",
+            "name": "CreateSession",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2552,7 +2609,7 @@ export default {
             ]
           },
           {
-            "name": "deleteAccount",
+            "name": "DeleteAccount",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2575,7 +2632,7 @@ export default {
             ]
           },
           {
-            "name": "deleteComment",
+            "name": "DeleteComment",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2598,7 +2655,7 @@ export default {
             ]
           },
           {
-            "name": "deleteFriend",
+            "name": "DeleteFriend",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2621,7 +2678,7 @@ export default {
             ]
           },
           {
-            "name": "deleteLike",
+            "name": "DeleteLike",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2644,7 +2701,7 @@ export default {
             ]
           },
           {
-            "name": "deleteMarker",
+            "name": "DeleteMarker",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2667,7 +2724,7 @@ export default {
             ]
           },
           {
-            "name": "deleteMute",
+            "name": "DeleteMute",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2690,7 +2747,7 @@ export default {
             ]
           },
           {
-            "name": "deletePost",
+            "name": "DeletePost",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2713,7 +2770,7 @@ export default {
             ]
           },
           {
-            "name": "deleteRequest",
+            "name": "DeleteRequest",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2736,7 +2793,7 @@ export default {
             ]
           },
           {
-            "name": "deleteSession",
+            "name": "DeleteSession",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2759,7 +2816,7 @@ export default {
             ]
           },
           {
-            "name": "updateAccount",
+            "name": "UpdateAccount",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2792,7 +2849,7 @@ export default {
             ]
           },
           {
-            "name": "updateComment",
+            "name": "UpdateComment",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2825,7 +2882,7 @@ export default {
             ]
           },
           {
-            "name": "updateMarker",
+            "name": "UpdateMarker",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2858,7 +2915,7 @@ export default {
             ]
           },
           {
-            "name": "updatePost",
+            "name": "UpdatePost",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2891,7 +2948,7 @@ export default {
             ]
           },
           {
-            "name": "updateRequest",
+            "name": "UpdateRequest",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -2924,7 +2981,7 @@ export default {
             ]
           },
           {
-            "name": "updateSession",
+            "name": "UpdateSession",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -3238,6 +3295,21 @@ export default {
             "args": []
           },
           {
+            "name": "likes",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Like",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
             "name": "marker",
             "type": {
               "kind": "OBJECT",
@@ -3280,6 +3352,162 @@ export default {
         "kind": "OBJECT",
         "name": "Query",
         "fields": [
+          {
+            "name": "AccountByID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "AccountBySelfID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Account",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "LikesByPostID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Like",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "postID",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "RequestsByAccountID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Request",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "accountID",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "RequestsByRequestID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Request",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "requestID",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "SessionByID",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Session",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
           {
             "name": "accounts",
             "type": {
@@ -3457,198 +3685,6 @@ export default {
               }
             },
             "args": []
-          },
-          {
-            "name": "queryAccountByID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "queryAccountByMyID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "queryLikesByPostID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Like",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "postID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "queryMarkers",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Marker",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "queryPosts",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Post",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "queryRequestsByAccountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "accountID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "queryRequestsByRequestID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "RequestID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "querySessionByAccountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Session",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "ID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
           },
           {
             "name": "requests",
@@ -3880,8 +3916,8 @@ export default {
 } as unknown as IntrospectionQuery;
 
 export const CreateAccountDocument = gql`
-    mutation createAccount($email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
-  createAccount(
+    mutation CreateAccount($email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
+  CreateAccount(
     input: {email: $email, password: $password, type: $type, name: $name, age: $age, gender: $gender, avatar: $avatar, introduction: $introduction}
   ) {
     id
@@ -3900,8 +3936,8 @@ export function useCreateAccountMutation() {
   return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
 };
 export const UpdateAccountDocument = gql`
-    mutation updateAccount($id: ID!, $email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
-  updateAccount(
+    mutation UpdateAccount($id: ID!, $email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
+  UpdateAccount(
     id: $id
     input: {email: $email, password: $password, type: $type, name: $name, age: $age, gender: $gender, avatar: $avatar, introduction: $introduction}
   ) {
@@ -3921,8 +3957,8 @@ export function useUpdateAccountMutation() {
   return Urql.useMutation<UpdateAccountMutation, UpdateAccountMutationVariables>(UpdateAccountDocument);
 };
 export const DeleteAccountDocument = gql`
-    mutation deleteAccount($id: ID!) {
-  deleteAccount(id: $id) {
+    mutation DeleteAccount($id: ID!) {
+  DeleteAccount(id: $id) {
     id
     email
     type
@@ -3939,8 +3975,8 @@ export function useDeleteAccountMutation() {
   return Urql.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument);
 };
 export const CreateCommentDocument = gql`
-    mutation createComment($postID: ID!, $accountID: ID!, $body: String!) {
-  createComment(input: {postID: $postID, accountID: $accountID, body: $body}) {
+    mutation CreateComment($postID: ID!, $accountID: ID!, $body: String!) {
+  CreateComment(input: {postID: $postID, accountID: $accountID, body: $body}) {
     id
     postID
     accountID
@@ -3953,8 +3989,8 @@ export function useCreateCommentMutation() {
   return Urql.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument);
 };
 export const UpdateCommentDocument = gql`
-    mutation updateComment($id: ID!, $postID: ID!, $accountID: ID!, $body: String!) {
-  updateComment(
+    mutation UpdateComment($id: ID!, $postID: ID!, $accountID: ID!, $body: String!) {
+  UpdateComment(
     id: $id
     input: {postID: $postID, accountID: $accountID, body: $body}
   ) {
@@ -3970,8 +4006,8 @@ export function useUpdateCommentMutation() {
   return Urql.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument);
 };
 export const DeleteCommentDocument = gql`
-    mutation deleteComment($id: ID!) {
-  deleteComment(id: $id) {
+    mutation DeleteComment($id: ID!) {
+  DeleteComment(id: $id) {
     id
     postID
     accountID
@@ -3984,8 +4020,9 @@ export function useDeleteCommentMutation() {
   return Urql.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument);
 };
 export const CreateFriendDocument = gql`
-    mutation createFriend($accountID: ID!, $friendID: ID!) {
-  createFriend(input: {accountID: $accountID, friendID: $friendID}) {
+    mutation CreateFriend($accountID: ID!, $friendID: ID!) {
+  CreateFriend(input: {accountID: $accountID, friendID: $friendID}) {
+    id
     accountID
     friendID
   }
@@ -3996,8 +4033,9 @@ export function useCreateFriendMutation() {
   return Urql.useMutation<CreateFriendMutation, CreateFriendMutationVariables>(CreateFriendDocument);
 };
 export const DeleteFriendDocument = gql`
-    mutation deleteFriend($id: ID!) {
-  deleteFriend(id: $id) {
+    mutation DeleteFriend($id: ID!) {
+  DeleteFriend(id: $id) {
+    id
     accountID
     friendID
   }
@@ -4008,8 +4046,9 @@ export function useDeleteFriendMutation() {
   return Urql.useMutation<DeleteFriendMutation, DeleteFriendMutationVariables>(DeleteFriendDocument);
 };
 export const CreateLikeDocument = gql`
-    mutation createLike($postID: ID!, $accountID: ID!) {
-  createLike(input: {postID: $postID, accountID: $accountID}) {
+    mutation CreateLike($postID: ID!, $accountID: ID!) {
+  CreateLike(input: {postID: $postID, accountID: $accountID}) {
+    id
     postID
     accountID
   }
@@ -4020,8 +4059,9 @@ export function useCreateLikeMutation() {
   return Urql.useMutation<CreateLikeMutation, CreateLikeMutationVariables>(CreateLikeDocument);
 };
 export const DeleteLikeDocument = gql`
-    mutation deleteLike($id: ID!) {
-  deleteLike(id: $id) {
+    mutation DeleteLike($id: ID!) {
+  DeleteLike(id: $id) {
+    id
     postID
     accountID
   }
@@ -4032,8 +4072,8 @@ export function useDeleteLikeMutation() {
   return Urql.useMutation<DeleteLikeMutation, DeleteLikeMutationVariables>(DeleteLikeDocument);
 };
 export const CreateMarkerDocument = gql`
-    mutation createMarker($postID: ID!, $title: String!, $lat: String!, $lng: String!) {
-  createMarker(input: {postID: $postID, title: $title, lat: $lat, lng: $lng}) {
+    mutation CreateMarker($postID: ID!, $title: String!, $lat: String!, $lng: String!) {
+  CreateMarker(input: {postID: $postID, title: $title, lat: $lat, lng: $lng}) {
     id
     postID
     title
@@ -4047,8 +4087,8 @@ export function useCreateMarkerMutation() {
   return Urql.useMutation<CreateMarkerMutation, CreateMarkerMutationVariables>(CreateMarkerDocument);
 };
 export const UpdateMarkerDocument = gql`
-    mutation updateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
-  updateMarker(id: $id, input: {title: $title, lat: $lat, lng: $lng}) {
+    mutation UpdateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
+  UpdateMarker(id: $id, input: {title: $title, lat: $lat, lng: $lng}) {
     id
     postID
     title
@@ -4062,8 +4102,8 @@ export function useUpdateMarkerMutation() {
   return Urql.useMutation<UpdateMarkerMutation, UpdateMarkerMutationVariables>(UpdateMarkerDocument);
 };
 export const DeleteMarkerDocument = gql`
-    mutation deleteMarker($id: ID!) {
-  deleteMarker(id: $id) {
+    mutation DeleteMarker($id: ID!) {
+  DeleteMarker(id: $id) {
     id
     postID
     title
@@ -4077,8 +4117,9 @@ export function useDeleteMarkerMutation() {
   return Urql.useMutation<DeleteMarkerMutation, DeleteMarkerMutationVariables>(DeleteMarkerDocument);
 };
 export const CreateMuteDocument = gql`
-    mutation createMute($accountID: ID!, $muteID: ID!) {
-  createMute(input: {accountID: $accountID, muteID: $muteID}) {
+    mutation CreateMute($accountID: ID!, $muteID: ID!) {
+  CreateMute(input: {accountID: $accountID, muteID: $muteID}) {
+    id
     accountID
     muteID
   }
@@ -4089,8 +4130,9 @@ export function useCreateMuteMutation() {
   return Urql.useMutation<CreateMuteMutation, CreateMuteMutationVariables>(CreateMuteDocument);
 };
 export const DeleteMuteDocument = gql`
-    mutation deleteMute($id: ID!) {
-  deleteMute(id: $id) {
+    mutation DeleteMute($id: ID!) {
+  DeleteMute(id: $id) {
+    id
     accountID
     muteID
   }
@@ -4101,8 +4143,8 @@ export function useDeleteMuteMutation() {
   return Urql.useMutation<DeleteMuteMutation, DeleteMuteMutationVariables>(DeleteMuteDocument);
 };
 export const CreatePostDocument = gql`
-    mutation createPost($accountID: ID!, $title: String!, $body: String!, $img: String!) {
-  createPost(
+    mutation CreatePost($accountID: ID!, $title: String!, $body: String!, $img: String!) {
+  CreatePost(
     input: {accountID: $accountID, title: $title, body: $body, img: $img}
   ) {
     id
@@ -4118,8 +4160,8 @@ export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 };
 export const UpdatePostDocument = gql`
-    mutation updatePost($id: ID!, $accountID: ID!, $title: String!, $body: String!, $img: String!) {
-  updatePost(
+    mutation UpdatePost($id: ID!, $accountID: ID!, $title: String!, $body: String!, $img: String!) {
+  UpdatePost(
     id: $id
     input: {accountID: $accountID, title: $title, body: $body, img: $img}
   ) {
@@ -4136,8 +4178,8 @@ export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
 };
 export const DeletePostDocument = gql`
-    mutation deletePost($id: ID!) {
-  deletePost(id: $id) {
+    mutation DeletePost($id: ID!) {
+  DeletePost(id: $id) {
     id
     accountID
     title
@@ -4151,10 +4193,11 @@ export function useDeletePostMutation() {
   return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument);
 };
 export const CreateRequestDocument = gql`
-    mutation createRequest($accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
-  createRequest(
+    mutation CreateRequest($accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
+  CreateRequest(
     input: {accountID: $accountID, requestID: $requestID, status: $status}
   ) {
+    id
     accountID
     requestID
     status
@@ -4166,11 +4209,12 @@ export function useCreateRequestMutation() {
   return Urql.useMutation<CreateRequestMutation, CreateRequestMutationVariables>(CreateRequestDocument);
 };
 export const UpdateRequestDocument = gql`
-    mutation updateRequest($id: ID!, $accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
-  updateRequest(
+    mutation UpdateRequest($id: ID!, $accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
+  UpdateRequest(
     id: $id
     input: {accountID: $accountID, requestID: $requestID, status: $status}
   ) {
+    id
     accountID
     requestID
     status
@@ -4182,8 +4226,9 @@ export function useUpdateRequestMutation() {
   return Urql.useMutation<UpdateRequestMutation, UpdateRequestMutationVariables>(UpdateRequestDocument);
 };
 export const DeleteRequestDocument = gql`
-    mutation deleteRequest($id: ID!) {
-  deleteRequest(id: $id) {
+    mutation DeleteRequest($id: ID!) {
+  DeleteRequest(id: $id) {
+    id
     accountID
     requestID
     status
@@ -4195,8 +4240,9 @@ export function useDeleteRequestMutation() {
   return Urql.useMutation<DeleteRequestMutation, DeleteRequestMutationVariables>(DeleteRequestDocument);
 };
 export const CreateSessionDocument = gql`
-    mutation createSession($session: String!, $accountID: ID!) {
-  createSession(input: {session: $session, accountID: $accountID}) {
+    mutation CreateSession($session: String!, $accountID: ID!) {
+  CreateSession(input: {session: $session, accountID: $accountID}) {
+    id
     accountID
   }
 }
@@ -4206,8 +4252,9 @@ export function useCreateSessionMutation() {
   return Urql.useMutation<CreateSessionMutation, CreateSessionMutationVariables>(CreateSessionDocument);
 };
 export const UpdateSessionDocument = gql`
-    mutation updateSession($id: ID!, $session: String!, $accountID: ID!) {
-  updateSession(id: $id, input: {session: $session, accountID: $accountID}) {
+    mutation UpdateSession($id: ID!, $session: String!, $accountID: ID!) {
+  UpdateSession(id: $id, input: {session: $session, accountID: $accountID}) {
+    id
     accountID
     session
   }
@@ -4218,8 +4265,9 @@ export function useUpdateSessionMutation() {
   return Urql.useMutation<UpdateSessionMutation, UpdateSessionMutationVariables>(UpdateSessionDocument);
 };
 export const DeleteSessionDocument = gql`
-    mutation deleteSession($id: ID!) {
-  deleteSession(id: $id) {
+    mutation DeleteSession($id: ID!) {
+  DeleteSession(id: $id) {
+    id
     accountID
   }
 }
@@ -4227,4 +4275,221 @@ export const DeleteSessionDocument = gql`
 
 export function useDeleteSessionMutation() {
   return Urql.useMutation<DeleteSessionMutation, DeleteSessionMutationVariables>(DeleteSessionDocument);
+};
+export const AccountByIdDocument = gql`
+    query AccountByID($id: ID!) {
+  AccountByID(id: $id) {
+    id
+    name
+    age
+    gender
+    avatar
+    introduction
+    posts {
+      id
+      title
+      updatedAt
+      likes {
+        accountID
+      }
+    }
+    friends {
+      friends {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+export function useAccountByIdQuery(options: Omit<Urql.UseQueryArgs<AccountByIdQueryVariables>, 'query'>) {
+  return Urql.useQuery<AccountByIdQuery>({ query: AccountByIdDocument, ...options });
+};
+export const AccountBySelfIdDocument = gql`
+    query AccountBySelfID($id: ID!) {
+  AccountBySelfID(id: $id) {
+    id
+    email
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+    posts {
+      id
+      title
+      createdAt
+      updatedAt
+      likes {
+        accountID
+      }
+    }
+    likes {
+      post {
+        id
+        accountID
+        title
+        updatedAt
+      }
+      account {
+        id
+        name
+        avatar
+      }
+    }
+    friends {
+      friends {
+        id
+        name
+        avatar
+      }
+    }
+    mutes {
+      mute {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+export function useAccountBySelfIdQuery(options: Omit<Urql.UseQueryArgs<AccountBySelfIdQueryVariables>, 'query'>) {
+  return Urql.useQuery<AccountBySelfIdQuery>({ query: AccountBySelfIdDocument, ...options });
+};
+export const LikesByPostIdDocument = gql`
+    query LikesByPostID($postID: ID!) {
+  LikesByPostID(postID: $postID) {
+    id
+    createdAt
+    account {
+      id
+      name
+      avatar
+    }
+  }
+}
+    `;
+
+export function useLikesByPostIdQuery(options: Omit<Urql.UseQueryArgs<LikesByPostIdQueryVariables>, 'query'>) {
+  return Urql.useQuery<LikesByPostIdQuery>({ query: LikesByPostIdDocument, ...options });
+};
+export const MarkersDocument = gql`
+    query Markers {
+  markers {
+    id
+    title
+    lat
+    lng
+    post {
+      id
+      title
+      body
+      img
+      account {
+        id
+        name
+        avatar
+      }
+      likes {
+        accountID
+      }
+    }
+  }
+}
+    `;
+
+export function useMarkersQuery(options?: Omit<Urql.UseQueryArgs<MarkersQueryVariables>, 'query'>) {
+  return Urql.useQuery<MarkersQuery>({ query: MarkersDocument, ...options });
+};
+export const PostsDocument = gql`
+    query Posts {
+  posts {
+    id
+    title
+    body
+    img
+    createdAt
+    updatedAt
+    account {
+      id
+      name
+      avatar
+    }
+    marker {
+      id
+      title
+      lat
+      lng
+    }
+    likes {
+      id
+      accountID
+    }
+    comments {
+      id
+      body
+      account {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+export function usePostsQuery(options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>) {
+  return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
+};
+export const RequestsByAccountIdDocument = gql`
+    query RequestsByAccountID($accountID: ID!) {
+  RequestsByAccountID(accountID: $accountID) {
+    id
+    createdAt
+    updatedAt
+    request {
+      id
+      name
+      avatar
+    }
+  }
+}
+    `;
+
+export function useRequestsByAccountIdQuery(options: Omit<Urql.UseQueryArgs<RequestsByAccountIdQueryVariables>, 'query'>) {
+  return Urql.useQuery<RequestsByAccountIdQuery>({ query: RequestsByAccountIdDocument, ...options });
+};
+export const RequestsByRequestIdDocument = gql`
+    query RequestsByRequestID($requestID: ID!) {
+  RequestsByRequestID(requestID: $requestID) {
+    id
+    createdAt
+    account {
+      id
+      name
+      avatar
+    }
+  }
+}
+    `;
+
+export function useRequestsByRequestIdQuery(options: Omit<Urql.UseQueryArgs<RequestsByRequestIdQueryVariables>, 'query'>) {
+  return Urql.useQuery<RequestsByRequestIdQuery>({ query: RequestsByRequestIdDocument, ...options });
+};
+export const SessionByIdDocument = gql`
+    query SessionByID($id: ID!) {
+  SessionByID(id: $id) {
+    id
+    session
+  }
+}
+    `;
+
+export function useSessionByIdQuery(options: Omit<Urql.UseQueryArgs<SessionByIdQueryVariables>, 'query'>) {
+  return Urql.useQuery<SessionByIdQuery>({ query: SessionByIdDocument, ...options });
 };

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Katsushi21/travelone/ent/account"
 	"github.com/Katsushi21/travelone/ent/comment"
+	"github.com/Katsushi21/travelone/ent/like"
 	"github.com/Katsushi21/travelone/ent/marker"
 	"github.com/Katsushi21/travelone/ent/post"
 	"github.com/google/uuid"
@@ -127,6 +128,21 @@ func (pc *PostCreate) SetMarker(m *Marker) *PostCreate {
 // SetAccount sets the "account" edge to the Account entity.
 func (pc *PostCreate) SetAccount(a *Account) *PostCreate {
 	return pc.SetAccountID(a.ID)
+}
+
+// AddLikeIDs adds the "likes" edge to the Like entity by IDs.
+func (pc *PostCreate) AddLikeIDs(ids ...uuid.UUID) *PostCreate {
+	pc.mutation.AddLikeIDs(ids...)
+	return pc
+}
+
+// AddLikes adds the "likes" edges to the Like entity.
+func (pc *PostCreate) AddLikes(l ...*Like) *PostCreate {
+	ids := make([]uuid.UUID, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return pc.AddLikeIDs(ids...)
 }
 
 // Mutation returns the PostMutation object of the builder.
@@ -375,6 +391,25 @@ func (pc *PostCreate) createSpec() (*Post, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.AccountID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.LikesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   post.LikesTable,
+			Columns: []string{post.LikesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: like.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

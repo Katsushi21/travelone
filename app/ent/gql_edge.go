@@ -172,6 +172,14 @@ func (po *Post) Account(ctx context.Context) (*Account, error) {
 	return result, err
 }
 
+func (po *Post) Likes(ctx context.Context) ([]*Like, error) {
+	result, err := po.Edges.LikesOrErr()
+	if IsNotLoaded(err) {
+		result, err = po.QueryLikes().All(ctx)
+	}
+	return result, err
+}
+
 func (r *Request) Account(ctx context.Context) (*Account, error) {
 	result, err := r.Edges.AccountOrErr()
 	if IsNotLoaded(err) {

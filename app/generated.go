@@ -166,31 +166,30 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
 		Img       func(childComplexity int) int
+		Likes     func(childComplexity int) int
 		Marker    func(childComplexity int) int
 		Title     func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
 	Query struct {
-		Accounts                 func(childComplexity int) int
-		Comments                 func(childComplexity int) int
-		Friends                  func(childComplexity int) int
-		Likes                    func(childComplexity int) int
-		Markers                  func(childComplexity int) int
-		Mutes                    func(childComplexity int) int
-		Node                     func(childComplexity int, id uuid.UUID) int
-		Nodes                    func(childComplexity int, ids []uuid.UUID) int
-		Posts                    func(childComplexity int) int
-		QueryAccountByID         func(childComplexity int, id uuid.UUID) int
-		QueryAccountByMyID       func(childComplexity int, id uuid.UUID) int
-		QueryLikesByPostID       func(childComplexity int, postID uuid.UUID) int
-		QueryMarkers             func(childComplexity int) int
-		QueryPosts               func(childComplexity int) int
-		QueryRequestsByAccountID func(childComplexity int, accountID uuid.UUID) int
-		QueryRequestsByRequestID func(childComplexity int, requestID uuid.UUID) int
-		QuerySessionByAccountID  func(childComplexity int, id uuid.UUID) int
-		Requests                 func(childComplexity int) int
-		Sessions                 func(childComplexity int) int
+		AccountByID         func(childComplexity int, id uuid.UUID) int
+		AccountBySelfID     func(childComplexity int, id uuid.UUID) int
+		Accounts            func(childComplexity int) int
+		Comments            func(childComplexity int) int
+		Friends             func(childComplexity int) int
+		Likes               func(childComplexity int) int
+		LikesByPostID       func(childComplexity int, postID uuid.UUID) int
+		Markers             func(childComplexity int) int
+		Mutes               func(childComplexity int) int
+		Node                func(childComplexity int, id uuid.UUID) int
+		Nodes               func(childComplexity int, ids []uuid.UUID) int
+		Posts               func(childComplexity int) int
+		Requests            func(childComplexity int) int
+		RequestsByAccountID func(childComplexity int, accountID uuid.UUID) int
+		RequestsByRequestID func(childComplexity int, requestID uuid.UUID) int
+		SessionByID         func(childComplexity int, id uuid.UUID) int
+		Sessions            func(childComplexity int) int
 	}
 
 	Request struct {
@@ -252,14 +251,12 @@ type QueryResolver interface {
 	Posts(ctx context.Context) ([]*ent.Post, error)
 	Requests(ctx context.Context) ([]*ent.Request, error)
 	Sessions(ctx context.Context) ([]*ent.Session, error)
-	QueryAccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error)
-	QueryAccountByMyID(ctx context.Context, id uuid.UUID) (*ent.Account, error)
-	QueryLikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error)
-	QueryMarkers(ctx context.Context) ([]*ent.Marker, error)
-	QueryPosts(ctx context.Context) ([]*ent.Post, error)
-	QueryRequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error)
-	QueryRequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error)
-	QuerySessionByAccountID(ctx context.Context, id uuid.UUID) (*ent.Session, error)
+	AccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error)
+	AccountBySelfID(ctx context.Context, id uuid.UUID) (*ent.Account, error)
+	LikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error)
+	RequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error)
+	RequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error)
+	SessionByID(ctx context.Context, id uuid.UUID) (*ent.Session, error)
 }
 
 type executableSchema struct {
@@ -627,288 +624,288 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Marker.UpdatedAt(childComplexity), true
 
-	case "Mutation.createAccount":
+	case "Mutation.CreateAccount":
 		if e.complexity.Mutation.CreateAccount == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createAccount_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateAccount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateAccount(childComplexity, args["input"].(ent.CreateAccountInput)), true
 
-	case "Mutation.createComment":
+	case "Mutation.CreateComment":
 		if e.complexity.Mutation.CreateComment == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createComment_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateComment_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateComment(childComplexity, args["input"].(ent.CreateCommentInput)), true
 
-	case "Mutation.createFriend":
+	case "Mutation.CreateFriend":
 		if e.complexity.Mutation.CreateFriend == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createFriend_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateFriend_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateFriend(childComplexity, args["input"].(ent.CreateFriendInput)), true
 
-	case "Mutation.createLike":
+	case "Mutation.CreateLike":
 		if e.complexity.Mutation.CreateLike == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createLike_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateLike_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateLike(childComplexity, args["input"].(ent.CreateLikeInput)), true
 
-	case "Mutation.createMarker":
+	case "Mutation.CreateMarker":
 		if e.complexity.Mutation.CreateMarker == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createMarker_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateMarker_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateMarker(childComplexity, args["input"].(ent.CreateMarkerInput)), true
 
-	case "Mutation.createMute":
+	case "Mutation.CreateMute":
 		if e.complexity.Mutation.CreateMute == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createMute_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateMute_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateMute(childComplexity, args["input"].(ent.CreateMuteInput)), true
 
-	case "Mutation.createPost":
+	case "Mutation.CreatePost":
 		if e.complexity.Mutation.CreatePost == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createPost_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreatePost_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreatePost(childComplexity, args["input"].(ent.CreatePostInput)), true
 
-	case "Mutation.createRequest":
+	case "Mutation.CreateRequest":
 		if e.complexity.Mutation.CreateRequest == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createRequest_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateRequest_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateRequest(childComplexity, args["input"].(ent.CreateRequestInput)), true
 
-	case "Mutation.createSession":
+	case "Mutation.CreateSession":
 		if e.complexity.Mutation.CreateSession == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createSession_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateSession_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.CreateSession(childComplexity, args["input"].(ent.CreateSessionInput)), true
 
-	case "Mutation.deleteAccount":
+	case "Mutation.DeleteAccount":
 		if e.complexity.Mutation.DeleteAccount == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteAccount_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteAccount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteAccount(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteComment":
+	case "Mutation.DeleteComment":
 		if e.complexity.Mutation.DeleteComment == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteComment_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteComment_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteComment(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteFriend":
+	case "Mutation.DeleteFriend":
 		if e.complexity.Mutation.DeleteFriend == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteFriend_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteFriend_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteFriend(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteLike":
+	case "Mutation.DeleteLike":
 		if e.complexity.Mutation.DeleteLike == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteLike_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteLike_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteLike(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteMarker":
+	case "Mutation.DeleteMarker":
 		if e.complexity.Mutation.DeleteMarker == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteMarker_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteMarker_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteMarker(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteMute":
+	case "Mutation.DeleteMute":
 		if e.complexity.Mutation.DeleteMute == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteMute_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteMute_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteMute(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deletePost":
+	case "Mutation.DeletePost":
 		if e.complexity.Mutation.DeletePost == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deletePost_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeletePost_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeletePost(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteRequest":
+	case "Mutation.DeleteRequest":
 		if e.complexity.Mutation.DeleteRequest == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteRequest_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteRequest_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteRequest(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.deleteSession":
+	case "Mutation.DeleteSession":
 		if e.complexity.Mutation.DeleteSession == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteSession_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_DeleteSession_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DeleteSession(childComplexity, args["id"].(uuid.UUID)), true
 
-	case "Mutation.updateAccount":
+	case "Mutation.UpdateAccount":
 		if e.complexity.Mutation.UpdateAccount == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateAccount_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdateAccount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.UpdateAccount(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateAccountInput)), true
 
-	case "Mutation.updateComment":
+	case "Mutation.UpdateComment":
 		if e.complexity.Mutation.UpdateComment == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateComment_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdateComment_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.UpdateComment(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateCommentInput)), true
 
-	case "Mutation.updateMarker":
+	case "Mutation.UpdateMarker":
 		if e.complexity.Mutation.UpdateMarker == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateMarker_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdateMarker_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.UpdateMarker(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateMarkerInput)), true
 
-	case "Mutation.updatePost":
+	case "Mutation.UpdatePost":
 		if e.complexity.Mutation.UpdatePost == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updatePost_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdatePost_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.UpdatePost(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdatePostInput)), true
 
-	case "Mutation.updateRequest":
+	case "Mutation.UpdateRequest":
 		if e.complexity.Mutation.UpdateRequest == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateRequest_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdateRequest_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.UpdateRequest(childComplexity, args["id"].(uuid.UUID), args["input"].(ent.UpdateRequestInput)), true
 
-	case "Mutation.updateSession":
+	case "Mutation.UpdateSession":
 		if e.complexity.Mutation.UpdateSession == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateSession_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdateSession_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -1041,6 +1038,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Post.Img(childComplexity), true
 
+	case "Post.likes":
+		if e.complexity.Post.Likes == nil {
+			break
+		}
+
+		return e.complexity.Post.Likes(childComplexity), true
+
 	case "Post.marker":
 		if e.complexity.Post.Marker == nil {
 			break
@@ -1061,6 +1065,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Post.UpdatedAt(childComplexity), true
+
+	case "Query.AccountByID":
+		if e.complexity.Query.AccountByID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AccountByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AccountByID(childComplexity, args["id"].(uuid.UUID)), true
+
+	case "Query.AccountBySelfID":
+		if e.complexity.Query.AccountBySelfID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AccountBySelfID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AccountBySelfID(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Query.accounts":
 		if e.complexity.Query.Accounts == nil {
@@ -1089,6 +1117,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Likes(childComplexity), true
+
+	case "Query.LikesByPostID":
+		if e.complexity.Query.LikesByPostID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_LikesByPostID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.LikesByPostID(childComplexity, args["postID"].(uuid.UUID)), true
 
 	case "Query.markers":
 		if e.complexity.Query.Markers == nil {
@@ -1135,98 +1175,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Posts(childComplexity), true
 
-	case "Query.queryAccountByID":
-		if e.complexity.Query.QueryAccountByID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_queryAccountByID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.QueryAccountByID(childComplexity, args["id"].(uuid.UUID)), true
-
-	case "Query.queryAccountByMyID":
-		if e.complexity.Query.QueryAccountByMyID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_queryAccountByMyID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.QueryAccountByMyID(childComplexity, args["id"].(uuid.UUID)), true
-
-	case "Query.queryLikesByPostID":
-		if e.complexity.Query.QueryLikesByPostID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_queryLikesByPostID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.QueryLikesByPostID(childComplexity, args["postID"].(uuid.UUID)), true
-
-	case "Query.queryMarkers":
-		if e.complexity.Query.QueryMarkers == nil {
-			break
-		}
-
-		return e.complexity.Query.QueryMarkers(childComplexity), true
-
-	case "Query.queryPosts":
-		if e.complexity.Query.QueryPosts == nil {
-			break
-		}
-
-		return e.complexity.Query.QueryPosts(childComplexity), true
-
-	case "Query.queryRequestsByAccountID":
-		if e.complexity.Query.QueryRequestsByAccountID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_queryRequestsByAccountID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.QueryRequestsByAccountID(childComplexity, args["accountID"].(uuid.UUID)), true
-
-	case "Query.queryRequestsByRequestID":
-		if e.complexity.Query.QueryRequestsByRequestID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_queryRequestsByRequestID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.QueryRequestsByRequestID(childComplexity, args["RequestID"].(uuid.UUID)), true
-
-	case "Query.querySessionByAccountID":
-		if e.complexity.Query.QuerySessionByAccountID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_querySessionByAccountID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.QuerySessionByAccountID(childComplexity, args["ID"].(uuid.UUID)), true
-
 	case "Query.requests":
 		if e.complexity.Query.Requests == nil {
 			break
 		}
 
 		return e.complexity.Query.Requests(childComplexity), true
+
+	case "Query.RequestsByAccountID":
+		if e.complexity.Query.RequestsByAccountID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_RequestsByAccountID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.RequestsByAccountID(childComplexity, args["accountID"].(uuid.UUID)), true
+
+	case "Query.RequestsByRequestID":
+		if e.complexity.Query.RequestsByRequestID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_RequestsByRequestID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.RequestsByRequestID(childComplexity, args["requestID"].(uuid.UUID)), true
+
+	case "Query.SessionByID":
+		if e.complexity.Query.SessionByID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_SessionByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SessionByID(childComplexity, args["id"].(uuid.UUID)), true
 
 	case "Query.sessions":
 		if e.complexity.Query.Sessions == nil {
@@ -1463,9 +1453,9 @@ type Account implements Node {
 }
 """AccountGender is enum for the field gender"""
 enum AccountGender @goModel(model: "github.com/Katsushi21/travelone/ent/account.Gender") {
-  male
-  female
-  none
+  MALE
+  FEMALE
+  NONE
 }
 """Ordering options for Account connections"""
 input AccountOrder {
@@ -1489,9 +1479,9 @@ enum AccountOrderField {
 }
 """AccountType is enum for the field type"""
 enum AccountType @goModel(model: "github.com/Katsushi21/travelone/ent/account.Type") {
-  active
-  inactive
-  admin
+  ACTIVE
+  INACTIVE
+  ADMIN
 }
 """
 AccountWhereInput is used for filtering Account objects.
@@ -1825,6 +1815,7 @@ input CreatePostInput {
   commentIDs: [ID!]
   markerID: ID
   accountID: ID!
+  likeIDs: [ID!]
 }
 """
 CreateRequestInput is used for create Request object.
@@ -2213,6 +2204,7 @@ type Post implements Node {
   comments: [Comment!]
   marker: Marker
   account: Account!
+  likes: [Like!]
 }
 """Ordering options for Post connections"""
 input PostOrder {
@@ -2321,6 +2313,9 @@ input PostWhereInput {
   """account edge predicates"""
   hasAccount: Boolean
   hasAccountWith: [AccountWhereInput!]
+  """likes edge predicates"""
+  hasLikes: Boolean
+  hasLikesWith: [LikeWhereInput!]
 }
 type Query {
   """Fetches an object given its ID."""
@@ -2370,12 +2365,12 @@ enum RequestOrderField {
 }
 """RequestStatus is enum for the field status"""
 enum RequestStatus @goModel(model: "github.com/Katsushi21/travelone/ent/request.Status") {
-  inProcess
-  accept
-  deny
-  breakInProcess
-  breakAccept
-  breakDeny
+  IN_PROCESS
+  ACCEPT
+  DENY
+  BREAK_IN_PROCESS
+  BREAK_IN_ACCEPT
+  BREAK_DENY
 }
 """
 RequestWhereInput is used for filtering Request objects.
@@ -2599,6 +2594,8 @@ input UpdatePostInput {
   markerID: ID
   clearAccount: Boolean
   accountID: ID
+  addLikeIDs: [ID!]
+  removeLikeIDs: [ID!]
 }
 """
 UpdateRequestInput is used for update Request object.
@@ -2628,21 +2625,21 @@ input UpdateSessionInput {
   # Account
   ###############
   # CREATE
-  createAccount(input: CreateAccountInput!): Account!
+  CreateAccount(input: CreateAccountInput!): Account!
   # UPDATE
-  updateAccount(id: ID!, input: UpdateAccountInput!): Account!
+  UpdateAccount(id: ID!, input: UpdateAccountInput!): Account!
   # DELETE
-  deleteAccount(id: ID!): Account!
+  DeleteAccount(id: ID!): Account!
 
   ###############
   # Comment
   ###############
   # CREATE
-  createComment(input: CreateCommentInput!): Comment!
+  CreateComment(input: CreateCommentInput!): Comment!
   # UPDATE
-  updateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  UpdateComment(id: ID!, input: UpdateCommentInput!): Comment!
   # DELETE
-  deleteComment(id: ID!): Comment!
+  DeleteComment(id: ID!): Comment!
 
   ###############
   # File
@@ -2654,99 +2651,89 @@ input UpdateSessionInput {
   # Friend
   ###############
   # CREATE
-  createFriend(input: CreateFriendInput!): Friend!
+  CreateFriend(input: CreateFriendInput!): Friend!
   # DELETE
-  deleteFriend(id: ID!): Friend!
+  DeleteFriend(id: ID!): Friend!
 
   ###############
   # Like
   ###############
   # CREATE
-  createLike(input: CreateLikeInput!): Like!
+  CreateLike(input: CreateLikeInput!): Like!
   # DELETE
-  deleteLike(id: ID!): Like!
+  DeleteLike(id: ID!): Like!
 
   ###############
   # Marker
   ###############
   # CREATE
-  createMarker(input: CreateMarkerInput!): Marker!
+  CreateMarker(input: CreateMarkerInput!): Marker!
   # UPDATE
-  updateMarker(id: ID!, input: UpdateMarkerInput!): Marker!
+  UpdateMarker(id: ID!, input: UpdateMarkerInput!): Marker!
   # DELETE
-  deleteMarker(id: ID!): Marker!
+  DeleteMarker(id: ID!): Marker!
 
   ###############
   # Mute
   ###############
   # CREATE
-  createMute(input: CreateMuteInput!): Mute!
+  CreateMute(input: CreateMuteInput!): Mute!
   # DELETE
-  deleteMute(id: ID!): Mute!
+  DeleteMute(id: ID!): Mute!
 
   ###############
   # Post
   ###############
   # CREATE
-  createPost(input: CreatePostInput!): Post!
+  CreatePost(input: CreatePostInput!): Post!
   # UPDATE
-  updatePost(id: ID!, input: UpdatePostInput!): Post!
+  UpdatePost(id: ID!, input: UpdatePostInput!): Post!
   # DELETE
-  deletePost(id: ID!): Post!
+  DeletePost(id: ID!): Post!
 
   ###############
   # Request
   ###############
   # CREATE
-  createRequest(input: CreateRequestInput!): Request!
+  CreateRequest(input: CreateRequestInput!): Request!
   # UPDATE
-  updateRequest(id: ID!, input: UpdateRequestInput!): Request!
+  UpdateRequest(id: ID!, input: UpdateRequestInput!): Request!
   # DELETE
-  deleteRequest(id: ID!): Request!
+  DeleteRequest(id: ID!): Request!
 
   ###############
   # Session
   ###############
   # CREATE
-  createSession(input: CreateSessionInput!): Session!
+  CreateSession(input: CreateSessionInput!): Session!
   # UPDATE
-  updateSession(id: ID!, input: UpdateSessionInput!): Session!
+  UpdateSession(id: ID!, input: UpdateSessionInput!): Session!
   # DELETE
-  deleteSession(id: ID!): Session!
+  DeleteSession(id: ID!): Session!
 }
 `, BuiltIn: false},
 	{Name: "./schemas/query.graphql", Input: `extend type Query {
   ###############
   # Account
   ###############
-  queryAccountByID(id: ID!): Account!
-  queryAccountByMyID(id: ID!): Account!
+  AccountByID(id: ID!): Account!
+  AccountBySelfID(id: ID!): Account!
 
   ###############
   # Like
   ###############
-  queryLikesByPostID(postID: ID!): [Like!]!
-
-  ###############
-  # Marker
-  ###############
-  queryMarkers: [Marker!]!
-
-  ###############
-  # Post
-  ###############
-  queryPosts: [Post!]!
+  LikesByPostID(postID: ID!): [Like!]!
 
   ###############
   # Request
   ###############
-  queryRequestsByAccountID(accountID: ID!): [Request!]!
-  queryRequestsByRequestID(RequestID: ID!): [Request!]!
+  RequestsByAccountID(accountID: ID!): [Request!]!
+  RequestsByRequestID(requestID: ID!): [Request!]!
 
   ###############
   # Session
   ###############
-  querySessionByAccountID(ID: ID!): Session!
+  SessionByID(id: ID!): Session!
 }
 `, BuiltIn: false},
 	{Name: "./schemas/scalar.graphql", Input: `###############
@@ -2762,7 +2749,7 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_createAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateAccountInput
@@ -2777,7 +2764,7 @@ func (ec *executionContext) field_Mutation_createAccount_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateCommentInput
@@ -2792,7 +2779,7 @@ func (ec *executionContext) field_Mutation_createComment_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createFriend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateFriend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateFriendInput
@@ -2807,7 +2794,7 @@ func (ec *executionContext) field_Mutation_createFriend_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateLikeInput
@@ -2822,7 +2809,7 @@ func (ec *executionContext) field_Mutation_createLike_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateMarkerInput
@@ -2837,7 +2824,7 @@ func (ec *executionContext) field_Mutation_createMarker_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createMute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateMute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateMuteInput
@@ -2852,7 +2839,7 @@ func (ec *executionContext) field_Mutation_createMute_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreatePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreatePostInput
@@ -2867,7 +2854,7 @@ func (ec *executionContext) field_Mutation_createPost_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateRequestInput
@@ -2882,7 +2869,7 @@ func (ec *executionContext) field_Mutation_createRequest_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 ent.CreateSessionInput
@@ -2897,7 +2884,7 @@ func (ec *executionContext) field_Mutation_createSession_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2912,7 +2899,7 @@ func (ec *executionContext) field_Mutation_deleteAccount_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2927,7 +2914,7 @@ func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteFriend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteFriend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2942,7 +2929,7 @@ func (ec *executionContext) field_Mutation_deleteFriend_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteLike_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2957,7 +2944,7 @@ func (ec *executionContext) field_Mutation_deleteLike_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2972,7 +2959,7 @@ func (ec *executionContext) field_Mutation_deleteMarker_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteMute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteMute_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -2987,7 +2974,7 @@ func (ec *executionContext) field_Mutation_deleteMute_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deletePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeletePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3002,7 +2989,7 @@ func (ec *executionContext) field_Mutation_deletePost_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3017,7 +3004,7 @@ func (ec *executionContext) field_Mutation_deleteRequest_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_DeleteSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3032,7 +3019,7 @@ func (ec *executionContext) field_Mutation_deleteSession_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3056,7 +3043,7 @@ func (ec *executionContext) field_Mutation_updateAccount_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdateComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3080,7 +3067,7 @@ func (ec *executionContext) field_Mutation_updateComment_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdateMarker_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3104,7 +3091,7 @@ func (ec *executionContext) field_Mutation_updateMarker_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdatePost_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3128,7 +3115,7 @@ func (ec *executionContext) field_Mutation_updatePost_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdateRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3152,7 +3139,7 @@ func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdateSession_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 uuid.UUID
@@ -3173,6 +3160,96 @@ func (ec *executionContext) field_Mutation_updateSession_args(ctx context.Contex
 		}
 	}
 	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_AccountByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_AccountBySelfID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_LikesByPostID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["postID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["postID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_RequestsByAccountID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["accountID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["accountID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_RequestsByRequestID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["requestID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestID"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["requestID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_SessionByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 uuid.UUID
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -3218,96 +3295,6 @@ func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["ids"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_queryAccountByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_queryAccountByMyID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_queryLikesByPostID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["postID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postID"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["postID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_queryRequestsByAccountID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["accountID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["accountID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_queryRequestsByRequestID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["RequestID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("RequestID"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["RequestID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_querySessionByAccountID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 uuid.UUID
-	if tmp, ok := rawArgs["ID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
-		arg0, err = ec.unmarshalNID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["ID"] = arg0
 	return args, nil
 }
 
@@ -3889,6 +3876,8 @@ func (ec *executionContext) fieldContext_Account_posts(ctx context.Context, fiel
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -4729,6 +4718,8 @@ func (ec *executionContext) fieldContext_Comment_post(ctx context.Context, field
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -5579,6 +5570,8 @@ func (ec *executionContext) fieldContext_Like_post(ctx context.Context, field gr
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -5953,6 +5946,8 @@ func (ec *executionContext) fieldContext_Marker_post(ctx context.Context, field 
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -5960,8 +5955,8 @@ func (ec *executionContext) fieldContext_Marker_post(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createAccount(ctx, field)
+func (ec *executionContext) _Mutation_CreateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateAccount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -5991,7 +5986,7 @@ func (ec *executionContext) _Mutation_createAccount(ctx context.Context, field g
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6050,15 +6045,15 @@ func (ec *executionContext) fieldContext_Mutation_createAccount(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateAccount(ctx, field)
+func (ec *executionContext) _Mutation_UpdateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateAccount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6088,7 +6083,7 @@ func (ec *executionContext) _Mutation_updateAccount(ctx context.Context, field g
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdateAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6147,15 +6142,15 @@ func (ec *executionContext) fieldContext_Mutation_updateAccount(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdateAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteAccount(ctx, field)
+func (ec *executionContext) _Mutation_DeleteAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteAccount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6185,7 +6180,7 @@ func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field g
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6244,15 +6239,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteAccount(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createComment(ctx, field)
+func (ec *executionContext) _Mutation_CreateComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateComment(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6282,7 +6277,7 @@ func (ec *executionContext) _Mutation_createComment(ctx context.Context, field g
 	return ec.marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐComment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6317,15 +6312,15 @@ func (ec *executionContext) fieldContext_Mutation_createComment(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateComment(ctx, field)
+func (ec *executionContext) _Mutation_UpdateComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateComment(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6355,7 +6350,7 @@ func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field g
 	return ec.marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐComment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdateComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6390,15 +6385,15 @@ func (ec *executionContext) fieldContext_Mutation_updateComment(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdateComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteComment(ctx, field)
+func (ec *executionContext) _Mutation_DeleteComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteComment(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6428,7 +6423,7 @@ func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field g
 	return ec.marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐComment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6463,15 +6458,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteComment(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteComment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createFriend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createFriend(ctx, field)
+func (ec *executionContext) _Mutation_CreateFriend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateFriend(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6501,7 +6496,7 @@ func (ec *executionContext) _Mutation_createFriend(ctx context.Context, field gr
 	return ec.marshalNFriend2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriend(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createFriend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateFriend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6534,15 +6529,15 @@ func (ec *executionContext) fieldContext_Mutation_createFriend(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createFriend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateFriend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteFriend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteFriend(ctx, field)
+func (ec *executionContext) _Mutation_DeleteFriend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteFriend(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6572,7 +6567,7 @@ func (ec *executionContext) _Mutation_deleteFriend(ctx context.Context, field gr
 	return ec.marshalNFriend2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriend(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteFriend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteFriend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6605,15 +6600,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteFriend(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteFriend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteFriend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createLike(ctx, field)
+func (ec *executionContext) _Mutation_CreateLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateLike(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6643,7 +6638,7 @@ func (ec *executionContext) _Mutation_createLike(ctx context.Context, field grap
 	return ec.marshalNLike2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLike(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createLike(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateLike(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6676,15 +6671,15 @@ func (ec *executionContext) fieldContext_Mutation_createLike(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createLike_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateLike_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteLike(ctx, field)
+func (ec *executionContext) _Mutation_DeleteLike(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteLike(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6714,7 +6709,7 @@ func (ec *executionContext) _Mutation_deleteLike(ctx context.Context, field grap
 	return ec.marshalNLike2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLike(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteLike(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteLike(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6747,15 +6742,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteLike(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteLike_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteLike_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createMarker(ctx, field)
+func (ec *executionContext) _Mutation_CreateMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateMarker(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6785,7 +6780,7 @@ func (ec *executionContext) _Mutation_createMarker(ctx context.Context, field gr
 	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarker(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createMarker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateMarker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6820,15 +6815,15 @@ func (ec *executionContext) fieldContext_Mutation_createMarker(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createMarker_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateMarker_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateMarker(ctx, field)
+func (ec *executionContext) _Mutation_UpdateMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateMarker(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6858,7 +6853,7 @@ func (ec *executionContext) _Mutation_updateMarker(ctx context.Context, field gr
 	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarker(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateMarker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdateMarker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6893,15 +6888,15 @@ func (ec *executionContext) fieldContext_Mutation_updateMarker(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateMarker_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdateMarker_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteMarker(ctx, field)
+func (ec *executionContext) _Mutation_DeleteMarker(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteMarker(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6931,7 +6926,7 @@ func (ec *executionContext) _Mutation_deleteMarker(ctx context.Context, field gr
 	return ec.marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarker(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteMarker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteMarker(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -6966,15 +6961,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteMarker(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteMarker_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteMarker_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createMute(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createMute(ctx, field)
+func (ec *executionContext) _Mutation_CreateMute(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateMute(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7004,7 +6999,7 @@ func (ec *executionContext) _Mutation_createMute(ctx context.Context, field grap
 	return ec.marshalNMute2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMute(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createMute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateMute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7037,15 +7032,15 @@ func (ec *executionContext) fieldContext_Mutation_createMute(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createMute_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateMute_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteMute(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteMute(ctx, field)
+func (ec *executionContext) _Mutation_DeleteMute(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteMute(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7075,7 +7070,7 @@ func (ec *executionContext) _Mutation_deleteMute(ctx context.Context, field grap
 	return ec.marshalNMute2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMute(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteMute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteMute(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7108,15 +7103,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteMute(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteMute_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteMute_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createPost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createPost(ctx, field)
+func (ec *executionContext) _Mutation_CreatePost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreatePost(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7146,7 +7141,7 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 	return ec.marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPost(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreatePost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7174,6 +7169,8 @@ func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -7185,15 +7182,15 @@ func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createPost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreatePost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updatePost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updatePost(ctx, field)
+func (ec *executionContext) _Mutation_UpdatePost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdatePost(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7223,7 +7220,7 @@ func (ec *executionContext) _Mutation_updatePost(ctx context.Context, field grap
 	return ec.marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPost(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updatePost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdatePost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7251,6 +7248,8 @@ func (ec *executionContext) fieldContext_Mutation_updatePost(ctx context.Context
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -7262,15 +7261,15 @@ func (ec *executionContext) fieldContext_Mutation_updatePost(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updatePost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdatePost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deletePost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deletePost(ctx, field)
+func (ec *executionContext) _Mutation_DeletePost(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeletePost(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7300,7 +7299,7 @@ func (ec *executionContext) _Mutation_deletePost(ctx context.Context, field grap
 	return ec.marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPost(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deletePost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeletePost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7328,6 +7327,8 @@ func (ec *executionContext) fieldContext_Mutation_deletePost(ctx context.Context
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -7339,15 +7340,15 @@ func (ec *executionContext) fieldContext_Mutation_deletePost(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deletePost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeletePost_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createRequest(ctx, field)
+func (ec *executionContext) _Mutation_CreateRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateRequest(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7377,7 +7378,7 @@ func (ec *executionContext) _Mutation_createRequest(ctx context.Context, field g
 	return ec.marshalNRequest2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequest(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7412,15 +7413,15 @@ func (ec *executionContext) fieldContext_Mutation_createRequest(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateRequest(ctx, field)
+func (ec *executionContext) _Mutation_UpdateRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateRequest(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7450,7 +7451,7 @@ func (ec *executionContext) _Mutation_updateRequest(ctx context.Context, field g
 	return ec.marshalNRequest2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequest(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdateRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7485,15 +7486,15 @@ func (ec *executionContext) fieldContext_Mutation_updateRequest(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdateRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteRequest(ctx, field)
+func (ec *executionContext) _Mutation_DeleteRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteRequest(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7523,7 +7524,7 @@ func (ec *executionContext) _Mutation_deleteRequest(ctx context.Context, field g
 	return ec.marshalNRequest2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequest(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7558,15 +7559,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteRequest(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createSession(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createSession(ctx, field)
+func (ec *executionContext) _Mutation_CreateSession(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateSession(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7596,7 +7597,7 @@ func (ec *executionContext) _Mutation_createSession(ctx context.Context, field g
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSession(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createSession(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_CreateSession(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7627,15 +7628,15 @@ func (ec *executionContext) fieldContext_Mutation_createSession(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createSession_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_CreateSession_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateSession(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateSession(ctx, field)
+func (ec *executionContext) _Mutation_UpdateSession(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateSession(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7665,7 +7666,7 @@ func (ec *executionContext) _Mutation_updateSession(ctx context.Context, field g
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSession(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateSession(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdateSession(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7696,15 +7697,15 @@ func (ec *executionContext) fieldContext_Mutation_updateSession(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateSession_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdateSession_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteSession(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteSession(ctx, field)
+func (ec *executionContext) _Mutation_DeleteSession(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_DeleteSession(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7734,7 +7735,7 @@ func (ec *executionContext) _Mutation_deleteSession(ctx context.Context, field g
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSession(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteSession(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_DeleteSession(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7765,7 +7766,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteSession(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteSession_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_DeleteSession_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -8846,6 +8847,63 @@ func (ec *executionContext) fieldContext_Post_account(ctx context.Context, field
 	return fc, nil
 }
 
+func (ec *executionContext) _Post_likes(ctx context.Context, field graphql.CollectedField, obj *ent.Post) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Post_likes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Likes(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Like)
+	fc.Result = res
+	return ec.marshalOLike2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Post_likes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Post",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Like_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Like_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Like_updatedAt(ctx, field)
+			case "accountID":
+				return ec.fieldContext_Like_accountID(ctx, field)
+			case "postID":
+				return ec.fieldContext_Like_postID(ctx, field)
+			case "account":
+				return ec.fieldContext_Like_account(ctx, field)
+			case "post":
+				return ec.fieldContext_Like_post(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Like", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_node(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_node(ctx, field)
 	if err != nil {
@@ -9402,6 +9460,8 @@ func (ec *executionContext) fieldContext_Query_posts(ctx context.Context, field 
 				return ec.fieldContext_Post_marker(ctx, field)
 			case "account":
 				return ec.fieldContext_Post_account(ctx, field)
+			case "likes":
+				return ec.fieldContext_Post_likes(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
 		},
@@ -9529,8 +9589,8 @@ func (ec *executionContext) fieldContext_Query_sessions(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_queryAccountByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryAccountByID(ctx, field)
+func (ec *executionContext) _Query_AccountByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_AccountByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -9543,7 +9603,7 @@ func (ec *executionContext) _Query_queryAccountByID(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryAccountByID(rctx, fc.Args["id"].(uuid.UUID))
+		return ec.resolvers.Query().AccountByID(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9560,7 +9620,7 @@ func (ec *executionContext) _Query_queryAccountByID(ctx context.Context, field g
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_queryAccountByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_AccountByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -9619,15 +9679,15 @@ func (ec *executionContext) fieldContext_Query_queryAccountByID(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_queryAccountByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_AccountByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_queryAccountByMyID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryAccountByMyID(ctx, field)
+func (ec *executionContext) _Query_AccountBySelfID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_AccountBySelfID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -9640,7 +9700,7 @@ func (ec *executionContext) _Query_queryAccountByMyID(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryAccountByMyID(rctx, fc.Args["id"].(uuid.UUID))
+		return ec.resolvers.Query().AccountBySelfID(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9657,7 +9717,7 @@ func (ec *executionContext) _Query_queryAccountByMyID(ctx context.Context, field
 	return ec.marshalNAccount2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_queryAccountByMyID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_AccountBySelfID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -9716,15 +9776,15 @@ func (ec *executionContext) fieldContext_Query_queryAccountByMyID(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_queryAccountByMyID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_AccountBySelfID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_queryLikesByPostID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryLikesByPostID(ctx, field)
+func (ec *executionContext) _Query_LikesByPostID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_LikesByPostID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -9737,7 +9797,7 @@ func (ec *executionContext) _Query_queryLikesByPostID(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryLikesByPostID(rctx, fc.Args["postID"].(uuid.UUID))
+		return ec.resolvers.Query().LikesByPostID(rctx, fc.Args["postID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9754,7 +9814,7 @@ func (ec *executionContext) _Query_queryLikesByPostID(ctx context.Context, field
 	return ec.marshalNLike2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_queryLikesByPostID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_LikesByPostID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -9787,15 +9847,15 @@ func (ec *executionContext) fieldContext_Query_queryLikesByPostID(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_queryLikesByPostID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_LikesByPostID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_queryMarkers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryMarkers(ctx, field)
+func (ec *executionContext) _Query_RequestsByAccountID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_RequestsByAccountID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -9808,135 +9868,7 @@ func (ec *executionContext) _Query_queryMarkers(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryMarkers(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*ent.Marker)
-	fc.Result = res
-	return ec.marshalNMarker2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarkerᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_queryMarkers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Marker_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Marker_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Marker_updatedAt(ctx, field)
-			case "title":
-				return ec.fieldContext_Marker_title(ctx, field)
-			case "lat":
-				return ec.fieldContext_Marker_lat(ctx, field)
-			case "lng":
-				return ec.fieldContext_Marker_lng(ctx, field)
-			case "postID":
-				return ec.fieldContext_Marker_postID(ctx, field)
-			case "post":
-				return ec.fieldContext_Marker_post(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Marker", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_queryPosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryPosts(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryPosts(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*ent.Post)
-	fc.Result = res
-	return ec.marshalNPost2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_queryPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Post_id(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Post_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Post_updatedAt(ctx, field)
-			case "title":
-				return ec.fieldContext_Post_title(ctx, field)
-			case "body":
-				return ec.fieldContext_Post_body(ctx, field)
-			case "img":
-				return ec.fieldContext_Post_img(ctx, field)
-			case "accountID":
-				return ec.fieldContext_Post_accountID(ctx, field)
-			case "comments":
-				return ec.fieldContext_Post_comments(ctx, field)
-			case "marker":
-				return ec.fieldContext_Post_marker(ctx, field)
-			case "account":
-				return ec.fieldContext_Post_account(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Post", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_queryRequestsByAccountID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryRequestsByAccountID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryRequestsByAccountID(rctx, fc.Args["accountID"].(uuid.UUID))
+		return ec.resolvers.Query().RequestsByAccountID(rctx, fc.Args["accountID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9953,7 +9885,7 @@ func (ec *executionContext) _Query_queryRequestsByAccountID(ctx context.Context,
 	return ec.marshalNRequest2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_queryRequestsByAccountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_RequestsByAccountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -9988,15 +9920,15 @@ func (ec *executionContext) fieldContext_Query_queryRequestsByAccountID(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_queryRequestsByAccountID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_RequestsByAccountID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_queryRequestsByRequestID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_queryRequestsByRequestID(ctx, field)
+func (ec *executionContext) _Query_RequestsByRequestID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_RequestsByRequestID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -10009,7 +9941,7 @@ func (ec *executionContext) _Query_queryRequestsByRequestID(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QueryRequestsByRequestID(rctx, fc.Args["RequestID"].(uuid.UUID))
+		return ec.resolvers.Query().RequestsByRequestID(rctx, fc.Args["requestID"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10026,7 +9958,7 @@ func (ec *executionContext) _Query_queryRequestsByRequestID(ctx context.Context,
 	return ec.marshalNRequest2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_queryRequestsByRequestID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_RequestsByRequestID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -10061,15 +9993,15 @@ func (ec *executionContext) fieldContext_Query_queryRequestsByRequestID(ctx cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_queryRequestsByRequestID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_RequestsByRequestID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_querySessionByAccountID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_querySessionByAccountID(ctx, field)
+func (ec *executionContext) _Query_SessionByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_SessionByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -10082,7 +10014,7 @@ func (ec *executionContext) _Query_querySessionByAccountID(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().QuerySessionByAccountID(rctx, fc.Args["ID"].(uuid.UUID))
+		return ec.resolvers.Query().SessionByID(rctx, fc.Args["id"].(uuid.UUID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10099,7 +10031,7 @@ func (ec *executionContext) _Query_querySessionByAccountID(ctx context.Context, 
 	return ec.marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSession(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_querySessionByAccountID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_SessionByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -10130,7 +10062,7 @@ func (ec *executionContext) fieldContext_Query_querySessionByAccountID(ctx conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_querySessionByAccountID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_SessionByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -14788,6 +14720,14 @@ func (ec *executionContext) unmarshalInputCreatePostInput(ctx context.Context, o
 			if err != nil {
 				return it, err
 			}
+		case "likeIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("likeIDs"))
+			it.LikeIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -17164,6 +17104,22 @@ func (ec *executionContext) unmarshalInputPostWhereInput(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "hasLikes":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasLikes"))
+			it.HasLikes, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hasLikesWith":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasLikesWith"))
+			it.HasLikesWith, err = ec.unmarshalOLikeWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -18465,6 +18421,22 @@ func (ec *executionContext) unmarshalInputUpdatePostInput(ctx context.Context, o
 			if err != nil {
 				return it, err
 			}
+		case "addLikeIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addLikeIDs"))
+			it.AddLikeIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "removeLikeIDs":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeLikeIDs"))
+			it.RemoveLikeIDs, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -19298,217 +19270,217 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "createAccount":
+		case "CreateAccount":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createAccount(ctx, field)
+				return ec._Mutation_CreateAccount(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateAccount":
+		case "UpdateAccount":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateAccount(ctx, field)
+				return ec._Mutation_UpdateAccount(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteAccount":
+		case "DeleteAccount":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteAccount(ctx, field)
+				return ec._Mutation_DeleteAccount(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createComment":
+		case "CreateComment":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createComment(ctx, field)
+				return ec._Mutation_CreateComment(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateComment":
+		case "UpdateComment":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateComment(ctx, field)
+				return ec._Mutation_UpdateComment(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteComment":
+		case "DeleteComment":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteComment(ctx, field)
+				return ec._Mutation_DeleteComment(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createFriend":
+		case "CreateFriend":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createFriend(ctx, field)
+				return ec._Mutation_CreateFriend(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteFriend":
+		case "DeleteFriend":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteFriend(ctx, field)
+				return ec._Mutation_DeleteFriend(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createLike":
+		case "CreateLike":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createLike(ctx, field)
+				return ec._Mutation_CreateLike(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteLike":
+		case "DeleteLike":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteLike(ctx, field)
+				return ec._Mutation_DeleteLike(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createMarker":
+		case "CreateMarker":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createMarker(ctx, field)
+				return ec._Mutation_CreateMarker(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateMarker":
+		case "UpdateMarker":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateMarker(ctx, field)
+				return ec._Mutation_UpdateMarker(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteMarker":
+		case "DeleteMarker":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteMarker(ctx, field)
+				return ec._Mutation_DeleteMarker(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createMute":
+		case "CreateMute":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createMute(ctx, field)
+				return ec._Mutation_CreateMute(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteMute":
+		case "DeleteMute":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteMute(ctx, field)
+				return ec._Mutation_DeleteMute(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createPost":
+		case "CreatePost":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createPost(ctx, field)
+				return ec._Mutation_CreatePost(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updatePost":
+		case "UpdatePost":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updatePost(ctx, field)
+				return ec._Mutation_UpdatePost(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deletePost":
+		case "DeletePost":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deletePost(ctx, field)
+				return ec._Mutation_DeletePost(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createRequest":
+		case "CreateRequest":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createRequest(ctx, field)
+				return ec._Mutation_CreateRequest(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateRequest":
+		case "UpdateRequest":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateRequest(ctx, field)
+				return ec._Mutation_UpdateRequest(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteRequest":
+		case "DeleteRequest":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteRequest(ctx, field)
+				return ec._Mutation_DeleteRequest(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createSession":
+		case "CreateSession":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createSession(ctx, field)
+				return ec._Mutation_CreateSession(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateSession":
+		case "UpdateSession":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateSession(ctx, field)
+				return ec._Mutation_UpdateSession(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteSession":
+		case "DeleteSession":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteSession(ctx, field)
+				return ec._Mutation_DeleteSession(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -19770,6 +19742,23 @@ func (ec *executionContext) _Post(ctx context.Context, sel ast.SelectionSet, obj
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "likes":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Post_likes(ctx, field, obj)
 				return res
 			}
 
@@ -20057,7 +20046,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "queryAccountByID":
+		case "AccountByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20066,7 +20055,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_queryAccountByID(ctx, field)
+				res = ec._Query_AccountByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -20080,7 +20069,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "queryAccountByMyID":
+		case "AccountBySelfID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20089,7 +20078,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_queryAccountByMyID(ctx, field)
+				res = ec._Query_AccountBySelfID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -20103,7 +20092,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "queryLikesByPostID":
+		case "LikesByPostID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20112,7 +20101,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_queryLikesByPostID(ctx, field)
+				res = ec._Query_LikesByPostID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -20126,7 +20115,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "queryMarkers":
+		case "RequestsByAccountID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20135,7 +20124,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_queryMarkers(ctx, field)
+				res = ec._Query_RequestsByAccountID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -20149,7 +20138,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "queryPosts":
+		case "RequestsByRequestID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20158,7 +20147,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_queryPosts(ctx, field)
+				res = ec._Query_RequestsByRequestID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -20172,7 +20161,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "queryRequestsByAccountID":
+		case "SessionByID":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -20181,53 +20170,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_queryRequestsByAccountID(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "queryRequestsByRequestID":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_queryRequestsByRequestID(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "querySessionByAccountID":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_querySessionByAccountID(ctx, field)
+				res = ec._Query_SessionByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

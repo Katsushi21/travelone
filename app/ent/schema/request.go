@@ -40,12 +40,12 @@ func (Request) Fields() []ent.Field {
 				entgql.OrderField("REQUEST_ID"),
 			),
 		field.Enum("status").Values(
-			"inProcess",
-			"accept",
-			"deny",
-			"breakInProcess",
-			"breakAccept",
-			"breakDeny",
+			"IN_PROCESS",
+			"ACCEPT",
+			"DENY",
+			"BREAK_IN_PROCESS",
+			"BREAK_IN_ACCEPT",
+			"BREAK_DENY",
 		).
 			Annotations(
 				entgql.OrderField("STATUS"),

@@ -2,32 +2,22 @@ extend type Query {
   ###############
   # Account
   ###############
-  queryAccountByID(id: ID!): Account!
-  queryAccountByMyID(id: ID!): Account!
+  AccountByID(id: ID!): Account!
+  AccountBySelfID(id: ID!): Account!
 
   ###############
   # Like
   ###############
-  queryLikesByPostID(postID: ID!): [Like!]!
-
-  ###############
-  # Marker
-  ###############
-  queryMarkers: [Marker!]!
-
-  ###############
-  # Post
-  ###############
-  queryPosts: [Post!]!
+  LikesByPostID(postID: ID!): [Like!]!
 
   ###############
   # Request
   ###############
-  queryRequestsByAccountID(accountID: ID!): [Request!]!
-  queryRequestsByRequestID(RequestID: ID!): [Request!]!
+  RequestsByAccountID(accountID: ID!): [Request!]!
+  RequestsByRequestID(requestID: ID!): [Request!]!
 
   ###############
   # Session
   ###############
-  querySessionByAccountID(ID: ID!): Session!
+  SessionByID(id: ID!): Session!
 }

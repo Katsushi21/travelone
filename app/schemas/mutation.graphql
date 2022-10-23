@@ -3,21 +3,21 @@ type Mutation {
   # Account
   ###############
   # CREATE
-  createAccount(input: CreateAccountInput!): Account!
+  CreateAccount(input: CreateAccountInput!): Account!
   # UPDATE
-  updateAccount(id: ID!, input: UpdateAccountInput!): Account!
+  UpdateAccount(id: ID!, input: UpdateAccountInput!): Account!
   # DELETE
-  deleteAccount(id: ID!): Account!
+  DeleteAccount(id: ID!): Account!
 
   ###############
   # Comment
   ###############
   # CREATE
-  createComment(input: CreateCommentInput!): Comment!
+  CreateComment(input: CreateCommentInput!): Comment!
   # UPDATE
-  updateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  UpdateComment(id: ID!, input: UpdateCommentInput!): Comment!
   # DELETE
-  deleteComment(id: ID!): Comment!
+  DeleteComment(id: ID!): Comment!
 
   ###############
   # File
@@ -29,63 +29,63 @@ type Mutation {
   # Friend
   ###############
   # CREATE
-  createFriend(input: CreateFriendInput!): Friend!
+  CreateFriend(input: CreateFriendInput!): Friend!
   # DELETE
-  deleteFriend(id: ID!): Friend!
+  DeleteFriend(id: ID!): Friend!
 
   ###############
   # Like
   ###############
   # CREATE
-  createLike(input: CreateLikeInput!): Like!
+  CreateLike(input: CreateLikeInput!): Like!
   # DELETE
-  deleteLike(id: ID!): Like!
+  DeleteLike(id: ID!): Like!
 
   ###############
   # Marker
   ###############
   # CREATE
-  createMarker(input: CreateMarkerInput!): Marker!
+  CreateMarker(input: CreateMarkerInput!): Marker!
   # UPDATE
-  updateMarker(id: ID!, input: UpdateMarkerInput!): Marker!
+  UpdateMarker(id: ID!, input: UpdateMarkerInput!): Marker!
   # DELETE
-  deleteMarker(id: ID!): Marker!
+  DeleteMarker(id: ID!): Marker!
 
   ###############
   # Mute
   ###############
   # CREATE
-  createMute(input: CreateMuteInput!): Mute!
+  CreateMute(input: CreateMuteInput!): Mute!
   # DELETE
-  deleteMute(id: ID!): Mute!
+  DeleteMute(id: ID!): Mute!
 
   ###############
   # Post
   ###############
   # CREATE
-  createPost(input: CreatePostInput!): Post!
+  CreatePost(input: CreatePostInput!): Post!
   # UPDATE
-  updatePost(id: ID!, input: UpdatePostInput!): Post!
+  UpdatePost(id: ID!, input: UpdatePostInput!): Post!
   # DELETE
-  deletePost(id: ID!): Post!
+  DeletePost(id: ID!): Post!
 
   ###############
   # Request
   ###############
   # CREATE
-  createRequest(input: CreateRequestInput!): Request!
+  CreateRequest(input: CreateRequestInput!): Request!
   # UPDATE
-  updateRequest(id: ID!, input: UpdateRequestInput!): Request!
+  UpdateRequest(id: ID!, input: UpdateRequestInput!): Request!
   # DELETE
-  deleteRequest(id: ID!): Request!
+  DeleteRequest(id: ID!): Request!
 
   ###############
   # Session
   ###############
   # CREATE
-  createSession(input: CreateSessionInput!): Session!
+  CreateSession(input: CreateSessionInput!): Session!
   # UPDATE
-  updateSession(id: ID!, input: UpdateSessionInput!): Session!
+  UpdateSession(id: ID!, input: UpdateSessionInput!): Session!
   # DELETE
-  deleteSession(id: ID!): Session!
+  DeleteSession(id: ID!): Session!
 }

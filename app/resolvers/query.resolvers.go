@@ -5,40 +5,54 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Katsushi21/travelone/ent"
+	"github.com/Katsushi21/travelone/ent/like"
+	"github.com/Katsushi21/travelone/ent/request"
 	"github.com/google/uuid"
 )
 
-func (r *queryResolver) QueryAccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
+func (r *queryResolver) AccountByID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	return r.client.Account.Get(ctx, id)
 }
 
-func (r *queryResolver) QueryAccountByMyID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
+func (r *queryResolver) AccountBySelfID(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	return r.client.Account.Get(ctx, id)
 }
 
-func (r *queryResolver) QueryLikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) LikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error) {
+	like, err := r.client.Like.
+		Query().
+		Where(
+			like.PostID(postID),
+		).
+		All(ctx)
+
+	return like, err
 }
 
-func (r *queryResolver) QueryMarkers(ctx context.Context) ([]*ent.Marker, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) RequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error) {
+	request, err := r.client.Request.
+		Query().
+		Where(
+			request.AccountID(accountID),
+		).
+		All(ctx)
+
+	return request, err
 }
 
-func (r *queryResolver) QueryPosts(ctx context.Context) ([]*ent.Post, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) RequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error) {
+	request, err := r.client.Request.
+		Query().
+		Where(
+			request.AccountID(requestID),
+		).
+		All(ctx)
+
+	return request, err
 }
 
-func (r *queryResolver) QueryRequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *queryResolver) QueryRequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *queryResolver) QuerySessionByAccountID(ctx context.Context, id uuid.UUID) (*ent.Session, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) SessionByID(ctx context.Context, id uuid.UUID) (*ent.Session, error) {
+	return r.client.Session.Get(ctx, id)
 }

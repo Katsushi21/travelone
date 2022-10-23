@@ -31,6 +31,8 @@ const (
 	EdgeMarker = "marker"
 	// EdgeAccount holds the string denoting the account edge name in mutations.
 	EdgeAccount = "account"
+	// EdgeLikes holds the string denoting the likes edge name in mutations.
+	EdgeLikes = "likes"
 	// Table holds the table name of the post in the database.
 	Table = "Posts"
 	// CommentsTable is the table that holds the comments relation/edge.
@@ -54,6 +56,13 @@ const (
 	AccountInverseTable = "Accounts"
 	// AccountColumn is the table column denoting the account relation/edge.
 	AccountColumn = "account_id"
+	// LikesTable is the table that holds the likes relation/edge.
+	LikesTable = "Likes"
+	// LikesInverseTable is the table name for the Like entity.
+	// It exists in this package in order to avoid circular dependency with the "like" package.
+	LikesInverseTable = "Likes"
+	// LikesColumn is the table column denoting the likes relation/edge.
+	LikesColumn = "post_likes"
 )
 
 // Columns holds all SQL columns for post fields.
