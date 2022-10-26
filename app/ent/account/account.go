@@ -50,10 +50,12 @@ const (
 	EdgeLikes = "likes"
 	// EdgeSession holds the string denoting the session edge name in mutations.
 	EdgeSession = "session"
-	// EdgeFriendships holds the string denoting the friendships edge name in mutations.
-	EdgeFriendships = "friendships"
-	// EdgeRequestTargets holds the string denoting the requesttargets edge name in mutations.
-	EdgeRequestTargets = "requestTargets"
+	// EdgeFriendship holds the string denoting the friendship edge name in mutations.
+	EdgeFriendship = "friendship"
+	// EdgeMuteTarget holds the string denoting the mutetarget edge name in mutations.
+	EdgeMuteTarget = "muteTarget"
+	// EdgeRequestTarget holds the string denoting the requesttarget edge name in mutations.
+	EdgeRequestTarget = "requestTarget"
 	// Table holds the table name of the account in the database.
 	Table = "Accounts"
 	// PostsTable is the table that holds the posts relation/edge.
@@ -72,13 +74,8 @@ const (
 	CommentsColumn = "account_id"
 	// FriendsTable is the table that holds the friends relation/edge. The primary key declared below.
 	FriendsTable = "Friends"
-	// MutesTable is the table that holds the mutes relation/edge.
+	// MutesTable is the table that holds the mutes relation/edge. The primary key declared below.
 	MutesTable = "Mutes"
-	// MutesInverseTable is the table name for the Mute entity.
-	// It exists in this package in order to avoid circular dependency with the "mute" package.
-	MutesInverseTable = "Mutes"
-	// MutesColumn is the table column denoting the mutes relation/edge.
-	MutesColumn = "account_mutes"
 	// RequestsTable is the table that holds the requests relation/edge. The primary key declared below.
 	RequestsTable = "Requests"
 	// LikesTable is the table that holds the likes relation/edge.
@@ -95,20 +92,27 @@ const (
 	SessionInverseTable = "Sessions"
 	// SessionColumn is the table column denoting the session relation/edge.
 	SessionColumn = "account_id"
-	// FriendshipsTable is the table that holds the friendships relation/edge.
-	FriendshipsTable = "Friends"
-	// FriendshipsInverseTable is the table name for the Friend entity.
+	// FriendshipTable is the table that holds the friendship relation/edge.
+	FriendshipTable = "Friends"
+	// FriendshipInverseTable is the table name for the Friend entity.
 	// It exists in this package in order to avoid circular dependency with the "friend" package.
-	FriendshipsInverseTable = "Friends"
-	// FriendshipsColumn is the table column denoting the friendships relation/edge.
-	FriendshipsColumn = "account_id"
-	// RequestTargetsTable is the table that holds the requestTargets relation/edge.
-	RequestTargetsTable = "Requests"
-	// RequestTargetsInverseTable is the table name for the Request entity.
+	FriendshipInverseTable = "Friends"
+	// FriendshipColumn is the table column denoting the friendship relation/edge.
+	FriendshipColumn = "account_id"
+	// MuteTargetTable is the table that holds the muteTarget relation/edge.
+	MuteTargetTable = "Mutes"
+	// MuteTargetInverseTable is the table name for the Mute entity.
+	// It exists in this package in order to avoid circular dependency with the "mute" package.
+	MuteTargetInverseTable = "Mutes"
+	// MuteTargetColumn is the table column denoting the muteTarget relation/edge.
+	MuteTargetColumn = "account_id"
+	// RequestTargetTable is the table that holds the requestTarget relation/edge.
+	RequestTargetTable = "Requests"
+	// RequestTargetInverseTable is the table name for the Request entity.
 	// It exists in this package in order to avoid circular dependency with the "request" package.
-	RequestTargetsInverseTable = "Requests"
-	// RequestTargetsColumn is the table column denoting the requestTargets relation/edge.
-	RequestTargetsColumn = "account_id"
+	RequestTargetInverseTable = "Requests"
+	// RequestTargetColumn is the table column denoting the requestTarget relation/edge.
+	RequestTargetColumn = "account_id"
 )
 
 // Columns holds all SQL columns for account fields.
@@ -130,6 +134,9 @@ var (
 	// FriendsPrimaryKey and FriendsColumn2 are the table columns denoting the
 	// primary key for the friends relation (M2M).
 	FriendsPrimaryKey = []string{"account_id", "friend_id"}
+	// MutesPrimaryKey and MutesColumn2 are the table columns denoting the
+	// primary key for the mutes relation (M2M).
+	MutesPrimaryKey = []string{"account_id", "mute_id"}
 	// RequestsPrimaryKey and RequestsColumn2 are the table columns denoting the
 	// primary key for the requests relation (M2M).
 	RequestsPrimaryKey = []string{"account_id", "request_id"}

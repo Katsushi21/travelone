@@ -54,7 +54,7 @@ func (a *Account) Node(ctx context.Context) (node *Node, err error) {
 		ID:     a.ID,
 		Type:   "Account",
 		Fields: make([]*Field, 10),
-		Edges:  make([]*Edge, 9),
+		Edges:  make([]*Edge, 10),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(a.CreatedAt); err != nil {
@@ -168,11 +168,11 @@ func (a *Account) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Edges[3] = &Edge{
-		Type: "Mute",
+		Type: "Account",
 		Name: "mutes",
 	}
 	err = a.QueryMutes().
-		Select(mute.FieldID).
+		Select(account.FieldID).
 		Scan(ctx, &node.Edges[3].IDs)
 	if err != nil {
 		return nil, err
@@ -209,21 +209,31 @@ func (a *Account) Node(ctx context.Context) (node *Node, err error) {
 	}
 	node.Edges[7] = &Edge{
 		Type: "Friend",
-		Name: "friendships",
+		Name: "friendship",
 	}
-	err = a.QueryFriendships().
+	err = a.QueryFriendship().
 		Select(friend.FieldID).
 		Scan(ctx, &node.Edges[7].IDs)
 	if err != nil {
 		return nil, err
 	}
 	node.Edges[8] = &Edge{
-		Type: "Request",
-		Name: "requestTargets",
+		Type: "Mute",
+		Name: "muteTarget",
 	}
-	err = a.QueryRequestTargets().
-		Select(request.FieldID).
+	err = a.QueryMuteTarget().
+		Select(mute.FieldID).
 		Scan(ctx, &node.Edges[8].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[9] = &Edge{
+		Type: "Request",
+		Name: "requestTarget",
+	}
+	err = a.QueryRequestTarget().
+		Select(request.FieldID).
+		Scan(ctx, &node.Edges[9].IDs)
 	if err != nil {
 		return nil, err
 	}

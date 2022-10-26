@@ -31,14 +31,8 @@ func (Request) Mixin() []ent.Mixin {
 
 func (Request) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("account_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("ACCOUNT_ID"),
-			),
-		field.UUID("request_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("REQUEST_ID"),
-			),
+		field.UUID("account_id", uuid.UUID{}),
+		field.UUID("request_id", uuid.UUID{}),
 		field.Enum("status").Values(
 			"IN_PROCESS",
 			"ACCEPT",
@@ -46,10 +40,7 @@ func (Request) Fields() []ent.Field {
 			"BREAK_IN_PROCESS",
 			"BREAK_IN_ACCEPT",
 			"BREAK_DENY",
-		).
-			Annotations(
-				entgql.OrderField("STATUS"),
-			),
+		),
 	}
 }
 

@@ -28,7 +28,7 @@ func (a *Account) Friends(ctx context.Context) ([]*Account, error) {
 	return result, err
 }
 
-func (a *Account) Mutes(ctx context.Context) ([]*Mute, error) {
+func (a *Account) Mutes(ctx context.Context) ([]*Account, error) {
 	result, err := a.Edges.MutesOrErr()
 	if IsNotLoaded(err) {
 		result, err = a.QueryMutes().All(ctx)
@@ -60,18 +60,26 @@ func (a *Account) Session(ctx context.Context) ([]*Session, error) {
 	return result, err
 }
 
-func (a *Account) Friendships(ctx context.Context) ([]*Friend, error) {
-	result, err := a.Edges.FriendshipsOrErr()
+func (a *Account) Friendship(ctx context.Context) ([]*Friend, error) {
+	result, err := a.Edges.FriendshipOrErr()
 	if IsNotLoaded(err) {
-		result, err = a.QueryFriendships().All(ctx)
+		result, err = a.QueryFriendship().All(ctx)
 	}
 	return result, err
 }
 
-func (a *Account) RequestTargets(ctx context.Context) ([]*Request, error) {
-	result, err := a.Edges.RequestTargetsOrErr()
+func (a *Account) MuteTarget(ctx context.Context) ([]*Mute, error) {
+	result, err := a.Edges.MuteTargetOrErr()
 	if IsNotLoaded(err) {
-		result, err = a.QueryRequestTargets().All(ctx)
+		result, err = a.QueryMuteTarget().All(ctx)
+	}
+	return result, err
+}
+
+func (a *Account) RequestTarget(ctx context.Context) ([]*Request, error) {
+	result, err := a.Edges.RequestTargetOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryRequestTarget().All(ctx)
 	}
 	return result, err
 }

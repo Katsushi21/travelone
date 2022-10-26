@@ -33,49 +33,26 @@ func (Account) Fields() []ent.Field {
 		field.String("email").
 			MaxLen(100).
 			NotEmpty().
-			Unique().
-			Annotations(
-				entgql.OrderField("EMAIL"),
-			),
+			Unique(),
 		field.String("password").
-			Sensitive().
-			Annotations(
-				entgql.OrderField("PASSWORD"),
-			),
+			Sensitive(),
 		field.Enum("type").
 			Values(
 				"ACTIVE",
 				"INACTIVE",
 				"ADMIN",
-			).
-			Annotations(
-				entgql.OrderField("ACCOUNT_TYPE"),
 			),
-		field.String("name").
-			Annotations(
-				entgql.OrderField("NAME"),
-			),
-		field.Int("age").Positive().
-			Annotations(
-				entgql.OrderField("AGE"),
-			),
+		field.String("name"),
+		field.Int("age").
+			Positive(),
 		field.Enum("gender").
 			Values(
 				"MALE",
 				"FEMALE",
 				"NONE",
-			).
-			Annotations(
-				entgql.OrderField("GENDER"),
 			),
-		field.String("avatar").
-			Annotations(
-				entgql.OrderField("AVATAR"),
-			),
-		field.String("introduction").
-			Annotations(
-				entgql.OrderField("INTRODUCTION"),
-			),
+		field.String("avatar"),
+		field.String("introduction"),
 	}
 }
 
@@ -84,10 +61,11 @@ func (Account) Edges() []ent.Edge {
 		edge.To("posts", Post.Type),
 		edge.To("comments", Comment.Type),
 		edge.To("friends", Account.Type).
-			Through("friendships", Friend.Type),
-		edge.To("mutes", Mute.Type),
+			Through("friendship", Friend.Type),
+		edge.To("mutes", Account.Type).
+			Through("muteTarget", Mute.Type),
 		edge.To("requests", Account.Type).
-			Through("requestTargets", Request.Type),
+			Through("requestTarget", Request.Type),
 		edge.To("likes", Like.Type),
 		edge.To("session", Session.Type),
 	}

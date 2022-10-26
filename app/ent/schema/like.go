@@ -31,14 +31,8 @@ func (Like) Mixin() []ent.Mixin {
 
 func (Like) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("account_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("ACCOUNT_ID"),
-			),
-		field.UUID("post_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("POST_ID"),
-			),
+		field.UUID("account_id", uuid.UUID{}),
+		field.UUID("post_id", uuid.UUID{}),
 	}
 }
 

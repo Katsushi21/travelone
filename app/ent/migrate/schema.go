@@ -164,7 +164,6 @@ var (
 		{Name: "oid", Type: field.TypeUUID},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "account_mutes", Type: field.TypeUUID, Nullable: true},
 		{Name: "account_id", Type: field.TypeUUID},
 		{Name: "mute_id", Type: field.TypeUUID},
 	}
@@ -175,22 +174,23 @@ var (
 		PrimaryKey: []*schema.Column{MutesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "Mutes_Accounts_mutes",
-				Columns:    []*schema.Column{MutesColumns[3]},
-				RefColumns: []*schema.Column{AccountsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
 				Symbol:     "Mutes_Accounts_account",
-				Columns:    []*schema.Column{MutesColumns[4]},
+				Columns:    []*schema.Column{MutesColumns[3]},
 				RefColumns: []*schema.Column{AccountsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "Mutes_Accounts_mute",
-				Columns:    []*schema.Column{MutesColumns[5]},
+				Columns:    []*schema.Column{MutesColumns[4]},
 				RefColumns: []*schema.Column{AccountsColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "mute_account_id_mute_id",
+				Unique:  true,
+				Columns: []*schema.Column{MutesColumns[3], MutesColumns[4]},
 			},
 		},
 	}
@@ -317,7 +317,6 @@ func init() {
 	}
 	MutesTable.ForeignKeys[0].RefTable = AccountsTable
 	MutesTable.ForeignKeys[1].RefTable = AccountsTable
-	MutesTable.ForeignKeys[2].RefTable = AccountsTable
 	MutesTable.Annotation = &entsql.Annotation{
 		Table: "Mutes",
 	}

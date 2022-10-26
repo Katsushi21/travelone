@@ -27,7 +27,6 @@ type MuteQuery struct {
 	predicates  []predicate.Mute
 	withAccount *AccountQuery
 	withMute    *AccountQuery
-	withFKs     bool
 	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*Mute) error
 	// intermediate query (i.e. traversal path).
@@ -391,19 +390,12 @@ func (mq *MuteQuery) prepareQuery(ctx context.Context) error {
 func (mq *MuteQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Mute, error) {
 	var (
 		nodes       = []*Mute{}
-		withFKs     = mq.withFKs
 		_spec       = mq.querySpec()
 		loadedTypes = [2]bool{
 			mq.withAccount != nil,
 			mq.withMute != nil,
 		}
 	)
-	if mq.withAccount != nil || mq.withMute != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, mute.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		return (*Mute).scanValues(nil, columns)
 	}

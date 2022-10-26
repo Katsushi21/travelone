@@ -31,14 +31,8 @@ func (Friend) Mixin() []ent.Mixin {
 
 func (Friend) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("account_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("ACCOUNT_ID"),
-			),
-		field.UUID("friend_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("FRIEND_ID"),
-			),
+		field.UUID("account_id", uuid.UUID{}),
+		field.UUID("friend_id", uuid.UUID{}),
 	}
 }
 

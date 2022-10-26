@@ -65,12 +65,12 @@ func (a *AccountQuery) collectField(ctx context.Context, op *graphql.OperationCo
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = &MuteQuery{config: a.config}
+				query = &AccountQuery{config: a.config}
 			)
 			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
 				return err
 			}
-			a.WithNamedMutes(alias, func(wq *MuteQuery) {
+			a.WithNamedMutes(alias, func(wq *AccountQuery) {
 				*wq = *query
 			})
 		case "requests":
@@ -109,7 +109,7 @@ func (a *AccountQuery) collectField(ctx context.Context, op *graphql.OperationCo
 			a.WithNamedSession(alias, func(wq *SessionQuery) {
 				*wq = *query
 			})
-		case "friendships":
+		case "friendship":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -118,10 +118,22 @@ func (a *AccountQuery) collectField(ctx context.Context, op *graphql.OperationCo
 			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
 				return err
 			}
-			a.WithNamedFriendships(alias, func(wq *FriendQuery) {
+			a.WithNamedFriendship(alias, func(wq *FriendQuery) {
 				*wq = *query
 			})
-		case "requesttargets", "requestTargets":
+		case "mutetarget", "muteTarget":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &MuteQuery{config: a.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			a.WithNamedMuteTarget(alias, func(wq *MuteQuery) {
+				*wq = *query
+			})
+		case "requesttarget", "requestTarget":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -130,7 +142,7 @@ func (a *AccountQuery) collectField(ctx context.Context, op *graphql.OperationCo
 			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
 				return err
 			}
-			a.WithNamedRequestTargets(alias, func(wq *RequestQuery) {
+			a.WithNamedRequestTarget(alias, func(wq *RequestQuery) {
 				*wq = *query
 			})
 		}
@@ -160,28 +172,6 @@ func newAccountPaginateArgs(rv map[string]interface{}) *accountPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &AccountOrder{Field: &AccountOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithAccountOrder(order))
-			}
-		case *AccountOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithAccountOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*AccountWhereInput); ok {
 		args.opts = append(args.opts, WithAccountFilter(v.Filter))
@@ -253,28 +243,6 @@ func newCommentPaginateArgs(rv map[string]interface{}) *commentPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &CommentOrder{Field: &CommentOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithCommentOrder(order))
-			}
-		case *CommentOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithCommentOrder(v))
-			}
-		}
-	}
 	if v, ok := rv[whereField].(*CommentWhereInput); ok {
 		args.opts = append(args.opts, WithCommentFilter(v.Filter))
 	}
@@ -344,28 +312,6 @@ func newFriendPaginateArgs(rv map[string]interface{}) *friendPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &FriendOrder{Field: &FriendOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithFriendOrder(order))
-			}
-		case *FriendOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithFriendOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*FriendWhereInput); ok {
 		args.opts = append(args.opts, WithFriendFilter(v.Filter))
@@ -437,28 +383,6 @@ func newLikePaginateArgs(rv map[string]interface{}) *likePaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &LikeOrder{Field: &LikeOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithLikeOrder(order))
-			}
-		case *LikeOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithLikeOrder(v))
-			}
-		}
-	}
 	if v, ok := rv[whereField].(*LikeWhereInput); ok {
 		args.opts = append(args.opts, WithLikeFilter(v.Filter))
 	}
@@ -518,28 +442,6 @@ func newMarkerPaginateArgs(rv map[string]interface{}) *markerPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &MarkerOrder{Field: &MarkerOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithMarkerOrder(order))
-			}
-		case *MarkerOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithMarkerOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*MarkerWhereInput); ok {
 		args.opts = append(args.opts, WithMarkerFilter(v.Filter))
@@ -610,28 +512,6 @@ func newMutePaginateArgs(rv map[string]interface{}) *mutePaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &MuteOrder{Field: &MuteOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithMuteOrder(order))
-			}
-		case *MuteOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithMuteOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*MuteWhereInput); ok {
 		args.opts = append(args.opts, WithMuteFilter(v.Filter))
@@ -727,28 +607,6 @@ func newPostPaginateArgs(rv map[string]interface{}) *postPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &PostOrder{Field: &PostOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithPostOrder(order))
-			}
-		case *PostOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithPostOrder(v))
-			}
-		}
-	}
 	if v, ok := rv[whereField].(*PostWhereInput); ok {
 		args.opts = append(args.opts, WithPostFilter(v.Filter))
 	}
@@ -819,28 +677,6 @@ func newRequestPaginateArgs(rv map[string]interface{}) *requestPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &RequestOrder{Field: &RequestOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithRequestOrder(order))
-			}
-		case *RequestOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithRequestOrder(v))
-			}
-		}
-	}
 	if v, ok := rv[whereField].(*RequestWhereInput); ok {
 		args.opts = append(args.opts, WithRequestFilter(v.Filter))
 	}
@@ -900,28 +736,6 @@ func newSessionPaginateArgs(rv map[string]interface{}) *sessionPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &SessionOrder{Field: &SessionOrderField{}}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithSessionOrder(order))
-			}
-		case *SessionOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithSessionOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*SessionWhereInput); ok {
 		args.opts = append(args.opts, WithSessionFilter(v.Filter))

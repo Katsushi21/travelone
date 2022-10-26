@@ -28,8 +28,7 @@ type Mute struct {
 	MuteID uuid.UUID `json:"mute_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MuteQuery when eager-loading is set.
-	Edges         MuteEdges `json:"edges"`
-	account_mutes *uuid.UUID
+	Edges MuteEdges `json:"edges"`
 }
 
 // MuteEdges holds the relations/edges for other nodes in the graph.
@@ -80,8 +79,6 @@ func (*Mute) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullTime)
 		case mute.FieldID, mute.FieldAccountID, mute.FieldMuteID:
 			values[i] = new(uuid.UUID)
-		case mute.ForeignKeys[0]: // account_mutes
-			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Mute", columns[i])
 		}
@@ -126,13 +123,6 @@ func (m *Mute) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field mute_id", values[i])
 			} else if value != nil {
 				m.MuteID = *value
-			}
-		case mute.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullScanner); !ok {
-				return fmt.Errorf("unexpected type %T for field account_mutes", values[i])
-			} else if value.Valid {
-				m.account_mutes = new(uuid.UUID)
-				*m.account_mutes = *value.S.(*uuid.UUID)
 			}
 		}
 	}

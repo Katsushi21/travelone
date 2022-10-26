@@ -315,14 +315,14 @@ func (c *AccountClient) QueryFriends(a *Account) *AccountQuery {
 }
 
 // QueryMutes queries the mutes edge of a Account.
-func (c *AccountClient) QueryMutes(a *Account) *MuteQuery {
-	query := &MuteQuery{config: c.config}
+func (c *AccountClient) QueryMutes(a *Account) *AccountQuery {
+	query := &AccountQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, id),
-			sqlgraph.To(mute.Table, mute.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, account.MutesTable, account.MutesColumn),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, account.MutesTable, account.MutesPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -378,15 +378,15 @@ func (c *AccountClient) QuerySession(a *Account) *SessionQuery {
 	return query
 }
 
-// QueryFriendships queries the friendships edge of a Account.
-func (c *AccountClient) QueryFriendships(a *Account) *FriendQuery {
+// QueryFriendship queries the friendship edge of a Account.
+func (c *AccountClient) QueryFriendship(a *Account) *FriendQuery {
 	query := &FriendQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, id),
 			sqlgraph.To(friend.Table, friend.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, account.FriendshipsTable, account.FriendshipsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, account.FriendshipTable, account.FriendshipColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -394,15 +394,31 @@ func (c *AccountClient) QueryFriendships(a *Account) *FriendQuery {
 	return query
 }
 
-// QueryRequestTargets queries the requestTargets edge of a Account.
-func (c *AccountClient) QueryRequestTargets(a *Account) *RequestQuery {
+// QueryMuteTarget queries the muteTarget edge of a Account.
+func (c *AccountClient) QueryMuteTarget(a *Account) *MuteQuery {
+	query := &MuteQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, id),
+			sqlgraph.To(mute.Table, mute.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, account.MuteTargetTable, account.MuteTargetColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryRequestTarget queries the requestTarget edge of a Account.
+func (c *AccountClient) QueryRequestTarget(a *Account) *RequestQuery {
 	query := &RequestQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, id),
 			sqlgraph.To(request.Table, request.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, account.RequestTargetsTable, account.RequestTargetsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, account.RequestTargetTable, account.RequestTargetColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil

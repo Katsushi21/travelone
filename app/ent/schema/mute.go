@@ -32,14 +32,8 @@ func (Mute) Mixin() []ent.Mixin {
 
 func (Mute) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("account_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("ACCOUNT_ID"),
-			),
-		field.UUID("mute_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("MUTE_ID"),
-			),
+		field.UUID("account_id", uuid.UUID{}),
+		field.UUID("mute_id", uuid.UUID{}),
 	}
 }
 

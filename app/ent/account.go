@@ -51,32 +51,35 @@ type AccountEdges struct {
 	// Friends holds the value of the friends edge.
 	Friends []*Account `json:"friends,omitempty"`
 	// Mutes holds the value of the mutes edge.
-	Mutes []*Mute `json:"mutes,omitempty"`
+	Mutes []*Account `json:"mutes,omitempty"`
 	// Requests holds the value of the requests edge.
 	Requests []*Account `json:"requests,omitempty"`
 	// Likes holds the value of the likes edge.
 	Likes []*Like `json:"likes,omitempty"`
 	// Session holds the value of the session edge.
 	Session []*Session `json:"session,omitempty"`
-	// Friendships holds the value of the friendships edge.
-	Friendships []*Friend `json:"friendships,omitempty"`
-	// RequestTargets holds the value of the requestTargets edge.
-	RequestTargets []*Request `json:"requestTargets,omitempty"`
+	// Friendship holds the value of the friendship edge.
+	Friendship []*Friend `json:"friendship,omitempty"`
+	// MuteTarget holds the value of the muteTarget edge.
+	MuteTarget []*Mute `json:"muteTarget,omitempty"`
+	// RequestTarget holds the value of the requestTarget edge.
+	RequestTarget []*Request `json:"requestTarget,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [9]bool
+	loadedTypes [10]bool
 	// totalCount holds the count of the edges above.
-	totalCount [9]map[string]int
+	totalCount [10]map[string]int
 
-	namedPosts          map[string][]*Post
-	namedComments       map[string][]*Comment
-	namedFriends        map[string][]*Account
-	namedMutes          map[string][]*Mute
-	namedRequests       map[string][]*Account
-	namedLikes          map[string][]*Like
-	namedSession        map[string][]*Session
-	namedFriendships    map[string][]*Friend
-	namedRequestTargets map[string][]*Request
+	namedPosts         map[string][]*Post
+	namedComments      map[string][]*Comment
+	namedFriends       map[string][]*Account
+	namedMutes         map[string][]*Account
+	namedRequests      map[string][]*Account
+	namedLikes         map[string][]*Like
+	namedSession       map[string][]*Session
+	namedFriendship    map[string][]*Friend
+	namedMuteTarget    map[string][]*Mute
+	namedRequestTarget map[string][]*Request
 }
 
 // PostsOrErr returns the Posts value or an error if the edge
@@ -108,7 +111,7 @@ func (e AccountEdges) FriendsOrErr() ([]*Account, error) {
 
 // MutesOrErr returns the Mutes value or an error if the edge
 // was not loaded in eager-loading.
-func (e AccountEdges) MutesOrErr() ([]*Mute, error) {
+func (e AccountEdges) MutesOrErr() ([]*Account, error) {
 	if e.loadedTypes[3] {
 		return e.Mutes, nil
 	}
@@ -142,22 +145,31 @@ func (e AccountEdges) SessionOrErr() ([]*Session, error) {
 	return nil, &NotLoadedError{edge: "session"}
 }
 
-// FriendshipsOrErr returns the Friendships value or an error if the edge
+// FriendshipOrErr returns the Friendship value or an error if the edge
 // was not loaded in eager-loading.
-func (e AccountEdges) FriendshipsOrErr() ([]*Friend, error) {
+func (e AccountEdges) FriendshipOrErr() ([]*Friend, error) {
 	if e.loadedTypes[7] {
-		return e.Friendships, nil
+		return e.Friendship, nil
 	}
-	return nil, &NotLoadedError{edge: "friendships"}
+	return nil, &NotLoadedError{edge: "friendship"}
 }
 
-// RequestTargetsOrErr returns the RequestTargets value or an error if the edge
+// MuteTargetOrErr returns the MuteTarget value or an error if the edge
 // was not loaded in eager-loading.
-func (e AccountEdges) RequestTargetsOrErr() ([]*Request, error) {
+func (e AccountEdges) MuteTargetOrErr() ([]*Mute, error) {
 	if e.loadedTypes[8] {
-		return e.RequestTargets, nil
+		return e.MuteTarget, nil
 	}
-	return nil, &NotLoadedError{edge: "requestTargets"}
+	return nil, &NotLoadedError{edge: "muteTarget"}
+}
+
+// RequestTargetOrErr returns the RequestTarget value or an error if the edge
+// was not loaded in eager-loading.
+func (e AccountEdges) RequestTargetOrErr() ([]*Request, error) {
+	if e.loadedTypes[9] {
+		return e.RequestTarget, nil
+	}
+	return nil, &NotLoadedError{edge: "requestTarget"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -275,7 +287,7 @@ func (a *Account) QueryFriends() *AccountQuery {
 }
 
 // QueryMutes queries the "mutes" edge of the Account entity.
-func (a *Account) QueryMutes() *MuteQuery {
+func (a *Account) QueryMutes() *AccountQuery {
 	return (&AccountClient{config: a.config}).QueryMutes(a)
 }
 
@@ -294,14 +306,19 @@ func (a *Account) QuerySession() *SessionQuery {
 	return (&AccountClient{config: a.config}).QuerySession(a)
 }
 
-// QueryFriendships queries the "friendships" edge of the Account entity.
-func (a *Account) QueryFriendships() *FriendQuery {
-	return (&AccountClient{config: a.config}).QueryFriendships(a)
+// QueryFriendship queries the "friendship" edge of the Account entity.
+func (a *Account) QueryFriendship() *FriendQuery {
+	return (&AccountClient{config: a.config}).QueryFriendship(a)
 }
 
-// QueryRequestTargets queries the "requestTargets" edge of the Account entity.
-func (a *Account) QueryRequestTargets() *RequestQuery {
-	return (&AccountClient{config: a.config}).QueryRequestTargets(a)
+// QueryMuteTarget queries the "muteTarget" edge of the Account entity.
+func (a *Account) QueryMuteTarget() *MuteQuery {
+	return (&AccountClient{config: a.config}).QueryMuteTarget(a)
+}
+
+// QueryRequestTarget queries the "requestTarget" edge of the Account entity.
+func (a *Account) QueryRequestTarget() *RequestQuery {
+	return (&AccountClient{config: a.config}).QueryRequestTarget(a)
 }
 
 // Update returns a builder for updating this Account.
@@ -433,7 +450,7 @@ func (a *Account) appendNamedFriends(name string, edges ...*Account) {
 
 // NamedMutes returns the Mutes named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *Account) NamedMutes(name string) ([]*Mute, error) {
+func (a *Account) NamedMutes(name string) ([]*Account, error) {
 	if a.Edges.namedMutes == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
@@ -444,12 +461,12 @@ func (a *Account) NamedMutes(name string) ([]*Mute, error) {
 	return nodes, nil
 }
 
-func (a *Account) appendNamedMutes(name string, edges ...*Mute) {
+func (a *Account) appendNamedMutes(name string, edges ...*Account) {
 	if a.Edges.namedMutes == nil {
-		a.Edges.namedMutes = make(map[string][]*Mute)
+		a.Edges.namedMutes = make(map[string][]*Account)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedMutes[name] = []*Mute{}
+		a.Edges.namedMutes[name] = []*Account{}
 	} else {
 		a.Edges.namedMutes[name] = append(a.Edges.namedMutes[name], edges...)
 	}
@@ -527,51 +544,75 @@ func (a *Account) appendNamedSession(name string, edges ...*Session) {
 	}
 }
 
-// NamedFriendships returns the Friendships named value or an error if the edge was not
+// NamedFriendship returns the Friendship named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *Account) NamedFriendships(name string) ([]*Friend, error) {
-	if a.Edges.namedFriendships == nil {
+func (a *Account) NamedFriendship(name string) ([]*Friend, error) {
+	if a.Edges.namedFriendship == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedFriendships[name]
+	nodes, ok := a.Edges.namedFriendship[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *Account) appendNamedFriendships(name string, edges ...*Friend) {
-	if a.Edges.namedFriendships == nil {
-		a.Edges.namedFriendships = make(map[string][]*Friend)
+func (a *Account) appendNamedFriendship(name string, edges ...*Friend) {
+	if a.Edges.namedFriendship == nil {
+		a.Edges.namedFriendship = make(map[string][]*Friend)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedFriendships[name] = []*Friend{}
+		a.Edges.namedFriendship[name] = []*Friend{}
 	} else {
-		a.Edges.namedFriendships[name] = append(a.Edges.namedFriendships[name], edges...)
+		a.Edges.namedFriendship[name] = append(a.Edges.namedFriendship[name], edges...)
 	}
 }
 
-// NamedRequestTargets returns the RequestTargets named value or an error if the edge was not
+// NamedMuteTarget returns the MuteTarget named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (a *Account) NamedRequestTargets(name string) ([]*Request, error) {
-	if a.Edges.namedRequestTargets == nil {
+func (a *Account) NamedMuteTarget(name string) ([]*Mute, error) {
+	if a.Edges.namedMuteTarget == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := a.Edges.namedRequestTargets[name]
+	nodes, ok := a.Edges.namedMuteTarget[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (a *Account) appendNamedRequestTargets(name string, edges ...*Request) {
-	if a.Edges.namedRequestTargets == nil {
-		a.Edges.namedRequestTargets = make(map[string][]*Request)
+func (a *Account) appendNamedMuteTarget(name string, edges ...*Mute) {
+	if a.Edges.namedMuteTarget == nil {
+		a.Edges.namedMuteTarget = make(map[string][]*Mute)
 	}
 	if len(edges) == 0 {
-		a.Edges.namedRequestTargets[name] = []*Request{}
+		a.Edges.namedMuteTarget[name] = []*Mute{}
 	} else {
-		a.Edges.namedRequestTargets[name] = append(a.Edges.namedRequestTargets[name], edges...)
+		a.Edges.namedMuteTarget[name] = append(a.Edges.namedMuteTarget[name], edges...)
+	}
+}
+
+// NamedRequestTarget returns the RequestTarget named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (a *Account) NamedRequestTarget(name string) ([]*Request, error) {
+	if a.Edges.namedRequestTarget == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := a.Edges.namedRequestTarget[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (a *Account) appendNamedRequestTarget(name string, edges ...*Request) {
+	if a.Edges.namedRequestTarget == nil {
+		a.Edges.namedRequestTarget = make(map[string][]*Request)
+	}
+	if len(edges) == 0 {
+		a.Edges.namedRequestTarget[name] = []*Request{}
+	} else {
+		a.Edges.namedRequestTarget[name] = append(a.Edges.namedRequestTarget[name], edges...)
 	}
 }
 

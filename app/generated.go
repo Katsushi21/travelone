@@ -50,26 +50,27 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Account struct {
-		Age            func(childComplexity int) int
-		Avatar         func(childComplexity int) int
-		Comments       func(childComplexity int) int
-		CreatedAt      func(childComplexity int) int
-		Email          func(childComplexity int) int
-		Friends        func(childComplexity int) int
-		Friendships    func(childComplexity int) int
-		Gender         func(childComplexity int) int
-		ID             func(childComplexity int) int
-		Introduction   func(childComplexity int) int
-		Likes          func(childComplexity int) int
-		Mutes          func(childComplexity int) int
-		Name           func(childComplexity int) int
-		Password       func(childComplexity int) int
-		Posts          func(childComplexity int) int
-		RequestTargets func(childComplexity int) int
-		Requests       func(childComplexity int) int
-		Session        func(childComplexity int) int
-		Type           func(childComplexity int) int
-		UpdatedAt      func(childComplexity int) int
+		Age           func(childComplexity int) int
+		Avatar        func(childComplexity int) int
+		Comments      func(childComplexity int) int
+		CreatedAt     func(childComplexity int) int
+		Email         func(childComplexity int) int
+		Friends       func(childComplexity int) int
+		Friendship    func(childComplexity int) int
+		Gender        func(childComplexity int) int
+		ID            func(childComplexity int) int
+		Introduction  func(childComplexity int) int
+		Likes         func(childComplexity int) int
+		MuteTarget    func(childComplexity int) int
+		Mutes         func(childComplexity int) int
+		Name          func(childComplexity int) int
+		Password      func(childComplexity int) int
+		Posts         func(childComplexity int) int
+		RequestTarget func(childComplexity int) int
+		Requests      func(childComplexity int) int
+		Session       func(childComplexity int) int
+		Type          func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
 	}
 
 	Comment struct {
@@ -316,12 +317,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Friends(childComplexity), true
 
-	case "Account.friendships":
-		if e.complexity.Account.Friendships == nil {
+	case "Account.friendship":
+		if e.complexity.Account.Friendship == nil {
 			break
 		}
 
-		return e.complexity.Account.Friendships(childComplexity), true
+		return e.complexity.Account.Friendship(childComplexity), true
 
 	case "Account.gender":
 		if e.complexity.Account.Gender == nil {
@@ -351,6 +352,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Likes(childComplexity), true
 
+	case "Account.mutetarget":
+		if e.complexity.Account.MuteTarget == nil {
+			break
+		}
+
+		return e.complexity.Account.MuteTarget(childComplexity), true
+
 	case "Account.mutes":
 		if e.complexity.Account.Mutes == nil {
 			break
@@ -379,12 +387,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Posts(childComplexity), true
 
-	case "Account.requesttargets":
-		if e.complexity.Account.RequestTargets == nil {
+	case "Account.requesttarget":
+		if e.complexity.Account.RequestTarget == nil {
 			break
 		}
 
-		return e.complexity.Account.RequestTargets(childComplexity), true
+		return e.complexity.Account.RequestTarget(childComplexity), true
 
 	case "Account.requests":
 		if e.complexity.Account.Requests == nil {
@@ -1331,9 +1339,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputAccountOrder,
 		ec.unmarshalInputAccountWhereInput,
-		ec.unmarshalInputCommentOrder,
 		ec.unmarshalInputCommentWhereInput,
 		ec.unmarshalInputCreateAccountInput,
 		ec.unmarshalInputCreateCommentInput,
@@ -1344,19 +1350,12 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreatePostInput,
 		ec.unmarshalInputCreateRequestInput,
 		ec.unmarshalInputCreateSessionInput,
-		ec.unmarshalInputFriendOrder,
 		ec.unmarshalInputFriendWhereInput,
-		ec.unmarshalInputLikeOrder,
 		ec.unmarshalInputLikeWhereInput,
-		ec.unmarshalInputMarkerOrder,
 		ec.unmarshalInputMarkerWhereInput,
-		ec.unmarshalInputMuteOrder,
 		ec.unmarshalInputMuteWhereInput,
-		ec.unmarshalInputPostOrder,
 		ec.unmarshalInputPostWhereInput,
-		ec.unmarshalInputRequestOrder,
 		ec.unmarshalInputRequestWhereInput,
-		ec.unmarshalInputSessionOrder,
 		ec.unmarshalInputSessionWhereInput,
 		ec.unmarshalInputUpdateAccountInput,
 		ec.unmarshalInputUpdateCommentInput,
@@ -1444,38 +1443,19 @@ type Account implements Node {
   posts: [Post!]
   comments: [Comment!]
   friends: [Account!]
-  mutes: [Mute!]
+  mutes: [Account!]
   requests: [Account!]
   likes: [Like!]
   session: [Session!]
-  friendships: [Friend!]
-  requesttargets: [Request!]
+  friendship: [Friend!]
+  mutetarget: [Mute!]
+  requesttarget: [Request!]
 }
 """AccountGender is enum for the field gender"""
 enum AccountGender @goModel(model: "github.com/Katsushi21/travelone/ent/account.Gender") {
   MALE
   FEMALE
   NONE
-}
-"""Ordering options for Account connections"""
-input AccountOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Accounts."""
-  field: AccountOrderField!
-}
-"""Properties by which Account connections can be ordered."""
-enum AccountOrderField {
-  CREATED_AT
-  UPDATED_AT
-  EMAIL
-  PASSWORD
-  ACCOUNT_TYPE
-  NAME
-  AGE
-  GENDER
-  AVATAR
-  INTRODUCTION
 }
 """AccountType is enum for the field type"""
 enum AccountType @goModel(model: "github.com/Katsushi21/travelone/ent/account.Type") {
@@ -1618,7 +1598,7 @@ input AccountWhereInput {
   hasFriendsWith: [AccountWhereInput!]
   """mutes edge predicates"""
   hasMutes: Boolean
-  hasMutesWith: [MuteWhereInput!]
+  hasMutesWith: [AccountWhereInput!]
   """requests edge predicates"""
   hasRequests: Boolean
   hasRequestsWith: [AccountWhereInput!]
@@ -1628,12 +1608,15 @@ input AccountWhereInput {
   """session edge predicates"""
   hasSession: Boolean
   hasSessionWith: [SessionWhereInput!]
-  """friendships edge predicates"""
-  hasFriendships: Boolean
-  hasFriendshipsWith: [FriendWhereInput!]
-  """requestTargets edge predicates"""
-  hasRequestTargets: Boolean
-  hasRequestTargetsWith: [RequestWhereInput!]
+  """friendship edge predicates"""
+  hasFriendship: Boolean
+  hasFriendshipWith: [FriendWhereInput!]
+  """muteTarget edge predicates"""
+  hasMuteTarget: Boolean
+  hasMuteTargetWith: [MuteWhereInput!]
+  """requestTarget edge predicates"""
+  hasRequestTarget: Boolean
+  hasRequestTargetWith: [RequestWhereInput!]
 }
 type Comment implements Node {
   id: ID!
@@ -1644,21 +1627,6 @@ type Comment implements Node {
   postID: ID!
   post: Post!
   account: Account!
-}
-"""Ordering options for Comment connections"""
-input CommentOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Comments."""
-  field: CommentOrderField!
-}
-"""Properties by which Comment connections can be ordered."""
-enum CommentOrderField {
-  CREATED_AT
-  UPDATED_AT
-  BODY
-  ACCOUNT_ID
-  POST_ID
 }
 """
 CommentWhereInput is used for filtering Comment objects.
@@ -1852,20 +1820,6 @@ type Friend implements Node {
   account: Account!
   friend: Account!
 }
-"""Ordering options for Friend connections"""
-input FriendOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Friends."""
-  field: FriendOrderField!
-}
-"""Properties by which Friend connections can be ordered."""
-enum FriendOrderField {
-  CREATED_AT
-  UPDATED_AT
-  ACCOUNT_ID
-  FRIEND_ID
-}
 """
 FriendWhereInput is used for filtering Friend objects.
 Input was generated by ent.
@@ -1910,20 +1864,6 @@ type Like implements Node {
   postID: ID!
   account: Account!
   post: Post!
-}
-"""Ordering options for Like connections"""
-input LikeOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Likes."""
-  field: LikeOrderField!
-}
-"""Properties by which Like connections can be ordered."""
-enum LikeOrderField {
-  CREATED_AT
-  UPDATED_AT
-  ACCOUNT_ID
-  POST_ID
 }
 """
 LikeWhereInput is used for filtering Like objects.
@@ -1986,22 +1926,6 @@ type Marker implements Node {
   lng: String!
   postID: ID!
   post: Post!
-}
-"""Ordering options for Marker connections"""
-input MarkerOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Markers."""
-  field: MarkerOrderField!
-}
-"""Properties by which Marker connections can be ordered."""
-enum MarkerOrderField {
-  CREATED_AT
-  UPDATED_AT
-  TITLE
-  LAT
-  LNG
-  POST_ID
 }
 """
 MarkerWhereInput is used for filtering Marker objects.
@@ -2098,20 +2022,6 @@ type Mute implements Node {
   account: Account!
   mute: Account!
 }
-"""Ordering options for Mute connections"""
-input MuteOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Mutes."""
-  field: MuteOrderField!
-}
-"""Properties by which Mute connections can be ordered."""
-enum MuteOrderField {
-  CREATED_AT
-  UPDATED_AT
-  ACCOUNT_ID
-  MUTE_ID
-}
 """
 MuteWhereInput is used for filtering Mute objects.
 Input was generated by ent.
@@ -2147,22 +2057,6 @@ input MuteWhereInput {
   updatedAtGTE: Time
   updatedAtLT: Time
   updatedAtLTE: Time
-  """account_id field predicates"""
-  accountID: ID
-  accountIDNEQ: ID
-  accountIDIn: [ID!]
-  accountIDNotIn: [ID!]
-  """mute_id field predicates"""
-  muteID: ID
-  muteIDNEQ: ID
-  muteIDIn: [ID!]
-  muteIDNotIn: [ID!]
-  """account edge predicates"""
-  hasAccount: Boolean
-  hasAccountWith: [AccountWhereInput!]
-  """mute edge predicates"""
-  hasMute: Boolean
-  hasMuteWith: [AccountWhereInput!]
 }
 """
 An object with an ID.
@@ -2205,22 +2099,6 @@ type Post implements Node {
   marker: Marker
   account: Account!
   likes: [Like!]
-}
-"""Ordering options for Post connections"""
-input PostOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Posts."""
-  field: PostOrderField!
-}
-"""Properties by which Post connections can be ordered."""
-enum PostOrderField {
-  CREATED_AT
-  UPDATED_AT
-  TITLE
-  BODY
-  IMG
-  ACCOUNT_ID
 }
 """
 PostWhereInput is used for filtering Post objects.
@@ -2348,21 +2226,6 @@ type Request implements Node {
   account: Account!
   request: Account!
 }
-"""Ordering options for Request connections"""
-input RequestOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Requests."""
-  field: RequestOrderField!
-}
-"""Properties by which Request connections can be ordered."""
-enum RequestOrderField {
-  CREATED_AT
-  UPDATED_AT
-  ACCOUNT_ID
-  REQUEST_ID
-  STATUS
-}
 """RequestStatus is enum for the field status"""
 enum RequestStatus @goModel(model: "github.com/Katsushi21/travelone/ent/request.Status") {
   IN_PROCESS
@@ -2420,20 +2283,6 @@ type Session implements Node {
   accountID: ID!
   session: String!
   account: Account!
-}
-"""Ordering options for Session connections"""
-input SessionOrder {
-  """The ordering direction."""
-  direction: OrderDirection! = ASC
-  """The field by which to order Sessions."""
-  field: SessionOrderField!
-}
-"""Properties by which Session connections can be ordered."""
-enum SessionOrderField {
-  CREATED_AT
-  UPDATED_AT
-  ACCOUNT_ID
-  SESSION
 }
 """
 SessionWhereInput is used for filtering Session objects.
@@ -4016,10 +3865,12 @@ func (ec *executionContext) fieldContext_Account_friends(ctx context.Context, fi
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -4050,9 +3901,9 @@ func (ec *executionContext) _Account_mutes(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.Mute)
+	res := resTmp.([]*ent.Account)
 	fc.Result = res
-	return ec.marshalOMute2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteᚄ(ctx, field.Selections, res)
+	return ec.marshalOAccount2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Account_mutes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4064,21 +3915,49 @@ func (ec *executionContext) fieldContext_Account_mutes(ctx context.Context, fiel
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Mute_id(ctx, field)
+				return ec.fieldContext_Account_id(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Mute_createdAt(ctx, field)
+				return ec.fieldContext_Account_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Mute_updatedAt(ctx, field)
-			case "accountID":
-				return ec.fieldContext_Mute_accountID(ctx, field)
-			case "muteID":
-				return ec.fieldContext_Mute_muteID(ctx, field)
-			case "account":
-				return ec.fieldContext_Mute_account(ctx, field)
-			case "mute":
-				return ec.fieldContext_Mute_mute(ctx, field)
+				return ec.fieldContext_Account_updatedAt(ctx, field)
+			case "email":
+				return ec.fieldContext_Account_email(ctx, field)
+			case "password":
+				return ec.fieldContext_Account_password(ctx, field)
+			case "type":
+				return ec.fieldContext_Account_type(ctx, field)
+			case "name":
+				return ec.fieldContext_Account_name(ctx, field)
+			case "age":
+				return ec.fieldContext_Account_age(ctx, field)
+			case "gender":
+				return ec.fieldContext_Account_gender(ctx, field)
+			case "avatar":
+				return ec.fieldContext_Account_avatar(ctx, field)
+			case "introduction":
+				return ec.fieldContext_Account_introduction(ctx, field)
+			case "posts":
+				return ec.fieldContext_Account_posts(ctx, field)
+			case "comments":
+				return ec.fieldContext_Account_comments(ctx, field)
+			case "friends":
+				return ec.fieldContext_Account_friends(ctx, field)
+			case "mutes":
+				return ec.fieldContext_Account_mutes(ctx, field)
+			case "requests":
+				return ec.fieldContext_Account_requests(ctx, field)
+			case "likes":
+				return ec.fieldContext_Account_likes(ctx, field)
+			case "session":
+				return ec.fieldContext_Account_session(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Mute", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
 	}
 	return fc, nil
@@ -4156,10 +4035,12 @@ func (ec *executionContext) fieldContext_Account_requests(ctx context.Context, f
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -4279,8 +4160,8 @@ func (ec *executionContext) fieldContext_Account_session(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Account_friendships(ctx context.Context, field graphql.CollectedField, obj *ent.Account) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Account_friendships(ctx, field)
+func (ec *executionContext) _Account_friendship(ctx context.Context, field graphql.CollectedField, obj *ent.Account) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Account_friendship(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4293,7 +4174,7 @@ func (ec *executionContext) _Account_friendships(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Friendships(ctx)
+		return obj.Friendship(ctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4307,7 +4188,7 @@ func (ec *executionContext) _Account_friendships(ctx context.Context, field grap
 	return ec.marshalOFriend2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Account_friendships(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Account_friendship(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Account",
 		Field:      field,
@@ -4336,8 +4217,8 @@ func (ec *executionContext) fieldContext_Account_friendships(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Account_requesttargets(ctx context.Context, field graphql.CollectedField, obj *ent.Account) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Account_requesttargets(ctx, field)
+func (ec *executionContext) _Account_mutetarget(ctx context.Context, field graphql.CollectedField, obj *ent.Account) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Account_mutetarget(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4350,7 +4231,64 @@ func (ec *executionContext) _Account_requesttargets(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.RequestTargets(ctx)
+		return obj.MuteTarget(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Mute)
+	fc.Result = res
+	return ec.marshalOMute2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Account_mutetarget(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Mute_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Mute_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mute_updatedAt(ctx, field)
+			case "accountID":
+				return ec.fieldContext_Mute_accountID(ctx, field)
+			case "muteID":
+				return ec.fieldContext_Mute_muteID(ctx, field)
+			case "account":
+				return ec.fieldContext_Mute_account(ctx, field)
+			case "mute":
+				return ec.fieldContext_Mute_mute(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Mute", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Account_requesttarget(ctx context.Context, field graphql.CollectedField, obj *ent.Account) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Account_requesttarget(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestTarget(ctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4364,7 +4302,7 @@ func (ec *executionContext) _Account_requesttargets(ctx context.Context, field g
 	return ec.marshalORequest2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Account_requesttargets(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Account_requesttarget(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Account",
 		Field:      field,
@@ -4802,10 +4740,12 @@ func (ec *executionContext) fieldContext_Comment_account(ctx context.Context, fi
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -5108,10 +5048,12 @@ func (ec *executionContext) fieldContext_Friend_account(ctx context.Context, fie
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -5194,10 +5136,12 @@ func (ec *executionContext) fieldContext_Friend_friend(ctx context.Context, fiel
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -5500,10 +5444,12 @@ func (ec *executionContext) fieldContext_Like_account(ctx context.Context, field
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -6030,10 +5976,12 @@ func (ec *executionContext) fieldContext_Mutation_CreateAccount(ctx context.Cont
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -6127,10 +6075,12 @@ func (ec *executionContext) fieldContext_Mutation_UpdateAccount(ctx context.Cont
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -6224,10 +6174,12 @@ func (ec *executionContext) fieldContext_Mutation_DeleteAccount(ctx context.Cont
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -8068,10 +8020,12 @@ func (ec *executionContext) fieldContext_Mute_account(ctx context.Context, field
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -8154,10 +8108,12 @@ func (ec *executionContext) fieldContext_Mute_mute(ctx context.Context, field gr
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -8836,10 +8792,12 @@ func (ec *executionContext) fieldContext_Post_account(ctx context.Context, field
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -9086,10 +9044,12 @@ func (ec *executionContext) fieldContext_Query_accounts(ctx context.Context, fie
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -9664,10 +9624,12 @@ func (ec *executionContext) fieldContext_Query_AccountByID(ctx context.Context, 
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -9761,10 +9723,12 @@ func (ec *executionContext) fieldContext_Query_AccountBySelfID(ctx context.Conte
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -10537,10 +10501,12 @@ func (ec *executionContext) fieldContext_Request_account(ctx context.Context, fi
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -10623,10 +10589,12 @@ func (ec *executionContext) fieldContext_Request_request(ctx context.Context, fi
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -10929,10 +10897,12 @@ func (ec *executionContext) fieldContext_Session_account(ctx context.Context, fi
 				return ec.fieldContext_Account_likes(ctx, field)
 			case "session":
 				return ec.fieldContext_Account_session(ctx, field)
-			case "friendships":
-				return ec.fieldContext_Account_friendships(ctx, field)
-			case "requesttargets":
-				return ec.fieldContext_Account_requesttargets(ctx, field)
+			case "friendship":
+				return ec.fieldContext_Account_friendship(ctx, field)
+			case "mutetarget":
+				return ec.fieldContext_Account_mutetarget(ctx, field)
+			case "requesttarget":
+				return ec.fieldContext_Account_requesttarget(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
 		},
@@ -12713,41 +12683,6 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputAccountOrder(ctx context.Context, obj interface{}) (ent.AccountOrder, error) {
-	var it ent.AccountOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNAccountOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputAccountWhereInput(ctx context.Context, obj interface{}) (ent.AccountWhereInput, error) {
 	var it ent.AccountWhereInput
 	asMap := map[string]interface{}{}
@@ -13681,7 +13616,7 @@ func (ec *executionContext) unmarshalInputAccountWhereInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMutesWith"))
-			it.HasMutesWith, err = ec.unmarshalOMuteWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteWhereInputᚄ(ctx, v)
+			it.HasMutesWith, err = ec.unmarshalOAccountWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -13733,70 +13668,51 @@ func (ec *executionContext) unmarshalInputAccountWhereInput(ctx context.Context,
 			if err != nil {
 				return it, err
 			}
-		case "hasFriendships":
+		case "hasFriendship":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasFriendships"))
-			it.HasFriendships, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasFriendship"))
+			it.HasFriendship, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "hasFriendshipsWith":
+		case "hasFriendshipWith":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasFriendshipsWith"))
-			it.HasFriendshipsWith, err = ec.unmarshalOFriendWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendWhereInputᚄ(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasFriendshipWith"))
+			it.HasFriendshipWith, err = ec.unmarshalOFriendWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "hasRequestTargets":
+		case "hasMuteTarget":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasRequestTargets"))
-			it.HasRequestTargets, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMuteTarget"))
+			it.HasMuteTarget, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "hasRequestTargetsWith":
+		case "hasMuteTargetWith":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasRequestTargetsWith"))
-			it.HasRequestTargetsWith, err = ec.unmarshalORequestWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestWhereInputᚄ(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMuteTargetWith"))
+			it.HasMuteTargetWith, err = ec.unmarshalOMuteWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputCommentOrder(ctx context.Context, obj interface{}) (ent.CommentOrder, error) {
-	var it ent.CommentOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
+		case "hasRequestTarget":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasRequestTarget"))
+			it.HasRequestTarget, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "field":
+		case "hasRequestTargetWith":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNCommentOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐCommentOrderField(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasRequestTargetWith"))
+			it.HasRequestTargetWith, err = ec.unmarshalORequestWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -14836,41 +14752,6 @@ func (ec *executionContext) unmarshalInputCreateSessionInput(ctx context.Context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFriendOrder(ctx context.Context, obj interface{}) (ent.FriendOrder, error) {
-	var it ent.FriendOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNFriendOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputFriendWhereInput(ctx context.Context, obj interface{}) (ent.FriendWhereInput, error) {
 	var it ent.FriendWhereInput
 	asMap := map[string]interface{}{}
@@ -15093,41 +14974,6 @@ func (ec *executionContext) unmarshalInputFriendWhereInput(ctx context.Context, 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
 			it.UpdatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputLikeOrder(ctx context.Context, obj interface{}) (ent.LikeOrder, error) {
-	var it ent.LikeOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNLikeOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeOrderField(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -15455,41 +15301,6 @@ func (ec *executionContext) unmarshalInputLikeWhereInput(ctx context.Context, ob
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasPostWith"))
 			it.HasPostWith, err = ec.unmarshalOPostWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputMarkerOrder(ctx context.Context, obj interface{}) (ent.MarkerOrder, error) {
-	var it ent.MarkerOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNMarkerOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarkerOrderField(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -16090,41 +15901,6 @@ func (ec *executionContext) unmarshalInputMarkerWhereInput(ctx context.Context, 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMuteOrder(ctx context.Context, obj interface{}) (ent.MuteOrder, error) {
-	var it ent.MuteOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNMuteOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputMuteWhereInput(ctx context.Context, obj interface{}) (ent.MuteWhereInput, error) {
 	var it ent.MuteWhereInput
 	asMap := map[string]interface{}{}
@@ -16347,137 +16123,6 @@ func (ec *executionContext) unmarshalInputMuteWhereInput(ctx context.Context, ob
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
 			it.UpdatedAtLTE, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "accountID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-			it.AccountID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "accountIDNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNEQ"))
-			it.AccountIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "accountIDIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDIn"))
-			it.AccountIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "accountIDNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountIDNotIn"))
-			it.AccountIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "muteID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteID"))
-			it.MuteID, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "muteIDNEQ":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDNEQ"))
-			it.MuteIDNEQ, err = ec.unmarshalOID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "muteIDIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDIn"))
-			it.MuteIDIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "muteIDNotIn":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("muteIDNotIn"))
-			it.MuteIDNotIn, err = ec.unmarshalOID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "hasAccount":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAccount"))
-			it.HasAccount, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "hasAccountWith":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAccountWith"))
-			it.HasAccountWith, err = ec.unmarshalOAccountWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "hasMute":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMute"))
-			it.HasMute, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "hasMuteWith":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMuteWith"))
-			it.HasMuteWith, err = ec.unmarshalOAccountWhereInput2ᚕᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputPostOrder(ctx context.Context, obj interface{}) (ent.PostOrder, error) {
-	var it ent.PostOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNPostOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostOrderField(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -17126,41 +16771,6 @@ func (ec *executionContext) unmarshalInputPostWhereInput(ctx context.Context, ob
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputRequestOrder(ctx context.Context, obj interface{}) (ent.RequestOrder, error) {
-	var it ent.RequestOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNRequestOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputRequestWhereInput(ctx context.Context, obj interface{}) (ent.RequestWhereInput, error) {
 	var it ent.RequestWhereInput
 	asMap := map[string]interface{}{}
@@ -17415,41 +17025,6 @@ func (ec *executionContext) unmarshalInputRequestWhereInput(ctx context.Context,
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusNotIn"))
 			it.StatusNotIn, err = ec.unmarshalORequestStatus2ᚕgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚋrequestᚐStatusᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputSessionOrder(ctx context.Context, obj interface{}) (ent.SessionOrder, error) {
-	var it ent.SessionOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "direction":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			it.Direction, err = ec.unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "field":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNSessionOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSessionOrderField(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -18821,7 +18396,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 				return innerFunc(ctx)
 
 			})
-		case "friendships":
+		case "friendship":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -18830,7 +18405,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Account_friendships(ctx, field, obj)
+				res = ec._Account_friendship(ctx, field, obj)
 				return res
 			}
 
@@ -18838,7 +18413,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 				return innerFunc(ctx)
 
 			})
-		case "requesttargets":
+		case "mutetarget":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -18847,7 +18422,24 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Account_requesttargets(ctx, field, obj)
+				res = ec._Account_mutetarget(ctx, field, obj)
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "requesttarget":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Account_requesttarget(ctx, field, obj)
 				return res
 			}
 
@@ -20772,22 +20364,6 @@ func (ec *executionContext) marshalNAccountGender2githubᚗcomᚋKatsushi21ᚋtr
 	return v
 }
 
-func (ec *executionContext) unmarshalNAccountOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountOrderField(ctx context.Context, v interface{}) (*ent.AccountOrderField, error) {
-	var res = new(ent.AccountOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNAccountOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐAccountOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.AccountOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
-}
-
 func (ec *executionContext) unmarshalNAccountType2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚋaccountᚐType(ctx context.Context, v interface{}) (account.Type, error) {
 	var res account.Type
 	err := res.UnmarshalGQL(v)
@@ -20874,22 +20450,6 @@ func (ec *executionContext) marshalNComment2ᚖgithubᚗcomᚋKatsushi21ᚋtrave
 		return graphql.Null
 	}
 	return ec._Comment(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNCommentOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐCommentOrderField(ctx context.Context, v interface{}) (*ent.CommentOrderField, error) {
-	var res = new(ent.CommentOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNCommentOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐCommentOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.CommentOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalNCommentWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐCommentWhereInput(ctx context.Context, v interface{}) (*ent.CommentWhereInput, error) {
@@ -20998,22 +20558,6 @@ func (ec *executionContext) marshalNFriend2ᚖgithubᚗcomᚋKatsushi21ᚋtravel
 		return graphql.Null
 	}
 	return ec._Friend(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNFriendOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendOrderField(ctx context.Context, v interface{}) (*ent.FriendOrderField, error) {
-	var res = new(ent.FriendOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNFriendOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.FriendOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalNFriendWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐFriendWhereInput(ctx context.Context, v interface{}) (*ent.FriendWhereInput, error) {
@@ -21141,22 +20685,6 @@ func (ec *executionContext) marshalNLike2ᚖgithubᚗcomᚋKatsushi21ᚋtravelon
 	return ec._Like(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNLikeOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeOrderField(ctx context.Context, v interface{}) (*ent.LikeOrderField, error) {
-	var res = new(ent.LikeOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNLikeOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.LikeOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
-}
-
 func (ec *executionContext) unmarshalNLikeWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐLikeWhereInput(ctx context.Context, v interface{}) (*ent.LikeWhereInput, error) {
 	res, err := ec.unmarshalInputLikeWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -21218,22 +20746,6 @@ func (ec *executionContext) marshalNMarker2ᚖgithubᚗcomᚋKatsushi21ᚋtravel
 		return graphql.Null
 	}
 	return ec._Marker(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNMarkerOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarkerOrderField(ctx context.Context, v interface{}) (*ent.MarkerOrderField, error) {
-	var res = new(ent.MarkerOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNMarkerOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarkerOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.MarkerOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalNMarkerWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMarkerWhereInput(ctx context.Context, v interface{}) (*ent.MarkerWhereInput, error) {
@@ -21299,22 +20811,6 @@ func (ec *executionContext) marshalNMute2ᚖgithubᚗcomᚋKatsushi21ᚋtravelon
 	return ec._Mute(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMuteOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteOrderField(ctx context.Context, v interface{}) (*ent.MuteOrderField, error) {
-	var res = new(ent.MuteOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNMuteOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.MuteOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
-}
-
 func (ec *executionContext) unmarshalNMuteWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐMuteWhereInput(ctx context.Context, v interface{}) (*ent.MuteWhereInput, error) {
 	res, err := ec.unmarshalInputMuteWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -21356,16 +20852,6 @@ func (ec *executionContext) marshalNNode2ᚕgithubᚗcomᚋKatsushi21ᚋtravelon
 	wg.Wait()
 
 	return ret
-}
-
-func (ec *executionContext) unmarshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx context.Context, v interface{}) (ent.OrderDirection, error) {
-	var res ent.OrderDirection
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNOrderDirection2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐOrderDirection(ctx context.Context, sel ast.SelectionSet, v ent.OrderDirection) graphql.Marshaler {
-	return v
 }
 
 func (ec *executionContext) marshalNPost2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPost(ctx context.Context, sel ast.SelectionSet, v ent.Post) graphql.Marshaler {
@@ -21424,22 +20910,6 @@ func (ec *executionContext) marshalNPost2ᚖgithubᚗcomᚋKatsushi21ᚋtravelon
 		return graphql.Null
 	}
 	return ec._Post(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNPostOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostOrderField(ctx context.Context, v interface{}) (*ent.PostOrderField, error) {
-	var res = new(ent.PostOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNPostOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.PostOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalNPostWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐPostWhereInput(ctx context.Context, v interface{}) (*ent.PostWhereInput, error) {
@@ -21503,22 +20973,6 @@ func (ec *executionContext) marshalNRequest2ᚖgithubᚗcomᚋKatsushi21ᚋtrave
 		return graphql.Null
 	}
 	return ec._Request(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNRequestOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestOrderField(ctx context.Context, v interface{}) (*ent.RequestOrderField, error) {
-	var res = new(ent.RequestOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNRequestOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐRequestOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.RequestOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalNRequestStatus2githubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚋrequestᚐStatus(ctx context.Context, v interface{}) (request.Status, error) {
@@ -21592,22 +21046,6 @@ func (ec *executionContext) marshalNSession2ᚖgithubᚗcomᚋKatsushi21ᚋtrave
 		return graphql.Null
 	}
 	return ec._Session(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNSessionOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSessionOrderField(ctx context.Context, v interface{}) (*ent.SessionOrderField, error) {
-	var res = new(ent.SessionOrderField)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNSessionOrderField2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSessionOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.SessionOrderField) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalNSessionWhereInput2ᚖgithubᚗcomᚋKatsushi21ᚋtraveloneᚋentᚐSessionWhereInput(ctx context.Context, v interface{}) (*ent.SessionWhereInput, error) {

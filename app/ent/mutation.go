@@ -47,51 +47,54 @@ const (
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
 type AccountMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *uuid.UUID
-	created_at            *time.Time
-	updated_at            *time.Time
-	email                 *string
-	password              *string
-	_type                 *account.Type
-	name                  *string
-	age                   *int
-	addage                *int
-	gender                *account.Gender
-	avatar                *string
-	introduction          *string
-	clearedFields         map[string]struct{}
-	posts                 map[uuid.UUID]struct{}
-	removedposts          map[uuid.UUID]struct{}
-	clearedposts          bool
-	comments              map[uuid.UUID]struct{}
-	removedcomments       map[uuid.UUID]struct{}
-	clearedcomments       bool
-	friends               map[uuid.UUID]struct{}
-	removedfriends        map[uuid.UUID]struct{}
-	clearedfriends        bool
-	mutes                 map[uuid.UUID]struct{}
-	removedmutes          map[uuid.UUID]struct{}
-	clearedmutes          bool
-	requests              map[uuid.UUID]struct{}
-	removedrequests       map[uuid.UUID]struct{}
-	clearedrequests       bool
-	likes                 map[uuid.UUID]struct{}
-	removedlikes          map[uuid.UUID]struct{}
-	clearedlikes          bool
-	session               map[uuid.UUID]struct{}
-	removedsession        map[uuid.UUID]struct{}
-	clearedsession        bool
-	friendships           map[uuid.UUID]struct{}
-	removedfriendships    map[uuid.UUID]struct{}
-	clearedfriendships    bool
-	requestTargets        map[uuid.UUID]struct{}
-	removedrequestTargets map[uuid.UUID]struct{}
-	clearedrequestTargets bool
-	done                  bool
-	oldValue              func(context.Context) (*Account, error)
-	predicates            []predicate.Account
+	op                   Op
+	typ                  string
+	id                   *uuid.UUID
+	created_at           *time.Time
+	updated_at           *time.Time
+	email                *string
+	password             *string
+	_type                *account.Type
+	name                 *string
+	age                  *int
+	addage               *int
+	gender               *account.Gender
+	avatar               *string
+	introduction         *string
+	clearedFields        map[string]struct{}
+	posts                map[uuid.UUID]struct{}
+	removedposts         map[uuid.UUID]struct{}
+	clearedposts         bool
+	comments             map[uuid.UUID]struct{}
+	removedcomments      map[uuid.UUID]struct{}
+	clearedcomments      bool
+	friends              map[uuid.UUID]struct{}
+	removedfriends       map[uuid.UUID]struct{}
+	clearedfriends       bool
+	mutes                map[uuid.UUID]struct{}
+	removedmutes         map[uuid.UUID]struct{}
+	clearedmutes         bool
+	requests             map[uuid.UUID]struct{}
+	removedrequests      map[uuid.UUID]struct{}
+	clearedrequests      bool
+	likes                map[uuid.UUID]struct{}
+	removedlikes         map[uuid.UUID]struct{}
+	clearedlikes         bool
+	session              map[uuid.UUID]struct{}
+	removedsession       map[uuid.UUID]struct{}
+	clearedsession       bool
+	friendship           map[uuid.UUID]struct{}
+	removedfriendship    map[uuid.UUID]struct{}
+	clearedfriendship    bool
+	muteTarget           map[uuid.UUID]struct{}
+	removedmuteTarget    map[uuid.UUID]struct{}
+	clearedmuteTarget    bool
+	requestTarget        map[uuid.UUID]struct{}
+	removedrequestTarget map[uuid.UUID]struct{}
+	clearedrequestTarget bool
+	done                 bool
+	oldValue             func(context.Context) (*Account, error)
+	predicates           []predicate.Account
 }
 
 var _ ent.Mutation = (*AccountMutation)(nil)
@@ -740,7 +743,7 @@ func (m *AccountMutation) ResetFriends() {
 	m.removedfriends = nil
 }
 
-// AddMuteIDs adds the "mutes" edge to the Mute entity by ids.
+// AddMuteIDs adds the "mutes" edge to the Account entity by ids.
 func (m *AccountMutation) AddMuteIDs(ids ...uuid.UUID) {
 	if m.mutes == nil {
 		m.mutes = make(map[uuid.UUID]struct{})
@@ -750,17 +753,17 @@ func (m *AccountMutation) AddMuteIDs(ids ...uuid.UUID) {
 	}
 }
 
-// ClearMutes clears the "mutes" edge to the Mute entity.
+// ClearMutes clears the "mutes" edge to the Account entity.
 func (m *AccountMutation) ClearMutes() {
 	m.clearedmutes = true
 }
 
-// MutesCleared reports if the "mutes" edge to the Mute entity was cleared.
+// MutesCleared reports if the "mutes" edge to the Account entity was cleared.
 func (m *AccountMutation) MutesCleared() bool {
 	return m.clearedmutes
 }
 
-// RemoveMuteIDs removes the "mutes" edge to the Mute entity by IDs.
+// RemoveMuteIDs removes the "mutes" edge to the Account entity by IDs.
 func (m *AccountMutation) RemoveMuteIDs(ids ...uuid.UUID) {
 	if m.removedmutes == nil {
 		m.removedmutes = make(map[uuid.UUID]struct{})
@@ -771,7 +774,7 @@ func (m *AccountMutation) RemoveMuteIDs(ids ...uuid.UUID) {
 	}
 }
 
-// RemovedMutes returns the removed IDs of the "mutes" edge to the Mute entity.
+// RemovedMutes returns the removed IDs of the "mutes" edge to the Account entity.
 func (m *AccountMutation) RemovedMutesIDs() (ids []uuid.UUID) {
 	for id := range m.removedmutes {
 		ids = append(ids, id)
@@ -956,112 +959,166 @@ func (m *AccountMutation) ResetSession() {
 	m.removedsession = nil
 }
 
-// AddFriendshipIDs adds the "friendships" edge to the Friend entity by ids.
+// AddFriendshipIDs adds the "friendship" edge to the Friend entity by ids.
 func (m *AccountMutation) AddFriendshipIDs(ids ...uuid.UUID) {
-	if m.friendships == nil {
-		m.friendships = make(map[uuid.UUID]struct{})
+	if m.friendship == nil {
+		m.friendship = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
-		m.friendships[ids[i]] = struct{}{}
+		m.friendship[ids[i]] = struct{}{}
 	}
 }
 
-// ClearFriendships clears the "friendships" edge to the Friend entity.
-func (m *AccountMutation) ClearFriendships() {
-	m.clearedfriendships = true
+// ClearFriendship clears the "friendship" edge to the Friend entity.
+func (m *AccountMutation) ClearFriendship() {
+	m.clearedfriendship = true
 }
 
-// FriendshipsCleared reports if the "friendships" edge to the Friend entity was cleared.
-func (m *AccountMutation) FriendshipsCleared() bool {
-	return m.clearedfriendships
+// FriendshipCleared reports if the "friendship" edge to the Friend entity was cleared.
+func (m *AccountMutation) FriendshipCleared() bool {
+	return m.clearedfriendship
 }
 
-// RemoveFriendshipIDs removes the "friendships" edge to the Friend entity by IDs.
+// RemoveFriendshipIDs removes the "friendship" edge to the Friend entity by IDs.
 func (m *AccountMutation) RemoveFriendshipIDs(ids ...uuid.UUID) {
-	if m.removedfriendships == nil {
-		m.removedfriendships = make(map[uuid.UUID]struct{})
+	if m.removedfriendship == nil {
+		m.removedfriendship = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
-		delete(m.friendships, ids[i])
-		m.removedfriendships[ids[i]] = struct{}{}
+		delete(m.friendship, ids[i])
+		m.removedfriendship[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedFriendships returns the removed IDs of the "friendships" edge to the Friend entity.
-func (m *AccountMutation) RemovedFriendshipsIDs() (ids []uuid.UUID) {
-	for id := range m.removedfriendships {
+// RemovedFriendship returns the removed IDs of the "friendship" edge to the Friend entity.
+func (m *AccountMutation) RemovedFriendshipIDs() (ids []uuid.UUID) {
+	for id := range m.removedfriendship {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// FriendshipsIDs returns the "friendships" edge IDs in the mutation.
-func (m *AccountMutation) FriendshipsIDs() (ids []uuid.UUID) {
-	for id := range m.friendships {
+// FriendshipIDs returns the "friendship" edge IDs in the mutation.
+func (m *AccountMutation) FriendshipIDs() (ids []uuid.UUID) {
+	for id := range m.friendship {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetFriendships resets all changes to the "friendships" edge.
-func (m *AccountMutation) ResetFriendships() {
-	m.friendships = nil
-	m.clearedfriendships = false
-	m.removedfriendships = nil
+// ResetFriendship resets all changes to the "friendship" edge.
+func (m *AccountMutation) ResetFriendship() {
+	m.friendship = nil
+	m.clearedfriendship = false
+	m.removedfriendship = nil
 }
 
-// AddRequestTargetIDs adds the "requestTargets" edge to the Request entity by ids.
+// AddMuteTargetIDs adds the "muteTarget" edge to the Mute entity by ids.
+func (m *AccountMutation) AddMuteTargetIDs(ids ...uuid.UUID) {
+	if m.muteTarget == nil {
+		m.muteTarget = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		m.muteTarget[ids[i]] = struct{}{}
+	}
+}
+
+// ClearMuteTarget clears the "muteTarget" edge to the Mute entity.
+func (m *AccountMutation) ClearMuteTarget() {
+	m.clearedmuteTarget = true
+}
+
+// MuteTargetCleared reports if the "muteTarget" edge to the Mute entity was cleared.
+func (m *AccountMutation) MuteTargetCleared() bool {
+	return m.clearedmuteTarget
+}
+
+// RemoveMuteTargetIDs removes the "muteTarget" edge to the Mute entity by IDs.
+func (m *AccountMutation) RemoveMuteTargetIDs(ids ...uuid.UUID) {
+	if m.removedmuteTarget == nil {
+		m.removedmuteTarget = make(map[uuid.UUID]struct{})
+	}
+	for i := range ids {
+		delete(m.muteTarget, ids[i])
+		m.removedmuteTarget[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedMuteTarget returns the removed IDs of the "muteTarget" edge to the Mute entity.
+func (m *AccountMutation) RemovedMuteTargetIDs() (ids []uuid.UUID) {
+	for id := range m.removedmuteTarget {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// MuteTargetIDs returns the "muteTarget" edge IDs in the mutation.
+func (m *AccountMutation) MuteTargetIDs() (ids []uuid.UUID) {
+	for id := range m.muteTarget {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetMuteTarget resets all changes to the "muteTarget" edge.
+func (m *AccountMutation) ResetMuteTarget() {
+	m.muteTarget = nil
+	m.clearedmuteTarget = false
+	m.removedmuteTarget = nil
+}
+
+// AddRequestTargetIDs adds the "requestTarget" edge to the Request entity by ids.
 func (m *AccountMutation) AddRequestTargetIDs(ids ...uuid.UUID) {
-	if m.requestTargets == nil {
-		m.requestTargets = make(map[uuid.UUID]struct{})
+	if m.requestTarget == nil {
+		m.requestTarget = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
-		m.requestTargets[ids[i]] = struct{}{}
+		m.requestTarget[ids[i]] = struct{}{}
 	}
 }
 
-// ClearRequestTargets clears the "requestTargets" edge to the Request entity.
-func (m *AccountMutation) ClearRequestTargets() {
-	m.clearedrequestTargets = true
+// ClearRequestTarget clears the "requestTarget" edge to the Request entity.
+func (m *AccountMutation) ClearRequestTarget() {
+	m.clearedrequestTarget = true
 }
 
-// RequestTargetsCleared reports if the "requestTargets" edge to the Request entity was cleared.
-func (m *AccountMutation) RequestTargetsCleared() bool {
-	return m.clearedrequestTargets
+// RequestTargetCleared reports if the "requestTarget" edge to the Request entity was cleared.
+func (m *AccountMutation) RequestTargetCleared() bool {
+	return m.clearedrequestTarget
 }
 
-// RemoveRequestTargetIDs removes the "requestTargets" edge to the Request entity by IDs.
+// RemoveRequestTargetIDs removes the "requestTarget" edge to the Request entity by IDs.
 func (m *AccountMutation) RemoveRequestTargetIDs(ids ...uuid.UUID) {
-	if m.removedrequestTargets == nil {
-		m.removedrequestTargets = make(map[uuid.UUID]struct{})
+	if m.removedrequestTarget == nil {
+		m.removedrequestTarget = make(map[uuid.UUID]struct{})
 	}
 	for i := range ids {
-		delete(m.requestTargets, ids[i])
-		m.removedrequestTargets[ids[i]] = struct{}{}
+		delete(m.requestTarget, ids[i])
+		m.removedrequestTarget[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedRequestTargets returns the removed IDs of the "requestTargets" edge to the Request entity.
-func (m *AccountMutation) RemovedRequestTargetsIDs() (ids []uuid.UUID) {
-	for id := range m.removedrequestTargets {
+// RemovedRequestTarget returns the removed IDs of the "requestTarget" edge to the Request entity.
+func (m *AccountMutation) RemovedRequestTargetIDs() (ids []uuid.UUID) {
+	for id := range m.removedrequestTarget {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// RequestTargetsIDs returns the "requestTargets" edge IDs in the mutation.
-func (m *AccountMutation) RequestTargetsIDs() (ids []uuid.UUID) {
-	for id := range m.requestTargets {
+// RequestTargetIDs returns the "requestTarget" edge IDs in the mutation.
+func (m *AccountMutation) RequestTargetIDs() (ids []uuid.UUID) {
+	for id := range m.requestTarget {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetRequestTargets resets all changes to the "requestTargets" edge.
-func (m *AccountMutation) ResetRequestTargets() {
-	m.requestTargets = nil
-	m.clearedrequestTargets = false
-	m.removedrequestTargets = nil
+// ResetRequestTarget resets all changes to the "requestTarget" edge.
+func (m *AccountMutation) ResetRequestTarget() {
+	m.requestTarget = nil
+	m.clearedrequestTarget = false
+	m.removedrequestTarget = nil
 }
 
 // Where appends a list predicates to the AccountMutation builder.
@@ -1350,7 +1407,7 @@ func (m *AccountMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AccountMutation) AddedEdges() []string {
-	edges := make([]string, 0, 9)
+	edges := make([]string, 0, 10)
 	if m.posts != nil {
 		edges = append(edges, account.EdgePosts)
 	}
@@ -1372,11 +1429,14 @@ func (m *AccountMutation) AddedEdges() []string {
 	if m.session != nil {
 		edges = append(edges, account.EdgeSession)
 	}
-	if m.friendships != nil {
-		edges = append(edges, account.EdgeFriendships)
+	if m.friendship != nil {
+		edges = append(edges, account.EdgeFriendship)
 	}
-	if m.requestTargets != nil {
-		edges = append(edges, account.EdgeRequestTargets)
+	if m.muteTarget != nil {
+		edges = append(edges, account.EdgeMuteTarget)
+	}
+	if m.requestTarget != nil {
+		edges = append(edges, account.EdgeRequestTarget)
 	}
 	return edges
 }
@@ -1427,15 +1487,21 @@ func (m *AccountMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case account.EdgeFriendships:
-		ids := make([]ent.Value, 0, len(m.friendships))
-		for id := range m.friendships {
+	case account.EdgeFriendship:
+		ids := make([]ent.Value, 0, len(m.friendship))
+		for id := range m.friendship {
 			ids = append(ids, id)
 		}
 		return ids
-	case account.EdgeRequestTargets:
-		ids := make([]ent.Value, 0, len(m.requestTargets))
-		for id := range m.requestTargets {
+	case account.EdgeMuteTarget:
+		ids := make([]ent.Value, 0, len(m.muteTarget))
+		for id := range m.muteTarget {
+			ids = append(ids, id)
+		}
+		return ids
+	case account.EdgeRequestTarget:
+		ids := make([]ent.Value, 0, len(m.requestTarget))
+		for id := range m.requestTarget {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1445,7 +1511,7 @@ func (m *AccountMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AccountMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 9)
+	edges := make([]string, 0, 10)
 	if m.removedposts != nil {
 		edges = append(edges, account.EdgePosts)
 	}
@@ -1467,11 +1533,14 @@ func (m *AccountMutation) RemovedEdges() []string {
 	if m.removedsession != nil {
 		edges = append(edges, account.EdgeSession)
 	}
-	if m.removedfriendships != nil {
-		edges = append(edges, account.EdgeFriendships)
+	if m.removedfriendship != nil {
+		edges = append(edges, account.EdgeFriendship)
 	}
-	if m.removedrequestTargets != nil {
-		edges = append(edges, account.EdgeRequestTargets)
+	if m.removedmuteTarget != nil {
+		edges = append(edges, account.EdgeMuteTarget)
+	}
+	if m.removedrequestTarget != nil {
+		edges = append(edges, account.EdgeRequestTarget)
 	}
 	return edges
 }
@@ -1522,15 +1591,21 @@ func (m *AccountMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case account.EdgeFriendships:
-		ids := make([]ent.Value, 0, len(m.removedfriendships))
-		for id := range m.removedfriendships {
+	case account.EdgeFriendship:
+		ids := make([]ent.Value, 0, len(m.removedfriendship))
+		for id := range m.removedfriendship {
 			ids = append(ids, id)
 		}
 		return ids
-	case account.EdgeRequestTargets:
-		ids := make([]ent.Value, 0, len(m.removedrequestTargets))
-		for id := range m.removedrequestTargets {
+	case account.EdgeMuteTarget:
+		ids := make([]ent.Value, 0, len(m.removedmuteTarget))
+		for id := range m.removedmuteTarget {
+			ids = append(ids, id)
+		}
+		return ids
+	case account.EdgeRequestTarget:
+		ids := make([]ent.Value, 0, len(m.removedrequestTarget))
+		for id := range m.removedrequestTarget {
 			ids = append(ids, id)
 		}
 		return ids
@@ -1540,7 +1615,7 @@ func (m *AccountMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AccountMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 9)
+	edges := make([]string, 0, 10)
 	if m.clearedposts {
 		edges = append(edges, account.EdgePosts)
 	}
@@ -1562,11 +1637,14 @@ func (m *AccountMutation) ClearedEdges() []string {
 	if m.clearedsession {
 		edges = append(edges, account.EdgeSession)
 	}
-	if m.clearedfriendships {
-		edges = append(edges, account.EdgeFriendships)
+	if m.clearedfriendship {
+		edges = append(edges, account.EdgeFriendship)
 	}
-	if m.clearedrequestTargets {
-		edges = append(edges, account.EdgeRequestTargets)
+	if m.clearedmuteTarget {
+		edges = append(edges, account.EdgeMuteTarget)
+	}
+	if m.clearedrequestTarget {
+		edges = append(edges, account.EdgeRequestTarget)
 	}
 	return edges
 }
@@ -1589,10 +1667,12 @@ func (m *AccountMutation) EdgeCleared(name string) bool {
 		return m.clearedlikes
 	case account.EdgeSession:
 		return m.clearedsession
-	case account.EdgeFriendships:
-		return m.clearedfriendships
-	case account.EdgeRequestTargets:
-		return m.clearedrequestTargets
+	case account.EdgeFriendship:
+		return m.clearedfriendship
+	case account.EdgeMuteTarget:
+		return m.clearedmuteTarget
+	case account.EdgeRequestTarget:
+		return m.clearedrequestTarget
 	}
 	return false
 }
@@ -1630,11 +1710,14 @@ func (m *AccountMutation) ResetEdge(name string) error {
 	case account.EdgeSession:
 		m.ResetSession()
 		return nil
-	case account.EdgeFriendships:
-		m.ResetFriendships()
+	case account.EdgeFriendship:
+		m.ResetFriendship()
 		return nil
-	case account.EdgeRequestTargets:
-		m.ResetRequestTargets()
+	case account.EdgeMuteTarget:
+		m.ResetMuteTarget()
+		return nil
+	case account.EdgeRequestTarget:
+		m.ResetRequestTarget()
 		return nil
 	}
 	return fmt.Errorf("unknown Account edge %s", name)

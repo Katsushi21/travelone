@@ -67,7 +67,7 @@ query AccountBySelfID($id: ID!) {
       }
     }
     mutes {
-      mute {
+      mutes {
         id
         name
         avatar

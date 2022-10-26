@@ -987,19 +987,19 @@ func HasMutes() predicate.Account {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(MutesTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, MutesTable, MutesColumn),
+			sqlgraph.Edge(sqlgraph.M2M, false, MutesTable, MutesPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
 // HasMutesWith applies the HasEdge predicate on the "mutes" edge with a given conditions (other predicates).
-func HasMutesWith(preds ...predicate.Mute) predicate.Account {
+func HasMutesWith(preds ...predicate.Account) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(MutesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, MutesTable, MutesColumn),
+			sqlgraph.To(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, MutesTable, MutesPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
@@ -1093,25 +1093,25 @@ func HasSessionWith(preds ...predicate.Session) predicate.Account {
 	})
 }
 
-// HasFriendships applies the HasEdge predicate on the "friendships" edge.
-func HasFriendships() predicate.Account {
+// HasFriendship applies the HasEdge predicate on the "friendship" edge.
+func HasFriendship() predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FriendshipsTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, FriendshipsTable, FriendshipsColumn),
+			sqlgraph.To(FriendshipTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, FriendshipTable, FriendshipColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasFriendshipsWith applies the HasEdge predicate on the "friendships" edge with a given conditions (other predicates).
-func HasFriendshipsWith(preds ...predicate.Friend) predicate.Account {
+// HasFriendshipWith applies the HasEdge predicate on the "friendship" edge with a given conditions (other predicates).
+func HasFriendshipWith(preds ...predicate.Friend) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FriendshipsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, FriendshipsTable, FriendshipsColumn),
+			sqlgraph.To(FriendshipInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, FriendshipTable, FriendshipColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
@@ -1121,25 +1121,53 @@ func HasFriendshipsWith(preds ...predicate.Friend) predicate.Account {
 	})
 }
 
-// HasRequestTargets applies the HasEdge predicate on the "requestTargets" edge.
-func HasRequestTargets() predicate.Account {
+// HasMuteTarget applies the HasEdge predicate on the "muteTarget" edge.
+func HasMuteTarget() predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(RequestTargetsTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, RequestTargetsTable, RequestTargetsColumn),
+			sqlgraph.To(MuteTargetTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, MuteTargetTable, MuteTargetColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasRequestTargetsWith applies the HasEdge predicate on the "requestTargets" edge with a given conditions (other predicates).
-func HasRequestTargetsWith(preds ...predicate.Request) predicate.Account {
+// HasMuteTargetWith applies the HasEdge predicate on the "muteTarget" edge with a given conditions (other predicates).
+func HasMuteTargetWith(preds ...predicate.Mute) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(RequestTargetsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, RequestTargetsTable, RequestTargetsColumn),
+			sqlgraph.To(MuteTargetInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, MuteTargetTable, MuteTargetColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasRequestTarget applies the HasEdge predicate on the "requestTarget" edge.
+func HasRequestTarget() predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RequestTargetTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, RequestTargetTable, RequestTargetColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRequestTargetWith applies the HasEdge predicate on the "requestTarget" edge with a given conditions (other predicates).
+func HasRequestTargetWith(preds ...predicate.Request) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RequestTargetInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, RequestTargetTable, RequestTargetColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

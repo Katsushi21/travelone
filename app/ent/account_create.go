@@ -163,17 +163,17 @@ func (ac *AccountCreate) AddFriends(a ...*Account) *AccountCreate {
 	return ac.AddFriendIDs(ids...)
 }
 
-// AddMuteIDs adds the "mutes" edge to the Mute entity by IDs.
+// AddMuteIDs adds the "mutes" edge to the Account entity by IDs.
 func (ac *AccountCreate) AddMuteIDs(ids ...uuid.UUID) *AccountCreate {
 	ac.mutation.AddMuteIDs(ids...)
 	return ac
 }
 
-// AddMutes adds the "mutes" edges to the Mute entity.
-func (ac *AccountCreate) AddMutes(m ...*Mute) *AccountCreate {
-	ids := make([]uuid.UUID, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// AddMutes adds the "mutes" edges to the Account entity.
+func (ac *AccountCreate) AddMutes(a ...*Account) *AccountCreate {
+	ids := make([]uuid.UUID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
 	}
 	return ac.AddMuteIDs(ids...)
 }
@@ -223,14 +223,14 @@ func (ac *AccountCreate) AddSession(s ...*Session) *AccountCreate {
 	return ac.AddSessionIDs(ids...)
 }
 
-// AddFriendshipIDs adds the "friendships" edge to the Friend entity by IDs.
+// AddFriendshipIDs adds the "friendship" edge to the Friend entity by IDs.
 func (ac *AccountCreate) AddFriendshipIDs(ids ...uuid.UUID) *AccountCreate {
 	ac.mutation.AddFriendshipIDs(ids...)
 	return ac
 }
 
-// AddFriendships adds the "friendships" edges to the Friend entity.
-func (ac *AccountCreate) AddFriendships(f ...*Friend) *AccountCreate {
+// AddFriendship adds the "friendship" edges to the Friend entity.
+func (ac *AccountCreate) AddFriendship(f ...*Friend) *AccountCreate {
 	ids := make([]uuid.UUID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
@@ -238,14 +238,29 @@ func (ac *AccountCreate) AddFriendships(f ...*Friend) *AccountCreate {
 	return ac.AddFriendshipIDs(ids...)
 }
 
-// AddRequestTargetIDs adds the "requestTargets" edge to the Request entity by IDs.
+// AddMuteTargetIDs adds the "muteTarget" edge to the Mute entity by IDs.
+func (ac *AccountCreate) AddMuteTargetIDs(ids ...uuid.UUID) *AccountCreate {
+	ac.mutation.AddMuteTargetIDs(ids...)
+	return ac
+}
+
+// AddMuteTarget adds the "muteTarget" edges to the Mute entity.
+func (ac *AccountCreate) AddMuteTarget(m ...*Mute) *AccountCreate {
+	ids := make([]uuid.UUID, len(m))
+	for i := range m {
+		ids[i] = m[i].ID
+	}
+	return ac.AddMuteTargetIDs(ids...)
+}
+
+// AddRequestTargetIDs adds the "requestTarget" edge to the Request entity by IDs.
 func (ac *AccountCreate) AddRequestTargetIDs(ids ...uuid.UUID) *AccountCreate {
 	ac.mutation.AddRequestTargetIDs(ids...)
 	return ac
 }
 
-// AddRequestTargets adds the "requestTargets" edges to the Request entity.
-func (ac *AccountCreate) AddRequestTargets(r ...*Request) *AccountCreate {
+// AddRequestTarget adds the "requestTarget" edges to the Request entity.
+func (ac *AccountCreate) AddRequestTarget(r ...*Request) *AccountCreate {
 	ids := make([]uuid.UUID, len(r))
 	for i := range r {
 		ids[i] = r[i].ID
@@ -578,20 +593,27 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	}
 	if nodes := ac.mutation.MutesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   account.MutesTable,
-			Columns: []string{account.MutesColumn},
-			Bidi:    false,
+			Columns: account.MutesPrimaryKey,
+			Bidi:    true,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUUID,
-					Column: mute.FieldID,
+					Column: account.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &MuteCreate{config: ac.config, mutation: newMuteMutation(ac.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		if specE.ID.Value != nil {
+			edge.Target.Fields = append(edge.Target.Fields, specE.ID)
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
@@ -659,12 +681,12 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.FriendshipsIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.FriendshipIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   account.FriendshipsTable,
-			Columns: []string{account.FriendshipsColumn},
+			Table:   account.FriendshipTable,
+			Columns: []string{account.FriendshipColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -678,12 +700,31 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.RequestTargetsIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.MuteTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   account.RequestTargetsTable,
-			Columns: []string{account.RequestTargetsColumn},
+			Table:   account.MuteTargetTable,
+			Columns: []string{account.MuteTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUUID,
+					Column: mute.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.RequestTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   account.RequestTargetTable,
+			Columns: []string{account.RequestTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{

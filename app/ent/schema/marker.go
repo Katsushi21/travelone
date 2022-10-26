@@ -31,23 +31,10 @@ func (Marker) Mixin() []ent.Mixin {
 
 func (Marker) Fields() []ent.Field {
 	return []ent.Field{
-
-		field.String("title").
-			Annotations(
-				entgql.OrderField("TITLE"),
-			),
-		field.String("lat").
-			Annotations(
-				entgql.OrderField("LAT"),
-			),
-		field.String("lng").
-			Annotations(
-				entgql.OrderField("LNG"),
-			),
-		field.UUID("post_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("POST_ID"),
-			),
+		field.String("title"),
+		field.String("lat"),
+		field.String("lng"),
+		field.UUID("post_id", uuid.UUID{}),
 	}
 }
 

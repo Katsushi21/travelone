@@ -26,32 +26,34 @@ import (
 // AccountQuery is the builder for querying Account entities.
 type AccountQuery struct {
 	config
-	limit                   *int
-	offset                  *int
-	unique                  *bool
-	order                   []OrderFunc
-	fields                  []string
-	predicates              []predicate.Account
-	withPosts               *PostQuery
-	withComments            *CommentQuery
-	withFriends             *AccountQuery
-	withMutes               *MuteQuery
-	withRequests            *AccountQuery
-	withLikes               *LikeQuery
-	withSession             *SessionQuery
-	withFriendships         *FriendQuery
-	withRequestTargets      *RequestQuery
-	modifiers               []func(*sql.Selector)
-	loadTotal               []func(context.Context, []*Account) error
-	withNamedPosts          map[string]*PostQuery
-	withNamedComments       map[string]*CommentQuery
-	withNamedFriends        map[string]*AccountQuery
-	withNamedMutes          map[string]*MuteQuery
-	withNamedRequests       map[string]*AccountQuery
-	withNamedLikes          map[string]*LikeQuery
-	withNamedSession        map[string]*SessionQuery
-	withNamedFriendships    map[string]*FriendQuery
-	withNamedRequestTargets map[string]*RequestQuery
+	limit                  *int
+	offset                 *int
+	unique                 *bool
+	order                  []OrderFunc
+	fields                 []string
+	predicates             []predicate.Account
+	withPosts              *PostQuery
+	withComments           *CommentQuery
+	withFriends            *AccountQuery
+	withMutes              *AccountQuery
+	withRequests           *AccountQuery
+	withLikes              *LikeQuery
+	withSession            *SessionQuery
+	withFriendship         *FriendQuery
+	withMuteTarget         *MuteQuery
+	withRequestTarget      *RequestQuery
+	modifiers              []func(*sql.Selector)
+	loadTotal              []func(context.Context, []*Account) error
+	withNamedPosts         map[string]*PostQuery
+	withNamedComments      map[string]*CommentQuery
+	withNamedFriends       map[string]*AccountQuery
+	withNamedMutes         map[string]*AccountQuery
+	withNamedRequests      map[string]*AccountQuery
+	withNamedLikes         map[string]*LikeQuery
+	withNamedSession       map[string]*SessionQuery
+	withNamedFriendship    map[string]*FriendQuery
+	withNamedMuteTarget    map[string]*MuteQuery
+	withNamedRequestTarget map[string]*RequestQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -155,8 +157,8 @@ func (aq *AccountQuery) QueryFriends() *AccountQuery {
 }
 
 // QueryMutes chains the current query on the "mutes" edge.
-func (aq *AccountQuery) QueryMutes() *MuteQuery {
-	query := &MuteQuery{config: aq.config}
+func (aq *AccountQuery) QueryMutes() *AccountQuery {
+	query := &AccountQuery{config: aq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -167,8 +169,8 @@ func (aq *AccountQuery) QueryMutes() *MuteQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, selector),
-			sqlgraph.To(mute.Table, mute.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, account.MutesTable, account.MutesColumn),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, account.MutesTable, account.MutesPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -242,8 +244,8 @@ func (aq *AccountQuery) QuerySession() *SessionQuery {
 	return query
 }
 
-// QueryFriendships chains the current query on the "friendships" edge.
-func (aq *AccountQuery) QueryFriendships() *FriendQuery {
+// QueryFriendship chains the current query on the "friendship" edge.
+func (aq *AccountQuery) QueryFriendship() *FriendQuery {
 	query := &FriendQuery{config: aq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -256,7 +258,7 @@ func (aq *AccountQuery) QueryFriendships() *FriendQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, selector),
 			sqlgraph.To(friend.Table, friend.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, account.FriendshipsTable, account.FriendshipsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, account.FriendshipTable, account.FriendshipColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -264,8 +266,30 @@ func (aq *AccountQuery) QueryFriendships() *FriendQuery {
 	return query
 }
 
-// QueryRequestTargets chains the current query on the "requestTargets" edge.
-func (aq *AccountQuery) QueryRequestTargets() *RequestQuery {
+// QueryMuteTarget chains the current query on the "muteTarget" edge.
+func (aq *AccountQuery) QueryMuteTarget() *MuteQuery {
+	query := &MuteQuery{config: aq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, selector),
+			sqlgraph.To(mute.Table, mute.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, account.MuteTargetTable, account.MuteTargetColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRequestTarget chains the current query on the "requestTarget" edge.
+func (aq *AccountQuery) QueryRequestTarget() *RequestQuery {
 	query := &RequestQuery{config: aq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -278,7 +302,7 @@ func (aq *AccountQuery) QueryRequestTargets() *RequestQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, selector),
 			sqlgraph.To(request.Table, request.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, account.RequestTargetsTable, account.RequestTargetsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, account.RequestTargetTable, account.RequestTargetColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -462,20 +486,21 @@ func (aq *AccountQuery) Clone() *AccountQuery {
 		return nil
 	}
 	return &AccountQuery{
-		config:             aq.config,
-		limit:              aq.limit,
-		offset:             aq.offset,
-		order:              append([]OrderFunc{}, aq.order...),
-		predicates:         append([]predicate.Account{}, aq.predicates...),
-		withPosts:          aq.withPosts.Clone(),
-		withComments:       aq.withComments.Clone(),
-		withFriends:        aq.withFriends.Clone(),
-		withMutes:          aq.withMutes.Clone(),
-		withRequests:       aq.withRequests.Clone(),
-		withLikes:          aq.withLikes.Clone(),
-		withSession:        aq.withSession.Clone(),
-		withFriendships:    aq.withFriendships.Clone(),
-		withRequestTargets: aq.withRequestTargets.Clone(),
+		config:            aq.config,
+		limit:             aq.limit,
+		offset:            aq.offset,
+		order:             append([]OrderFunc{}, aq.order...),
+		predicates:        append([]predicate.Account{}, aq.predicates...),
+		withPosts:         aq.withPosts.Clone(),
+		withComments:      aq.withComments.Clone(),
+		withFriends:       aq.withFriends.Clone(),
+		withMutes:         aq.withMutes.Clone(),
+		withRequests:      aq.withRequests.Clone(),
+		withLikes:         aq.withLikes.Clone(),
+		withSession:       aq.withSession.Clone(),
+		withFriendship:    aq.withFriendship.Clone(),
+		withMuteTarget:    aq.withMuteTarget.Clone(),
+		withRequestTarget: aq.withRequestTarget.Clone(),
 		// clone intermediate query.
 		sql:    aq.sql.Clone(),
 		path:   aq.path,
@@ -518,8 +543,8 @@ func (aq *AccountQuery) WithFriends(opts ...func(*AccountQuery)) *AccountQuery {
 
 // WithMutes tells the query-builder to eager-load the nodes that are connected to
 // the "mutes" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithMutes(opts ...func(*MuteQuery)) *AccountQuery {
-	query := &MuteQuery{config: aq.config}
+func (aq *AccountQuery) WithMutes(opts ...func(*AccountQuery)) *AccountQuery {
+	query := &AccountQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -560,25 +585,36 @@ func (aq *AccountQuery) WithSession(opts ...func(*SessionQuery)) *AccountQuery {
 	return aq
 }
 
-// WithFriendships tells the query-builder to eager-load the nodes that are connected to
-// the "friendships" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithFriendships(opts ...func(*FriendQuery)) *AccountQuery {
+// WithFriendship tells the query-builder to eager-load the nodes that are connected to
+// the "friendship" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AccountQuery) WithFriendship(opts ...func(*FriendQuery)) *AccountQuery {
 	query := &FriendQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withFriendships = query
+	aq.withFriendship = query
 	return aq
 }
 
-// WithRequestTargets tells the query-builder to eager-load the nodes that are connected to
-// the "requestTargets" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithRequestTargets(opts ...func(*RequestQuery)) *AccountQuery {
+// WithMuteTarget tells the query-builder to eager-load the nodes that are connected to
+// the "muteTarget" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AccountQuery) WithMuteTarget(opts ...func(*MuteQuery)) *AccountQuery {
+	query := &MuteQuery{config: aq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withMuteTarget = query
+	return aq
+}
+
+// WithRequestTarget tells the query-builder to eager-load the nodes that are connected to
+// the "requestTarget" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AccountQuery) WithRequestTarget(opts ...func(*RequestQuery)) *AccountQuery {
 	query := &RequestQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withRequestTargets = query
+	aq.withRequestTarget = query
 	return aq
 }
 
@@ -652,7 +688,7 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	var (
 		nodes       = []*Account{}
 		_spec       = aq.querySpec()
-		loadedTypes = [9]bool{
+		loadedTypes = [10]bool{
 			aq.withPosts != nil,
 			aq.withComments != nil,
 			aq.withFriends != nil,
@@ -660,8 +696,9 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 			aq.withRequests != nil,
 			aq.withLikes != nil,
 			aq.withSession != nil,
-			aq.withFriendships != nil,
-			aq.withRequestTargets != nil,
+			aq.withFriendship != nil,
+			aq.withMuteTarget != nil,
+			aq.withRequestTarget != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
@@ -708,8 +745,8 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	}
 	if query := aq.withMutes; query != nil {
 		if err := aq.loadMutes(ctx, query, nodes,
-			func(n *Account) { n.Edges.Mutes = []*Mute{} },
-			func(n *Account, e *Mute) { n.Edges.Mutes = append(n.Edges.Mutes, e) }); err != nil {
+			func(n *Account) { n.Edges.Mutes = []*Account{} },
+			func(n *Account, e *Account) { n.Edges.Mutes = append(n.Edges.Mutes, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -734,17 +771,24 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 			return nil, err
 		}
 	}
-	if query := aq.withFriendships; query != nil {
-		if err := aq.loadFriendships(ctx, query, nodes,
-			func(n *Account) { n.Edges.Friendships = []*Friend{} },
-			func(n *Account, e *Friend) { n.Edges.Friendships = append(n.Edges.Friendships, e) }); err != nil {
+	if query := aq.withFriendship; query != nil {
+		if err := aq.loadFriendship(ctx, query, nodes,
+			func(n *Account) { n.Edges.Friendship = []*Friend{} },
+			func(n *Account, e *Friend) { n.Edges.Friendship = append(n.Edges.Friendship, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withRequestTargets; query != nil {
-		if err := aq.loadRequestTargets(ctx, query, nodes,
-			func(n *Account) { n.Edges.RequestTargets = []*Request{} },
-			func(n *Account, e *Request) { n.Edges.RequestTargets = append(n.Edges.RequestTargets, e) }); err != nil {
+	if query := aq.withMuteTarget; query != nil {
+		if err := aq.loadMuteTarget(ctx, query, nodes,
+			func(n *Account) { n.Edges.MuteTarget = []*Mute{} },
+			func(n *Account, e *Mute) { n.Edges.MuteTarget = append(n.Edges.MuteTarget, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := aq.withRequestTarget; query != nil {
+		if err := aq.loadRequestTarget(ctx, query, nodes,
+			func(n *Account) { n.Edges.RequestTarget = []*Request{} },
+			func(n *Account, e *Request) { n.Edges.RequestTarget = append(n.Edges.RequestTarget, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -772,7 +816,7 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	for name, query := range aq.withNamedMutes {
 		if err := aq.loadMutes(ctx, query, nodes,
 			func(n *Account) { n.appendNamedMutes(name) },
-			func(n *Account, e *Mute) { n.appendNamedMutes(name, e) }); err != nil {
+			func(n *Account, e *Account) { n.appendNamedMutes(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -797,17 +841,24 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedFriendships {
-		if err := aq.loadFriendships(ctx, query, nodes,
-			func(n *Account) { n.appendNamedFriendships(name) },
-			func(n *Account, e *Friend) { n.appendNamedFriendships(name, e) }); err != nil {
+	for name, query := range aq.withNamedFriendship {
+		if err := aq.loadFriendship(ctx, query, nodes,
+			func(n *Account) { n.appendNamedFriendship(name) },
+			func(n *Account, e *Friend) { n.appendNamedFriendship(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedRequestTargets {
-		if err := aq.loadRequestTargets(ctx, query, nodes,
-			func(n *Account) { n.appendNamedRequestTargets(name) },
-			func(n *Account, e *Request) { n.appendNamedRequestTargets(name, e) }); err != nil {
+	for name, query := range aq.withNamedMuteTarget {
+		if err := aq.loadMuteTarget(ctx, query, nodes,
+			func(n *Account) { n.appendNamedMuteTarget(name) },
+			func(n *Account, e *Mute) { n.appendNamedMuteTarget(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range aq.withNamedRequestTarget {
+		if err := aq.loadRequestTarget(ctx, query, nodes,
+			func(n *Account) { n.appendNamedRequestTarget(name) },
+			func(n *Account, e *Request) { n.appendNamedRequestTarget(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -931,34 +982,61 @@ func (aq *AccountQuery) loadFriends(ctx context.Context, query *AccountQuery, no
 	}
 	return nil
 }
-func (aq *AccountQuery) loadMutes(ctx context.Context, query *MuteQuery, nodes []*Account, init func(*Account), assign func(*Account, *Mute)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[uuid.UUID]*Account)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
+func (aq *AccountQuery) loadMutes(ctx context.Context, query *AccountQuery, nodes []*Account, init func(*Account), assign func(*Account, *Account)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[uuid.UUID]*Account)
+	nids := make(map[uuid.UUID]map[*Account]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
 		if init != nil {
-			init(nodes[i])
+			init(node)
 		}
 	}
-	query.withFKs = true
-	query.Where(predicate.Mute(func(s *sql.Selector) {
-		s.Where(sql.InValues(account.MutesColumn, fks...))
-	}))
-	neighbors, err := query.All(ctx)
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(account.MutesTable)
+		s.Join(joinT).On(s.C(account.FieldID), joinT.C(account.MutesPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(account.MutesPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(account.MutesPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	neighbors, err := query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+		assign := spec.Assign
+		values := spec.ScanValues
+		spec.ScanValues = func(columns []string) ([]interface{}, error) {
+			values, err := values(columns[1:])
+			if err != nil {
+				return nil, err
+			}
+			return append([]interface{}{new(uuid.UUID)}, values...), nil
+		}
+		spec.Assign = func(columns []string, values []interface{}) error {
+			outValue := *values[0].(*uuid.UUID)
+			inValue := *values[1].(*uuid.UUID)
+			if nids[inValue] == nil {
+				nids[inValue] = map[*Account]struct{}{byID[outValue]: struct{}{}}
+				return assign(columns[1:], values[1:])
+			}
+			nids[inValue][byID[outValue]] = struct{}{}
+			return nil
+		}
+	})
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.account_mutes
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "account_mutes" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "account_mutes" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected "mutes" node returned %v`, n.ID)
 		}
-		assign(node, n)
+		for kn := range nodes {
+			assign(kn, n)
+		}
 	}
 	return nil
 }
@@ -1078,7 +1156,7 @@ func (aq *AccountQuery) loadSession(ctx context.Context, query *SessionQuery, no
 	}
 	return nil
 }
-func (aq *AccountQuery) loadFriendships(ctx context.Context, query *FriendQuery, nodes []*Account, init func(*Account), assign func(*Account, *Friend)) error {
+func (aq *AccountQuery) loadFriendship(ctx context.Context, query *FriendQuery, nodes []*Account, init func(*Account), assign func(*Account, *Friend)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[uuid.UUID]*Account)
 	for i := range nodes {
@@ -1089,7 +1167,7 @@ func (aq *AccountQuery) loadFriendships(ctx context.Context, query *FriendQuery,
 		}
 	}
 	query.Where(predicate.Friend(func(s *sql.Selector) {
-		s.Where(sql.InValues(account.FriendshipsColumn, fks...))
+		s.Where(sql.InValues(account.FriendshipColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1105,7 +1183,34 @@ func (aq *AccountQuery) loadFriendships(ctx context.Context, query *FriendQuery,
 	}
 	return nil
 }
-func (aq *AccountQuery) loadRequestTargets(ctx context.Context, query *RequestQuery, nodes []*Account, init func(*Account), assign func(*Account, *Request)) error {
+func (aq *AccountQuery) loadMuteTarget(ctx context.Context, query *MuteQuery, nodes []*Account, init func(*Account), assign func(*Account, *Mute)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uuid.UUID]*Account)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.Mute(func(s *sql.Selector) {
+		s.Where(sql.InValues(account.MuteTargetColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AccountID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "account_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (aq *AccountQuery) loadRequestTarget(ctx context.Context, query *RequestQuery, nodes []*Account, init func(*Account), assign func(*Account, *Request)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[uuid.UUID]*Account)
 	for i := range nodes {
@@ -1116,7 +1221,7 @@ func (aq *AccountQuery) loadRequestTargets(ctx context.Context, query *RequestQu
 		}
 	}
 	query.Where(predicate.Request(func(s *sql.Selector) {
-		s.Where(sql.InValues(account.RequestTargetsColumn, fks...))
+		s.Where(sql.InValues(account.RequestTargetColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1277,13 +1382,13 @@ func (aq *AccountQuery) WithNamedFriends(name string, opts ...func(*AccountQuery
 
 // WithNamedMutes tells the query-builder to eager-load the nodes that are connected to the "mutes"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithNamedMutes(name string, opts ...func(*MuteQuery)) *AccountQuery {
-	query := &MuteQuery{config: aq.config}
+func (aq *AccountQuery) WithNamedMutes(name string, opts ...func(*AccountQuery)) *AccountQuery {
+	query := &AccountQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
 	if aq.withNamedMutes == nil {
-		aq.withNamedMutes = make(map[string]*MuteQuery)
+		aq.withNamedMutes = make(map[string]*AccountQuery)
 	}
 	aq.withNamedMutes[name] = query
 	return aq
@@ -1331,31 +1436,45 @@ func (aq *AccountQuery) WithNamedSession(name string, opts ...func(*SessionQuery
 	return aq
 }
 
-// WithNamedFriendships tells the query-builder to eager-load the nodes that are connected to the "friendships"
+// WithNamedFriendship tells the query-builder to eager-load the nodes that are connected to the "friendship"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithNamedFriendships(name string, opts ...func(*FriendQuery)) *AccountQuery {
+func (aq *AccountQuery) WithNamedFriendship(name string, opts ...func(*FriendQuery)) *AccountQuery {
 	query := &FriendQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedFriendships == nil {
-		aq.withNamedFriendships = make(map[string]*FriendQuery)
+	if aq.withNamedFriendship == nil {
+		aq.withNamedFriendship = make(map[string]*FriendQuery)
 	}
-	aq.withNamedFriendships[name] = query
+	aq.withNamedFriendship[name] = query
 	return aq
 }
 
-// WithNamedRequestTargets tells the query-builder to eager-load the nodes that are connected to the "requestTargets"
+// WithNamedMuteTarget tells the query-builder to eager-load the nodes that are connected to the "muteTarget"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithNamedRequestTargets(name string, opts ...func(*RequestQuery)) *AccountQuery {
+func (aq *AccountQuery) WithNamedMuteTarget(name string, opts ...func(*MuteQuery)) *AccountQuery {
+	query := &MuteQuery{config: aq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	if aq.withNamedMuteTarget == nil {
+		aq.withNamedMuteTarget = make(map[string]*MuteQuery)
+	}
+	aq.withNamedMuteTarget[name] = query
+	return aq
+}
+
+// WithNamedRequestTarget tells the query-builder to eager-load the nodes that are connected to the "requestTarget"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (aq *AccountQuery) WithNamedRequestTarget(name string, opts ...func(*RequestQuery)) *AccountQuery {
 	query := &RequestQuery{config: aq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedRequestTargets == nil {
-		aq.withNamedRequestTargets = make(map[string]*RequestQuery)
+	if aq.withNamedRequestTarget == nil {
+		aq.withNamedRequestTarget = make(map[string]*RequestQuery)
 	}
-	aq.withNamedRequestTargets[name] = query
+	aq.withNamedRequestTarget[name] = query
 	return aq
 }
 

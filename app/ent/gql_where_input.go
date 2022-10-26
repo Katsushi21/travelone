@@ -167,8 +167,8 @@ type AccountWhereInput struct {
 	HasFriendsWith []*AccountWhereInput `json:"hasFriendsWith,omitempty"`
 
 	// "mutes" edge predicates.
-	HasMutes     *bool             `json:"hasMutes,omitempty"`
-	HasMutesWith []*MuteWhereInput `json:"hasMutesWith,omitempty"`
+	HasMutes     *bool                `json:"hasMutes,omitempty"`
+	HasMutesWith []*AccountWhereInput `json:"hasMutesWith,omitempty"`
 
 	// "requests" edge predicates.
 	HasRequests     *bool                `json:"hasRequests,omitempty"`
@@ -182,13 +182,17 @@ type AccountWhereInput struct {
 	HasSession     *bool                `json:"hasSession,omitempty"`
 	HasSessionWith []*SessionWhereInput `json:"hasSessionWith,omitempty"`
 
-	// "friendships" edge predicates.
-	HasFriendships     *bool               `json:"hasFriendships,omitempty"`
-	HasFriendshipsWith []*FriendWhereInput `json:"hasFriendshipsWith,omitempty"`
+	// "friendship" edge predicates.
+	HasFriendship     *bool               `json:"hasFriendship,omitempty"`
+	HasFriendshipWith []*FriendWhereInput `json:"hasFriendshipWith,omitempty"`
 
-	// "requestTargets" edge predicates.
-	HasRequestTargets     *bool                `json:"hasRequestTargets,omitempty"`
-	HasRequestTargetsWith []*RequestWhereInput `json:"hasRequestTargetsWith,omitempty"`
+	// "muteTarget" edge predicates.
+	HasMuteTarget     *bool             `json:"hasMuteTarget,omitempty"`
+	HasMuteTargetWith []*MuteWhereInput `json:"hasMuteTargetWith,omitempty"`
+
+	// "requestTarget" edge predicates.
+	HasRequestTarget     *bool                `json:"hasRequestTarget,omitempty"`
+	HasRequestTargetWith []*RequestWhereInput `json:"hasRequestTargetWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -640,7 +644,7 @@ func (i *AccountWhereInput) P() (predicate.Account, error) {
 		predicates = append(predicates, p)
 	}
 	if len(i.HasMutesWith) > 0 {
-		with := make([]predicate.Mute, 0, len(i.HasMutesWith))
+		with := make([]predicate.Account, 0, len(i.HasMutesWith))
 		for _, w := range i.HasMutesWith {
 			p, err := w.P()
 			if err != nil {
@@ -704,41 +708,59 @@ func (i *AccountWhereInput) P() (predicate.Account, error) {
 		}
 		predicates = append(predicates, account.HasSessionWith(with...))
 	}
-	if i.HasFriendships != nil {
-		p := account.HasFriendships()
-		if !*i.HasFriendships {
+	if i.HasFriendship != nil {
+		p := account.HasFriendship()
+		if !*i.HasFriendship {
 			p = account.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasFriendshipsWith) > 0 {
-		with := make([]predicate.Friend, 0, len(i.HasFriendshipsWith))
-		for _, w := range i.HasFriendshipsWith {
+	if len(i.HasFriendshipWith) > 0 {
+		with := make([]predicate.Friend, 0, len(i.HasFriendshipWith))
+		for _, w := range i.HasFriendshipWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasFriendshipsWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasFriendshipWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, account.HasFriendshipsWith(with...))
+		predicates = append(predicates, account.HasFriendshipWith(with...))
 	}
-	if i.HasRequestTargets != nil {
-		p := account.HasRequestTargets()
-		if !*i.HasRequestTargets {
+	if i.HasMuteTarget != nil {
+		p := account.HasMuteTarget()
+		if !*i.HasMuteTarget {
 			p = account.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasRequestTargetsWith) > 0 {
-		with := make([]predicate.Request, 0, len(i.HasRequestTargetsWith))
-		for _, w := range i.HasRequestTargetsWith {
+	if len(i.HasMuteTargetWith) > 0 {
+		with := make([]predicate.Mute, 0, len(i.HasMuteTargetWith))
+		for _, w := range i.HasMuteTargetWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasRequestTargetsWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasMuteTargetWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, account.HasRequestTargetsWith(with...))
+		predicates = append(predicates, account.HasMuteTargetWith(with...))
+	}
+	if i.HasRequestTarget != nil {
+		p := account.HasRequestTarget()
+		if !*i.HasRequestTarget {
+			p = account.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasRequestTargetWith) > 0 {
+		with := make([]predicate.Request, 0, len(i.HasRequestTargetWith))
+		for _, w := range i.HasRequestTargetWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasRequestTargetWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, account.HasRequestTargetWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

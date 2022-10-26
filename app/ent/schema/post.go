@@ -31,22 +31,10 @@ func (Post) Mixin() []ent.Mixin {
 
 func (Post) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("title").
-			Annotations(
-				entgql.OrderField("TITLE"),
-			),
-		field.String("body").
-			Annotations(
-				entgql.OrderField("BODY"),
-			),
-		field.String("img").
-			Annotations(
-				entgql.OrderField("IMG"),
-			),
-		field.UUID("account_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("ACCOUNT_ID"),
-			),
+		field.String("title"),
+		field.String("body"),
+		field.String("img"),
+		field.UUID("account_id", uuid.UUID{}),
 	}
 }
 

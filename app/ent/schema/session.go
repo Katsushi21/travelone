@@ -31,14 +31,8 @@ func (Session) Mixin() []ent.Mixin {
 
 func (Session) Fields() []ent.Field {
 	return []ent.Field{
-		field.UUID("account_id", uuid.UUID{}).
-			Annotations(
-				entgql.OrderField("ACCOUNT_ID"),
-			),
-		field.String("session").
-			Annotations(
-				entgql.OrderField("SESSION"),
-			),
+		field.UUID("account_id", uuid.UUID{}),
+		field.String("session"),
 	}
 }
 
