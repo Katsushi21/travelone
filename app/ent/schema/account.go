@@ -31,7 +31,7 @@ func (Account) Mixin() []ent.Mixin {
 func (Account) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("email").
-			MaxLen(100).
+			MaxLen(256).
 			NotEmpty().
 			Unique(),
 		field.String("password").
