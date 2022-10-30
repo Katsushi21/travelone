@@ -1,4 +1,4 @@
-import { usePostsQuery } from 'src/generated/graphql';
+import { usePostsQuery } from 'app/generated/graphql';
 
 import { Post } from './Post';
 

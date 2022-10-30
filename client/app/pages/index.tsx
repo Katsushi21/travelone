@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Script from 'next/script';
 
-import { Footer } from '@/components/Footer';
-import { Header } from 'src/components/Header';
-import { PostList } from 'src/components/PostList';
+import { Footer } from 'app/components/Footer';
+import { Header } from 'app/components/Header';
+import { PostList } from 'app/components/PostList';
 
 const Home = () => {
   return (
