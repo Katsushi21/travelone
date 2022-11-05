@@ -21,36 +21,39 @@ func (r *queryResolver) AccountBySelfID(ctx context.Context, id uuid.UUID) (*ent
 }
 
 func (r *queryResolver) LikesByPostID(ctx context.Context, postID uuid.UUID) ([]*ent.Like, error) {
-	like, err := r.client.Like.
+	likes, err := r.client.Like.
 		Query().
 		Where(
 			like.PostID(postID),
 		).
+		Order(ent.Desc(like.FieldCreatedAt)).
 		All(ctx)
 
-	return like, err
+	return likes, err
 }
 
 func (r *queryResolver) RequestsByAccountID(ctx context.Context, accountID uuid.UUID) ([]*ent.Request, error) {
-	request, err := r.client.Request.
+	requests, err := r.client.Request.
 		Query().
 		Where(
 			request.AccountID(accountID),
 		).
+		Order(ent.Desc(request.FieldCreatedAt)).
 		All(ctx)
 
-	return request, err
+	return requests, err
 }
 
 func (r *queryResolver) RequestsByRequestID(ctx context.Context, requestID uuid.UUID) ([]*ent.Request, error) {
-	request, err := r.client.Request.
+	requests, err := r.client.Request.
 		Query().
 		Where(
 			request.AccountID(requestID),
 		).
+		Order(ent.Desc(request.FieldCreatedAt)).
 		All(ctx)
 
-	return request, err
+	return requests, err
 }
 
 func (r *queryResolver) SessionByID(ctx context.Context, id uuid.UUID) (*ent.Session, error) {
