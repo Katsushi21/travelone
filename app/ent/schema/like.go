@@ -38,11 +38,13 @@ func (Like) Fields() []ent.Field {
 
 func (Like) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("account", Account.Type).
+		edge.From("account", Account.Type).
+			Ref("likes").
 			Unique().
 			Required().
 			Field("account_id"),
-		edge.To("post", Post.Type).
+		edge.From("post", Post.Type).
+			Ref("likes").
 			Unique().
 			Required().
 			Field("post_id"),

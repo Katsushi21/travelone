@@ -253,7 +253,7 @@ func (lc *LikeCreate) createSpec() (*Like, *sqlgraph.CreateSpec) {
 	if nodes := lc.mutation.AccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.AccountTable,
 			Columns: []string{like.AccountColumn},
 			Bidi:    false,
@@ -273,7 +273,7 @@ func (lc *LikeCreate) createSpec() (*Like, *sqlgraph.CreateSpec) {
 	if nodes := lc.mutation.PostIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.PostTable,
 			Columns: []string{like.PostColumn},
 			Bidi:    false,

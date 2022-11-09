@@ -28,7 +28,6 @@ type LikeQuery struct {
 	predicates  []predicate.Like
 	withAccount *AccountQuery
 	withPost    *PostQuery
-	withFKs     bool
 	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*Like) error
 	// intermediate query (i.e. traversal path).
@@ -81,7 +80,7 @@ func (lq *LikeQuery) QueryAccount() *AccountQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(like.Table, like.FieldID, selector),
 			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, like.AccountTable, like.AccountColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.AccountTable, like.AccountColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
 		return fromU, nil
@@ -103,7 +102,7 @@ func (lq *LikeQuery) QueryPost() *PostQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(like.Table, like.FieldID, selector),
 			sqlgraph.To(post.Table, post.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, like.PostTable, like.PostColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.PostTable, like.PostColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(lq.driver.Dialect(), step)
 		return fromU, nil
@@ -392,19 +391,12 @@ func (lq *LikeQuery) prepareQuery(ctx context.Context) error {
 func (lq *LikeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Like, error) {
 	var (
 		nodes       = []*Like{}
-		withFKs     = lq.withFKs
 		_spec       = lq.querySpec()
 		loadedTypes = [2]bool{
 			lq.withAccount != nil,
 			lq.withPost != nil,
 		}
 	)
-	if lq.withAccount != nil || lq.withPost != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, like.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		return (*Like).scanValues(nil, columns)
 	}

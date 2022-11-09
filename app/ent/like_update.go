@@ -184,7 +184,7 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if lu.mutation.AccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.AccountTable,
 			Columns: []string{like.AccountColumn},
 			Bidi:    false,
@@ -200,7 +200,7 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if nodes := lu.mutation.AccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.AccountTable,
 			Columns: []string{like.AccountColumn},
 			Bidi:    false,
@@ -219,7 +219,7 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if lu.mutation.PostCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.PostTable,
 			Columns: []string{like.PostColumn},
 			Bidi:    false,
@@ -235,7 +235,7 @@ func (lu *LikeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if nodes := lu.mutation.PostIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.PostTable,
 			Columns: []string{like.PostColumn},
 			Bidi:    false,
@@ -453,7 +453,7 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 	if luo.mutation.AccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.AccountTable,
 			Columns: []string{like.AccountColumn},
 			Bidi:    false,
@@ -469,7 +469,7 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 	if nodes := luo.mutation.AccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.AccountTable,
 			Columns: []string{like.AccountColumn},
 			Bidi:    false,
@@ -488,7 +488,7 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 	if luo.mutation.PostCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.PostTable,
 			Columns: []string{like.PostColumn},
 			Bidi:    false,
@@ -504,7 +504,7 @@ func (luo *LikeUpdateOne) sqlSave(ctx context.Context) (_node *Like, err error) 
 	if nodes := luo.mutation.PostIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Inverse: true,
 			Table:   like.PostTable,
 			Columns: []string{like.PostColumn},
 			Bidi:    false,

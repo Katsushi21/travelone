@@ -630,7 +630,6 @@ func (pq *PostQuery) loadLikes(ctx context.Context, query *LikeQuery, nodes []*P
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.Like(func(s *sql.Selector) {
 		s.Where(sql.InValues(post.LikesColumn, fks...))
 	}))
@@ -639,13 +638,10 @@ func (pq *PostQuery) loadLikes(ctx context.Context, query *LikeQuery, nodes []*P
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.post_likes
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "post_likes" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.PostID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "post_likes" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "post_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

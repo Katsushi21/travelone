@@ -84,7 +84,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "like" package.
 	LikesInverseTable = "Likes"
 	// LikesColumn is the table column denoting the likes relation/edge.
-	LikesColumn = "account_likes"
+	LikesColumn = "account_id"
 	// SessionTable is the table that holds the session relation/edge.
 	SessionTable = "Sessions"
 	// SessionInverseTable is the table name for the Session entity.

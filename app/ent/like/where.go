@@ -316,7 +316,7 @@ func HasAccount() predicate.Like {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(AccountTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, AccountTable, AccountColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, AccountTable, AccountColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -328,7 +328,7 @@ func HasAccountWith(preds ...predicate.Account) predicate.Like {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(AccountInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, AccountTable, AccountColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, AccountTable, AccountColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
@@ -344,7 +344,7 @@ func HasPost() predicate.Like {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(PostTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, PostTable, PostColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, PostTable, PostColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -356,7 +356,7 @@ func HasPostWith(preds ...predicate.Post) predicate.Like {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(PostInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, PostTable, PostColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, PostTable, PostColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

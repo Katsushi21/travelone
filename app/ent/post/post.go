@@ -62,7 +62,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "like" package.
 	LikesInverseTable = "Likes"
 	// LikesColumn is the table column denoting the likes relation/edge.
-	LikesColumn = "post_likes"
+	LikesColumn = "post_id"
 )
 
 // Columns holds all SQL columns for post fields.

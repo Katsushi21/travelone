@@ -768,7 +768,7 @@ func (c *LikeClient) QueryAccount(l *Like) *AccountQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(like.Table, like.FieldID, id),
 			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, like.AccountTable, like.AccountColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.AccountTable, like.AccountColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
 		return fromV, nil
@@ -784,7 +784,7 @@ func (c *LikeClient) QueryPost(l *Like) *PostQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(like.Table, like.FieldID, id),
 			sqlgraph.To(post.Table, post.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, like.PostTable, like.PostColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, like.PostTable, like.PostColumn),
 		)
 		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
 		return fromV, nil
