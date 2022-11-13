@@ -1,21 +1,16 @@
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
-
 import '../styles/globals.css';
 import UrqlQueryWrapper from './UrqlQueryWrapper';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ja">
-      <UrqlQueryWrapper>
-        <head>
-          <title>travelone</title>
-        </head>
-        <body>
+      <head>
+        <title>travelone</title>
+      </head>
+      <body>
+        <UrqlQueryWrapper>
           <div data-theme="light">
             <header>
               <Header />
@@ -23,8 +18,10 @@ export default function RootLayout({
             <main>{children}</main>
           </div>
           <Footer />
-        </body>
-      </UrqlQueryWrapper>
+        </UrqlQueryWrapper>
+      </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

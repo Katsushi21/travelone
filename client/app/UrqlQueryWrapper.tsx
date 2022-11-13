@@ -1,4 +1,4 @@
-'use client ';
+'use client';
 
 import {
   createClient,
@@ -31,7 +31,7 @@ const client = createClient({
 });
 
 const UrqlQueryWrapper = ({ children }: Props) => {
-  <Provider value={client}>{children}</Provider>;
+  return <Provider value={client}>{children}</Provider>;
 };
 
 export default UrqlQueryWrapper;
