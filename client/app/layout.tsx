@@ -1,7 +1,8 @@
-import Image from 'next/image';
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
 
-import { Footer } from '../components/Footer';
-import { Header } from '../components/Header';
+import '../styles/globals.css';
+import UrqlQueryWrapper from './UrqlQueryWrapper';
 
 export default function RootLayout({
   children,
@@ -10,26 +11,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <head>
-        <title>travelone</title>
-      </head>
-      <body>
-        <div data-theme="light">
-          <header>
-            <Header />
-          </header>
-          <Image
-            className="bg-fixed"
-            src="/background.jpg"
-            width={4460}
-            height={3345}
-            layout="responsive"
-            alt="background image"
-          />
-          <main>{children}</main>
-        </div>
-        <Footer />
-      </body>
+      <UrqlQueryWrapper>
+        <head>
+          <title>travelone</title>
+        </head>
+        <body>
+          <div data-theme="light">
+            <header>
+              <Header />
+            </header>
+            <main>{children}</main>
+          </div>
+          <Footer />
+        </body>
+      </UrqlQueryWrapper>
     </html>
   );
 }
