@@ -17,7 +17,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             </header>
             <main>{children}</main>
           </div>
-          <Footer />
+          <footer>
+            <Footer />
+          </footer>
         </UrqlQueryWrapper>
       </body>
     </html>
