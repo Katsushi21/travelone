@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { FaRegComment } from 'react-icons/fa';
 
@@ -8,15 +7,14 @@ export const PostCard = ({ post }: { post: PostsQuery['posts'][number] }) => {
   const likes = post.likes ? post.likes.length : 0;
   const comments = post.comments ? post.comments.length : 0;
   return (
-    // <button>
     <div className="card w-96 bg-base-100 shadow-xl">
-      <Image
-        className="bg-fixed"
-        src={post.img}
-        width={400}
-        height={225}
-        alt="*"
-      />
+      {/* <Image
+          className="bg-fixed"
+          src={post.img}
+          width={400}
+          height={225}
+          alt="*"
+        /> */}
       <div className="card-body">
         <h2 className="card-title">{post.title}</h2>
         <div className="flex items-center justify-between">
@@ -26,12 +24,12 @@ export const PostCard = ({ post }: { post: PostsQuery['posts'][number] }) => {
               className="btn-ghost btn-circle avatar btn mx-2"
             >
               <div className="w-10 rounded-full">
-                <Image
-                  src={post.account.avatar}
-                  width={10}
-                  height={10}
-                  alt="*"
-                />
+                {/* <Image
+                    src={post.account.avatar}
+                    width={10}
+                    height={10}
+                    alt="*"
+                  /> */}
               </div>
             </label>
             {post.account.name}
@@ -49,6 +47,5 @@ export const PostCard = ({ post }: { post: PostsQuery['posts'][number] }) => {
         </div>
       </div>
     </div>
-    // </button>
   );
 };
