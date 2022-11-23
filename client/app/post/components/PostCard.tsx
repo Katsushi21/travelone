@@ -3,7 +3,7 @@ import { FaRegComment } from 'react-icons/fa';
 
 import { PostsQuery } from '../../generated/graphql';
 
-export const PostCard = ({ post }: { post: PostsQuery['posts'][number] }) => {
+export const PostCard = (post: PostsQuery['posts']) => {
   const likes = post.likes ? post.likes.length : 0;
   const comments = post.comments ? post.comments.length : 0;
   return (

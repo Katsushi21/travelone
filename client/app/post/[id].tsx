@@ -33,7 +33,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
   return { props };
 };
 
-const BookPage: React.FC<PageProps> = ({ title, author }: PageProps) => {
+export const BookPage: React.FC<PageProps> = ({ title, author }: PageProps) => {
   return (
     <>
       <Head>
@@ -46,4 +46,3 @@ const BookPage: React.FC<PageProps> = ({ title, author }: PageProps) => {
     </>
   );
 };
-export default BookPage;
