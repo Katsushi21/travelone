@@ -1,9 +1,9 @@
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import '../styles/globals.css';
-import { UrqlQueryWrapper } from './UrqlQueryWrapper';
+import UrqlQueryWrapper from './UrqlQueryWrapper';
 
-export const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ja">
       <head>
@@ -25,3 +25,5 @@ export const RootLayout = ({ children }: { children: React.ReactNode }) => {
     </html>
   );
 };
+
+export default RootLayout;

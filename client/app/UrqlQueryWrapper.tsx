@@ -1,3 +1,4 @@
+'use client';
 import {
   createClient,
   dedupExchange,
@@ -28,6 +29,7 @@ const client = createClient({
   },
 });
 
-export const UrqlQueryWrapper = ({ children }: Props) => {
+const UrqlQueryWrapper = ({ children }: Props) => {
   return <Provider value={client}>{children}</Provider>;
 };
+export default UrqlQueryWrapper;

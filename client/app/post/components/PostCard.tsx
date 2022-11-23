@@ -3,9 +3,17 @@ import { FaRegComment } from 'react-icons/fa';
 
 import { PostsQuery } from '../../generated/graphql';
 
-export const PostCard = (post: PostsQuery['posts']) => {
-  const likes = post.likes ? post.likes.length : 0;
-  const comments = post.comments ? post.comments.length : 0;
+type Props = {
+  key: string;
+  post: PostsQuery['posts'][number];
+};
+
+export const PostCard = (props: Props) => {
+  const post = props.post;
+
+  const likeNum = post.likes ? post.likes.length : 0;
+  const commentNum = post.comments ? post.comments.length : 0;
+
   return (
     <div className="card w-96 bg-base-100 shadow-xl">
       {/* <Image
@@ -37,11 +45,11 @@ export const PostCard = (post: PostsQuery['posts']) => {
           <div>
             <div className="badge badge-outline mx-2 h-6 w-14 text-xl">
               <AiOutlineHeart />
-              {likes}
+              {likeNum}
             </div>
             <div className="badge badge-outline mx-2 h-6 w-14 text-xl">
               <FaRegComment />
-              {comments}
+              {commentNum}
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
-export const RootPage = () => {
+const RootPage = () => {
   return <div></div>;
 };
+export default RootPage;

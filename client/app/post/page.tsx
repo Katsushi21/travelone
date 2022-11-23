@@ -1,8 +1,9 @@
+'use client';
 import { usePostsQuery } from 'app/generated/graphql';
 
 import { PostCard } from './components/PostCard';
 
-export const PostPage = () => {
+const PostPage = () => {
   const [result] = usePostsQuery();
   const { data, fetching, error } = result;
 
@@ -19,10 +20,12 @@ export const PostPage = () => {
   return (
     <div className="flex justify-center p-10">
       <div className="grid grid-cols-3 gap-10 ">
-        {data?.posts.map((post) => (
-          <PostCard key={post.id}>{post}</PostCard>
+        {data.posts.map((post) => (
+          <PostCard key={post.id} post={post} />
         ))}
       </div>
     </div>
   );
 };
+
+export default PostPage;
