@@ -1,11 +1,19 @@
-import gql from 'graphql-tag';
-import * as Urql from 'urql';
+import { GraphQLClient } from 'graphql-request';
+import { RequestInit } from 'graphql-request/dist/types.dom';
+import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+function fetcher<TData, TVariables extends { [key: string]: any }>(client: GraphQLClient, query: string, variables?: TVariables, requestHeaders?: RequestInit['headers']) {
+  return async (): Promise<TData> => client.request({
+    document: query,
+    variables,
+    requestHeaders
+  });
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -1565,2204 +1573,8 @@ export type SessionByIdQueryVariables = Exact<{
 
 export type SessionByIdQuery = { __typename?: 'Query', SessionByID: { __typename?: 'Session', id: string, session: string } };
 
-import { IntrospectionQuery } from 'graphql';
-export default {
-  "__schema": {
-    "queryType": {
-      "name": "Query"
-    },
-    "mutationType": {
-      "name": "Mutation"
-    },
-    "subscriptionType": null,
-    "types": [
-      {
-        "kind": "OBJECT",
-        "name": "Account",
-        "fields": [
-          {
-            "name": "age",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "avatar",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "comments",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Comment",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "email",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "friends",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Account",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "friendship",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Friend",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "gender",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "introduction",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "likes",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Like",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "mutes",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Account",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "mutetarget",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Mute",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "name",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "password",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "posts",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Post",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "requests",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Account",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "requesttarget",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Request",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "session",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Session",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "type",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Comment",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "body",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "post",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Post",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "postID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Friend",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "friend",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "friendID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Like",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "post",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Post",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "postID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Marker",
-        "fields": [
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "lat",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "lng",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "post",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Post",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "postID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "title",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Mutation",
-        "fields": [
-          {
-            "name": "CreateAccount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateComment",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Comment",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateFriend",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Friend",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateLike",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Like",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateMarker",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Marker",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateMute",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Mute",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreatePost",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Post",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateRequest",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Request",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "CreateSession",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Session",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteAccount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteComment",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Comment",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteFriend",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Friend",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteLike",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Like",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteMarker",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Marker",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteMute",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Mute",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeletePost",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Post",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteRequest",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Request",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "DeleteSession",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Session",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "UpdateAccount",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "UpdateComment",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Comment",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "UpdateMarker",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Marker",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "UpdatePost",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Post",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "UpdateRequest",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Request",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "UpdateSession",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Session",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "input",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Mute",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "mute",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "muteID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "INTERFACE",
-        "name": "Node",
-        "fields": [
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [],
-        "possibleTypes": [
-          {
-            "kind": "OBJECT",
-            "name": "Account"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Comment"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Friend"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Like"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Marker"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Mute"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Post"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Request"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "Session"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "PageInfo",
-        "fields": [
-          {
-            "name": "endCursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "hasNextPage",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "hasPreviousPage",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "startCursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Post",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "body",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "comments",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Comment",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "img",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "likes",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Like",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "marker",
-            "type": {
-              "kind": "OBJECT",
-              "name": "Marker",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "title",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Query",
-        "fields": [
-          {
-            "name": "AccountByID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "AccountBySelfID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "LikesByPostID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Like",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "postID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "RequestsByAccountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "accountID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "RequestsByRequestID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "requestID",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "SessionByID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Session",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "accounts",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Account",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "comments",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Comment",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "friends",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Friend",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "likes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Like",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "markers",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Marker",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "mutes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Mute",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "node",
-            "type": {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            },
-            "args": [
-              {
-                "name": "id",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "INTERFACE",
-                  "name": "Node",
-                  "ofType": null
-                }
-              }
-            },
-            "args": [
-              {
-                "name": "ids",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "LIST",
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "Any"
-                      }
-                    }
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "posts",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Post",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "requests",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Request",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "sessions",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Session",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Request",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "request",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "requestID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "status",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "Session",
-        "fields": [
-          {
-            "name": "account",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Account",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "accountID",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "id",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "session",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": [
-          {
-            "kind": "INTERFACE",
-            "name": "Node"
-          }
-        ]
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Any"
-      }
-    ],
-    "directives": []
-  }
-} as unknown as IntrospectionQuery;
 
-export const CreateAccountDocument = gql`
+export const CreateAccountDocument = `
     mutation CreateAccount($email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
   CreateAccount(
     input: {email: $email, password: $password, type: $type, name: $name, age: $age, gender: $gender, avatar: $avatar, introduction: $introduction}
@@ -3778,11 +1590,20 @@ export const CreateAccountDocument = gql`
   }
 }
     `;
-
-export function useCreateAccountMutation() {
-  return Urql.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument);
-};
-export const UpdateAccountDocument = gql`
+export const useCreateAccountMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateAccountMutation, TError, CreateAccountMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateAccountMutation, TError, CreateAccountMutationVariables, TContext>(
+      ['CreateAccount'],
+      (variables?: CreateAccountMutationVariables) => fetcher<CreateAccountMutation, CreateAccountMutationVariables>(client, CreateAccountDocument, variables, headers)(),
+      options
+    );
+export const UpdateAccountDocument = `
     mutation UpdateAccount($id: ID!, $email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
   UpdateAccount(
     id: $id
@@ -3799,11 +1620,20 @@ export const UpdateAccountDocument = gql`
   }
 }
     `;
-
-export function useUpdateAccountMutation() {
-  return Urql.useMutation<UpdateAccountMutation, UpdateAccountMutationVariables>(UpdateAccountDocument);
-};
-export const DeleteAccountDocument = gql`
+export const useUpdateAccountMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateAccountMutation, TError, UpdateAccountMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateAccountMutation, TError, UpdateAccountMutationVariables, TContext>(
+      ['UpdateAccount'],
+      (variables?: UpdateAccountMutationVariables) => fetcher<UpdateAccountMutation, UpdateAccountMutationVariables>(client, UpdateAccountDocument, variables, headers)(),
+      options
+    );
+export const DeleteAccountDocument = `
     mutation DeleteAccount($id: ID!) {
   DeleteAccount(id: $id) {
     id
@@ -3817,11 +1647,20 @@ export const DeleteAccountDocument = gql`
   }
 }
     `;
-
-export function useDeleteAccountMutation() {
-  return Urql.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument);
-};
-export const CreateCommentDocument = gql`
+export const useDeleteAccountMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteAccountMutation, TError, DeleteAccountMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteAccountMutation, TError, DeleteAccountMutationVariables, TContext>(
+      ['DeleteAccount'],
+      (variables?: DeleteAccountMutationVariables) => fetcher<DeleteAccountMutation, DeleteAccountMutationVariables>(client, DeleteAccountDocument, variables, headers)(),
+      options
+    );
+export const CreateCommentDocument = `
     mutation CreateComment($postID: ID!, $accountID: ID!, $body: String!) {
   CreateComment(input: {postID: $postID, accountID: $accountID, body: $body}) {
     id
@@ -3831,11 +1670,20 @@ export const CreateCommentDocument = gql`
   }
 }
     `;
-
-export function useCreateCommentMutation() {
-  return Urql.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(CreateCommentDocument);
-};
-export const UpdateCommentDocument = gql`
+export const useCreateCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>(
+      ['CreateComment'],
+      (variables?: CreateCommentMutationVariables) => fetcher<CreateCommentMutation, CreateCommentMutationVariables>(client, CreateCommentDocument, variables, headers)(),
+      options
+    );
+export const UpdateCommentDocument = `
     mutation UpdateComment($id: ID!, $postID: ID!, $accountID: ID!, $body: String!) {
   UpdateComment(
     id: $id
@@ -3848,11 +1696,20 @@ export const UpdateCommentDocument = gql`
   }
 }
     `;
-
-export function useUpdateCommentMutation() {
-  return Urql.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(UpdateCommentDocument);
-};
-export const DeleteCommentDocument = gql`
+export const useUpdateCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateCommentMutation, TError, UpdateCommentMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateCommentMutation, TError, UpdateCommentMutationVariables, TContext>(
+      ['UpdateComment'],
+      (variables?: UpdateCommentMutationVariables) => fetcher<UpdateCommentMutation, UpdateCommentMutationVariables>(client, UpdateCommentDocument, variables, headers)(),
+      options
+    );
+export const DeleteCommentDocument = `
     mutation DeleteComment($id: ID!) {
   DeleteComment(id: $id) {
     id
@@ -3862,11 +1719,20 @@ export const DeleteCommentDocument = gql`
   }
 }
     `;
-
-export function useDeleteCommentMutation() {
-  return Urql.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument);
-};
-export const CreateFriendDocument = gql`
+export const useDeleteCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteCommentMutation, TError, DeleteCommentMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteCommentMutation, TError, DeleteCommentMutationVariables, TContext>(
+      ['DeleteComment'],
+      (variables?: DeleteCommentMutationVariables) => fetcher<DeleteCommentMutation, DeleteCommentMutationVariables>(client, DeleteCommentDocument, variables, headers)(),
+      options
+    );
+export const CreateFriendDocument = `
     mutation CreateFriend($accountID: ID!, $friendID: ID!) {
   CreateFriend(input: {accountID: $accountID, friendID: $friendID}) {
     id
@@ -3875,11 +1741,20 @@ export const CreateFriendDocument = gql`
   }
 }
     `;
-
-export function useCreateFriendMutation() {
-  return Urql.useMutation<CreateFriendMutation, CreateFriendMutationVariables>(CreateFriendDocument);
-};
-export const DeleteFriendDocument = gql`
+export const useCreateFriendMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateFriendMutation, TError, CreateFriendMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateFriendMutation, TError, CreateFriendMutationVariables, TContext>(
+      ['CreateFriend'],
+      (variables?: CreateFriendMutationVariables) => fetcher<CreateFriendMutation, CreateFriendMutationVariables>(client, CreateFriendDocument, variables, headers)(),
+      options
+    );
+export const DeleteFriendDocument = `
     mutation DeleteFriend($id: ID!) {
   DeleteFriend(id: $id) {
     id
@@ -3888,11 +1763,20 @@ export const DeleteFriendDocument = gql`
   }
 }
     `;
-
-export function useDeleteFriendMutation() {
-  return Urql.useMutation<DeleteFriendMutation, DeleteFriendMutationVariables>(DeleteFriendDocument);
-};
-export const CreateLikeDocument = gql`
+export const useDeleteFriendMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteFriendMutation, TError, DeleteFriendMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteFriendMutation, TError, DeleteFriendMutationVariables, TContext>(
+      ['DeleteFriend'],
+      (variables?: DeleteFriendMutationVariables) => fetcher<DeleteFriendMutation, DeleteFriendMutationVariables>(client, DeleteFriendDocument, variables, headers)(),
+      options
+    );
+export const CreateLikeDocument = `
     mutation CreateLike($postID: ID!, $accountID: ID!) {
   CreateLike(input: {postID: $postID, accountID: $accountID}) {
     id
@@ -3901,11 +1785,20 @@ export const CreateLikeDocument = gql`
   }
 }
     `;
-
-export function useCreateLikeMutation() {
-  return Urql.useMutation<CreateLikeMutation, CreateLikeMutationVariables>(CreateLikeDocument);
-};
-export const DeleteLikeDocument = gql`
+export const useCreateLikeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateLikeMutation, TError, CreateLikeMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateLikeMutation, TError, CreateLikeMutationVariables, TContext>(
+      ['CreateLike'],
+      (variables?: CreateLikeMutationVariables) => fetcher<CreateLikeMutation, CreateLikeMutationVariables>(client, CreateLikeDocument, variables, headers)(),
+      options
+    );
+export const DeleteLikeDocument = `
     mutation DeleteLike($id: ID!) {
   DeleteLike(id: $id) {
     id
@@ -3914,11 +1807,20 @@ export const DeleteLikeDocument = gql`
   }
 }
     `;
-
-export function useDeleteLikeMutation() {
-  return Urql.useMutation<DeleteLikeMutation, DeleteLikeMutationVariables>(DeleteLikeDocument);
-};
-export const CreateMarkerDocument = gql`
+export const useDeleteLikeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteLikeMutation, TError, DeleteLikeMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteLikeMutation, TError, DeleteLikeMutationVariables, TContext>(
+      ['DeleteLike'],
+      (variables?: DeleteLikeMutationVariables) => fetcher<DeleteLikeMutation, DeleteLikeMutationVariables>(client, DeleteLikeDocument, variables, headers)(),
+      options
+    );
+export const CreateMarkerDocument = `
     mutation CreateMarker($postID: ID!, $title: String!, $lat: String!, $lng: String!) {
   CreateMarker(input: {postID: $postID, title: $title, lat: $lat, lng: $lng}) {
     id
@@ -3929,11 +1831,20 @@ export const CreateMarkerDocument = gql`
   }
 }
     `;
-
-export function useCreateMarkerMutation() {
-  return Urql.useMutation<CreateMarkerMutation, CreateMarkerMutationVariables>(CreateMarkerDocument);
-};
-export const UpdateMarkerDocument = gql`
+export const useCreateMarkerMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateMarkerMutation, TError, CreateMarkerMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateMarkerMutation, TError, CreateMarkerMutationVariables, TContext>(
+      ['CreateMarker'],
+      (variables?: CreateMarkerMutationVariables) => fetcher<CreateMarkerMutation, CreateMarkerMutationVariables>(client, CreateMarkerDocument, variables, headers)(),
+      options
+    );
+export const UpdateMarkerDocument = `
     mutation UpdateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
   UpdateMarker(id: $id, input: {title: $title, lat: $lat, lng: $lng}) {
     id
@@ -3944,11 +1855,20 @@ export const UpdateMarkerDocument = gql`
   }
 }
     `;
-
-export function useUpdateMarkerMutation() {
-  return Urql.useMutation<UpdateMarkerMutation, UpdateMarkerMutationVariables>(UpdateMarkerDocument);
-};
-export const DeleteMarkerDocument = gql`
+export const useUpdateMarkerMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateMarkerMutation, TError, UpdateMarkerMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateMarkerMutation, TError, UpdateMarkerMutationVariables, TContext>(
+      ['UpdateMarker'],
+      (variables?: UpdateMarkerMutationVariables) => fetcher<UpdateMarkerMutation, UpdateMarkerMutationVariables>(client, UpdateMarkerDocument, variables, headers)(),
+      options
+    );
+export const DeleteMarkerDocument = `
     mutation DeleteMarker($id: ID!) {
   DeleteMarker(id: $id) {
     id
@@ -3959,11 +1879,20 @@ export const DeleteMarkerDocument = gql`
   }
 }
     `;
-
-export function useDeleteMarkerMutation() {
-  return Urql.useMutation<DeleteMarkerMutation, DeleteMarkerMutationVariables>(DeleteMarkerDocument);
-};
-export const CreateMuteDocument = gql`
+export const useDeleteMarkerMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteMarkerMutation, TError, DeleteMarkerMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteMarkerMutation, TError, DeleteMarkerMutationVariables, TContext>(
+      ['DeleteMarker'],
+      (variables?: DeleteMarkerMutationVariables) => fetcher<DeleteMarkerMutation, DeleteMarkerMutationVariables>(client, DeleteMarkerDocument, variables, headers)(),
+      options
+    );
+export const CreateMuteDocument = `
     mutation CreateMute($accountID: ID!, $muteID: ID!) {
   CreateMute(input: {accountID: $accountID, muteID: $muteID}) {
     id
@@ -3972,11 +1901,20 @@ export const CreateMuteDocument = gql`
   }
 }
     `;
-
-export function useCreateMuteMutation() {
-  return Urql.useMutation<CreateMuteMutation, CreateMuteMutationVariables>(CreateMuteDocument);
-};
-export const DeleteMuteDocument = gql`
+export const useCreateMuteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateMuteMutation, TError, CreateMuteMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateMuteMutation, TError, CreateMuteMutationVariables, TContext>(
+      ['CreateMute'],
+      (variables?: CreateMuteMutationVariables) => fetcher<CreateMuteMutation, CreateMuteMutationVariables>(client, CreateMuteDocument, variables, headers)(),
+      options
+    );
+export const DeleteMuteDocument = `
     mutation DeleteMute($id: ID!) {
   DeleteMute(id: $id) {
     id
@@ -3985,11 +1923,20 @@ export const DeleteMuteDocument = gql`
   }
 }
     `;
-
-export function useDeleteMuteMutation() {
-  return Urql.useMutation<DeleteMuteMutation, DeleteMuteMutationVariables>(DeleteMuteDocument);
-};
-export const CreatePostDocument = gql`
+export const useDeleteMuteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteMuteMutation, TError, DeleteMuteMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteMuteMutation, TError, DeleteMuteMutationVariables, TContext>(
+      ['DeleteMute'],
+      (variables?: DeleteMuteMutationVariables) => fetcher<DeleteMuteMutation, DeleteMuteMutationVariables>(client, DeleteMuteDocument, variables, headers)(),
+      options
+    );
+export const CreatePostDocument = `
     mutation CreatePost($accountID: ID!, $title: String!, $body: String!, $img: String!) {
   CreatePost(
     input: {accountID: $accountID, title: $title, body: $body, img: $img}
@@ -4002,11 +1949,20 @@ export const CreatePostDocument = gql`
   }
 }
     `;
-
-export function useCreatePostMutation() {
-  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
-};
-export const UpdatePostDocument = gql`
+export const useCreatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
+      ['CreatePost'],
+      (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers)(),
+      options
+    );
+export const UpdatePostDocument = `
     mutation UpdatePost($id: ID!, $accountID: ID!, $title: String!, $body: String!, $img: String!) {
   UpdatePost(
     id: $id
@@ -4020,11 +1976,20 @@ export const UpdatePostDocument = gql`
   }
 }
     `;
-
-export function useUpdatePostMutation() {
-  return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
-};
-export const DeletePostDocument = gql`
+export const useUpdatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>(
+      ['UpdatePost'],
+      (variables?: UpdatePostMutationVariables) => fetcher<UpdatePostMutation, UpdatePostMutationVariables>(client, UpdatePostDocument, variables, headers)(),
+      options
+    );
+export const DeletePostDocument = `
     mutation DeletePost($id: ID!) {
   DeletePost(id: $id) {
     id
@@ -4035,11 +2000,20 @@ export const DeletePostDocument = gql`
   }
 }
     `;
-
-export function useDeletePostMutation() {
-  return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument);
-};
-export const CreateRequestDocument = gql`
+export const useDeletePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeletePostMutation, TError, DeletePostMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeletePostMutation, TError, DeletePostMutationVariables, TContext>(
+      ['DeletePost'],
+      (variables?: DeletePostMutationVariables) => fetcher<DeletePostMutation, DeletePostMutationVariables>(client, DeletePostDocument, variables, headers)(),
+      options
+    );
+export const CreateRequestDocument = `
     mutation CreateRequest($accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
   CreateRequest(
     input: {accountID: $accountID, requestID: $requestID, status: $status}
@@ -4051,11 +2025,20 @@ export const CreateRequestDocument = gql`
   }
 }
     `;
-
-export function useCreateRequestMutation() {
-  return Urql.useMutation<CreateRequestMutation, CreateRequestMutationVariables>(CreateRequestDocument);
-};
-export const UpdateRequestDocument = gql`
+export const useCreateRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateRequestMutation, TError, CreateRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateRequestMutation, TError, CreateRequestMutationVariables, TContext>(
+      ['CreateRequest'],
+      (variables?: CreateRequestMutationVariables) => fetcher<CreateRequestMutation, CreateRequestMutationVariables>(client, CreateRequestDocument, variables, headers)(),
+      options
+    );
+export const UpdateRequestDocument = `
     mutation UpdateRequest($id: ID!, $accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
   UpdateRequest(
     id: $id
@@ -4068,11 +2051,20 @@ export const UpdateRequestDocument = gql`
   }
 }
     `;
-
-export function useUpdateRequestMutation() {
-  return Urql.useMutation<UpdateRequestMutation, UpdateRequestMutationVariables>(UpdateRequestDocument);
-};
-export const DeleteRequestDocument = gql`
+export const useUpdateRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateRequestMutation, TError, UpdateRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateRequestMutation, TError, UpdateRequestMutationVariables, TContext>(
+      ['UpdateRequest'],
+      (variables?: UpdateRequestMutationVariables) => fetcher<UpdateRequestMutation, UpdateRequestMutationVariables>(client, UpdateRequestDocument, variables, headers)(),
+      options
+    );
+export const DeleteRequestDocument = `
     mutation DeleteRequest($id: ID!) {
   DeleteRequest(id: $id) {
     id
@@ -4082,11 +2074,20 @@ export const DeleteRequestDocument = gql`
   }
 }
     `;
-
-export function useDeleteRequestMutation() {
-  return Urql.useMutation<DeleteRequestMutation, DeleteRequestMutationVariables>(DeleteRequestDocument);
-};
-export const CreateSessionDocument = gql`
+export const useDeleteRequestMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteRequestMutation, TError, DeleteRequestMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteRequestMutation, TError, DeleteRequestMutationVariables, TContext>(
+      ['DeleteRequest'],
+      (variables?: DeleteRequestMutationVariables) => fetcher<DeleteRequestMutation, DeleteRequestMutationVariables>(client, DeleteRequestDocument, variables, headers)(),
+      options
+    );
+export const CreateSessionDocument = `
     mutation CreateSession($session: String!, $accountID: ID!) {
   CreateSession(input: {session: $session, accountID: $accountID}) {
     id
@@ -4094,11 +2095,20 @@ export const CreateSessionDocument = gql`
   }
 }
     `;
-
-export function useCreateSessionMutation() {
-  return Urql.useMutation<CreateSessionMutation, CreateSessionMutationVariables>(CreateSessionDocument);
-};
-export const UpdateSessionDocument = gql`
+export const useCreateSessionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateSessionMutation, TError, CreateSessionMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateSessionMutation, TError, CreateSessionMutationVariables, TContext>(
+      ['CreateSession'],
+      (variables?: CreateSessionMutationVariables) => fetcher<CreateSessionMutation, CreateSessionMutationVariables>(client, CreateSessionDocument, variables, headers)(),
+      options
+    );
+export const UpdateSessionDocument = `
     mutation UpdateSession($id: ID!, $session: String!, $accountID: ID!) {
   UpdateSession(id: $id, input: {session: $session, accountID: $accountID}) {
     id
@@ -4107,11 +2117,20 @@ export const UpdateSessionDocument = gql`
   }
 }
     `;
-
-export function useUpdateSessionMutation() {
-  return Urql.useMutation<UpdateSessionMutation, UpdateSessionMutationVariables>(UpdateSessionDocument);
-};
-export const DeleteSessionDocument = gql`
+export const useUpdateSessionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateSessionMutation, TError, UpdateSessionMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateSessionMutation, TError, UpdateSessionMutationVariables, TContext>(
+      ['UpdateSession'],
+      (variables?: UpdateSessionMutationVariables) => fetcher<UpdateSessionMutation, UpdateSessionMutationVariables>(client, UpdateSessionDocument, variables, headers)(),
+      options
+    );
+export const DeleteSessionDocument = `
     mutation DeleteSession($id: ID!) {
   DeleteSession(id: $id) {
     id
@@ -4119,11 +2138,20 @@ export const DeleteSessionDocument = gql`
   }
 }
     `;
-
-export function useDeleteSessionMutation() {
-  return Urql.useMutation<DeleteSessionMutation, DeleteSessionMutationVariables>(DeleteSessionDocument);
-};
-export const AccountByIdDocument = gql`
+export const useDeleteSessionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<DeleteSessionMutation, TError, DeleteSessionMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<DeleteSessionMutation, TError, DeleteSessionMutationVariables, TContext>(
+      ['DeleteSession'],
+      (variables?: DeleteSessionMutationVariables) => fetcher<DeleteSessionMutation, DeleteSessionMutationVariables>(client, DeleteSessionDocument, variables, headers)(),
+      options
+    );
+export const AccountByIdDocument = `
     query AccountByID($id: ID!) {
   AccountByID(id: $id) {
     id
@@ -4150,11 +2178,21 @@ export const AccountByIdDocument = gql`
   }
 }
     `;
-
-export function useAccountByIdQuery(options: Omit<Urql.UseQueryArgs<AccountByIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<AccountByIdQuery, AccountByIdQueryVariables>({ query: AccountByIdDocument, ...options });
-};
-export const AccountBySelfIdDocument = gql`
+export const useAccountByIdQuery = <
+      TData = AccountByIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: AccountByIdQueryVariables,
+      options?: UseQueryOptions<AccountByIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<AccountByIdQuery, TError, TData>(
+      ['AccountByID', variables],
+      fetcher<AccountByIdQuery, AccountByIdQueryVariables>(client, AccountByIdDocument, variables, headers),
+      options
+    );
+export const AccountBySelfIdDocument = `
     query AccountBySelfID($id: ID!) {
   AccountBySelfID(id: $id) {
     id
@@ -4204,11 +2242,21 @@ export const AccountBySelfIdDocument = gql`
   }
 }
     `;
-
-export function useAccountBySelfIdQuery(options: Omit<Urql.UseQueryArgs<AccountBySelfIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<AccountBySelfIdQuery, AccountBySelfIdQueryVariables>({ query: AccountBySelfIdDocument, ...options });
-};
-export const LikesByPostIdDocument = gql`
+export const useAccountBySelfIdQuery = <
+      TData = AccountBySelfIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: AccountBySelfIdQueryVariables,
+      options?: UseQueryOptions<AccountBySelfIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<AccountBySelfIdQuery, TError, TData>(
+      ['AccountBySelfID', variables],
+      fetcher<AccountBySelfIdQuery, AccountBySelfIdQueryVariables>(client, AccountBySelfIdDocument, variables, headers),
+      options
+    );
+export const LikesByPostIdDocument = `
     query LikesByPostID($postID: ID!) {
   LikesByPostID(postID: $postID) {
     id
@@ -4221,11 +2269,21 @@ export const LikesByPostIdDocument = gql`
   }
 }
     `;
-
-export function useLikesByPostIdQuery(options: Omit<Urql.UseQueryArgs<LikesByPostIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<LikesByPostIdQuery, LikesByPostIdQueryVariables>({ query: LikesByPostIdDocument, ...options });
-};
-export const MarkersDocument = gql`
+export const useLikesByPostIdQuery = <
+      TData = LikesByPostIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: LikesByPostIdQueryVariables,
+      options?: UseQueryOptions<LikesByPostIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<LikesByPostIdQuery, TError, TData>(
+      ['LikesByPostID', variables],
+      fetcher<LikesByPostIdQuery, LikesByPostIdQueryVariables>(client, LikesByPostIdDocument, variables, headers),
+      options
+    );
+export const MarkersDocument = `
     query Markers {
   markers {
     id
@@ -4249,11 +2307,21 @@ export const MarkersDocument = gql`
   }
 }
     `;
-
-export function useMarkersQuery(options?: Omit<Urql.UseQueryArgs<MarkersQueryVariables>, 'query'>) {
-  return Urql.useQuery<MarkersQuery, MarkersQueryVariables>({ query: MarkersDocument, ...options });
-};
-export const PostsDocument = gql`
+export const useMarkersQuery = <
+      TData = MarkersQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: MarkersQueryVariables,
+      options?: UseQueryOptions<MarkersQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<MarkersQuery, TError, TData>(
+      variables === undefined ? ['Markers'] : ['Markers', variables],
+      fetcher<MarkersQuery, MarkersQueryVariables>(client, MarkersDocument, variables, headers),
+      options
+    );
+export const PostsDocument = `
     query Posts {
   posts {
     id
@@ -4289,11 +2357,21 @@ export const PostsDocument = gql`
   }
 }
     `;
-
-export function usePostsQuery(options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>) {
-  return Urql.useQuery<PostsQuery, PostsQueryVariables>({ query: PostsDocument, ...options });
-};
-export const RequestsByAccountIdDocument = gql`
+export const usePostsQuery = <
+      TData = PostsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: PostsQueryVariables,
+      options?: UseQueryOptions<PostsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<PostsQuery, TError, TData>(
+      variables === undefined ? ['Posts'] : ['Posts', variables],
+      fetcher<PostsQuery, PostsQueryVariables>(client, PostsDocument, variables, headers),
+      options
+    );
+export const RequestsByAccountIdDocument = `
     query RequestsByAccountID($accountID: ID!) {
   RequestsByAccountID(accountID: $accountID) {
     id
@@ -4307,11 +2385,21 @@ export const RequestsByAccountIdDocument = gql`
   }
 }
     `;
-
-export function useRequestsByAccountIdQuery(options: Omit<Urql.UseQueryArgs<RequestsByAccountIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<RequestsByAccountIdQuery, RequestsByAccountIdQueryVariables>({ query: RequestsByAccountIdDocument, ...options });
-};
-export const RequestsByRequestIdDocument = gql`
+export const useRequestsByAccountIdQuery = <
+      TData = RequestsByAccountIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: RequestsByAccountIdQueryVariables,
+      options?: UseQueryOptions<RequestsByAccountIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<RequestsByAccountIdQuery, TError, TData>(
+      ['RequestsByAccountID', variables],
+      fetcher<RequestsByAccountIdQuery, RequestsByAccountIdQueryVariables>(client, RequestsByAccountIdDocument, variables, headers),
+      options
+    );
+export const RequestsByRequestIdDocument = `
     query RequestsByRequestID($requestID: ID!) {
   RequestsByRequestID(requestID: $requestID) {
     id
@@ -4324,11 +2412,21 @@ export const RequestsByRequestIdDocument = gql`
   }
 }
     `;
-
-export function useRequestsByRequestIdQuery(options: Omit<Urql.UseQueryArgs<RequestsByRequestIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<RequestsByRequestIdQuery, RequestsByRequestIdQueryVariables>({ query: RequestsByRequestIdDocument, ...options });
-};
-export const SessionByIdDocument = gql`
+export const useRequestsByRequestIdQuery = <
+      TData = RequestsByRequestIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: RequestsByRequestIdQueryVariables,
+      options?: UseQueryOptions<RequestsByRequestIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<RequestsByRequestIdQuery, TError, TData>(
+      ['RequestsByRequestID', variables],
+      fetcher<RequestsByRequestIdQuery, RequestsByRequestIdQueryVariables>(client, RequestsByRequestIdDocument, variables, headers),
+      options
+    );
+export const SessionByIdDocument = `
     query SessionByID($id: ID!) {
   SessionByID(id: $id) {
     id
@@ -4336,7 +2434,17 @@ export const SessionByIdDocument = gql`
   }
 }
     `;
-
-export function useSessionByIdQuery(options: Omit<Urql.UseQueryArgs<SessionByIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<SessionByIdQuery, SessionByIdQueryVariables>({ query: SessionByIdDocument, ...options });
-};
+export const useSessionByIdQuery = <
+      TData = SessionByIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: SessionByIdQueryVariables,
+      options?: UseQueryOptions<SessionByIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<SessionByIdQuery, TError, TData>(
+      ['SessionByID', variables],
+      fetcher<SessionByIdQuery, SessionByIdQueryVariables>(client, SessionByIdDocument, variables, headers),
+      options
+    );
