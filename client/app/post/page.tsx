@@ -1,17 +1,15 @@
 'use client';
 import { usePostsQuery } from 'app/generated/graphql';
 
+import { useGraphQLClient } from '../GraphQLClientProvider';
 import { PostCard } from './components/PostCard';
 
 const PostPage = () => {
-  const [result] = usePostsQuery();
-  const { data, fetching, error } = result;
+  const client = useGraphQLClient();
+  const { status, data, error, isFetching } = usePostsQuery(client, {});
 
-  if (fetching) {
+  if (isFetching) {
     return <div>fetching...</div>;
-  }
-  if (error) {
-    return <div>{error.message}</div>;
   }
   if (!data) {
     return <div>No Data</div>;

@@ -1,7 +1,6 @@
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import '../styles/globals.css';
-import UrqlQueryWrapper from './UrqlQueryWrapper';
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -10,17 +9,15 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <title>travelone</title>
       </head>
       <body>
-        <UrqlQueryWrapper>
-          <div data-theme="light">
-            <header>
-              <Header />
-            </header>
-            <main>{children}</main>
-          </div>
-          <footer>
-            <Footer />
-          </footer>
-        </UrqlQueryWrapper>
+        <div data-theme="light">
+          <header>
+            <Header />
+          </header>
+          <main>{children}</main>
+        </div>
+        <footer>
+          <Footer />
+        </footer>
       </body>
     </html>
   );
