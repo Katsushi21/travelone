@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.12",
-    "@tanstack/react-query": "^4.18.0",
     "daisyui": "^2.42.1",
     "graphql": "^16.6.0",
     "next": "^13.0.5",
@@ -27,8 +26,8 @@
     "@graphql-codegen/cli": "2.14.1",
     "@graphql-codegen/introspection": "2.2.1",
     "@graphql-codegen/typescript": "2.8.2",
+    "@graphql-codegen/typescript-graphql-request": "^4.5.8",
     "@graphql-codegen/typescript-operations": "2.5.7",
-    "@graphql-codegen/typescript-react-query": "^4.0.6",
     "@types/node": "^18.11.7",
     "@types/react": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.45.0",

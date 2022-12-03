@@ -1,19 +1,17 @@
 import { GraphQLClient } from 'graphql-request';
-import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
+import * as Dom from 'graphql-request/dist/types.dom';
+import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-
-function fetcher<TData, TVariables extends { [key: string]: any }>(client: GraphQLClient, query: string, variables?: TVariables, requestHeaders?: RequestInit['headers']) {
-  return async (): Promise<TData> => client.request({
-    document: query,
-    variables,
-    requestHeaders
-  });
-}
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -55,14 +53,14 @@ export type Account = Node & {
 export enum AccountGender {
   Female = 'FEMALE',
   Male = 'MALE',
-  None = 'NONE'
+  None = 'NONE',
 }
 
 /** AccountType is enum for the field type */
 export enum AccountType {
   Active = 'ACTIVE',
   Admin = 'ADMIN',
-  Inactive = 'INACTIVE'
+  Inactive = 'INACTIVE',
 }
 
 /**
@@ -660,126 +658,102 @@ export type Mutation = {
   UpdateSession: Session;
 };
 
-
 export type MutationCreateAccountArgs = {
   input: CreateAccountInput;
 };
-
 
 export type MutationCreateCommentArgs = {
   input: CreateCommentInput;
 };
 
-
 export type MutationCreateFriendArgs = {
   input: CreateFriendInput;
 };
-
 
 export type MutationCreateLikeArgs = {
   input: CreateLikeInput;
 };
 
-
 export type MutationCreateMarkerArgs = {
   input: CreateMarkerInput;
 };
-
 
 export type MutationCreateMuteArgs = {
   input: CreateMuteInput;
 };
 
-
 export type MutationCreatePostArgs = {
   input: CreatePostInput;
 };
-
 
 export type MutationCreateRequestArgs = {
   input: CreateRequestInput;
 };
 
-
 export type MutationCreateSessionArgs = {
   input: CreateSessionInput;
 };
-
 
 export type MutationDeleteAccountArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteCommentArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationDeleteFriendArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteLikeArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationDeleteMarkerArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteMuteArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationDeletePostArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteRequestArgs = {
   id: Scalars['ID'];
 };
 
-
 export type MutationDeleteSessionArgs = {
   id: Scalars['ID'];
 };
-
 
 export type MutationUpdateAccountArgs = {
   id: Scalars['ID'];
   input: UpdateAccountInput;
 };
 
-
 export type MutationUpdateCommentArgs = {
   id: Scalars['ID'];
   input: UpdateCommentInput;
 };
-
 
 export type MutationUpdateMarkerArgs = {
   id: Scalars['ID'];
   input: UpdateMarkerInput;
 };
 
-
 export type MutationUpdatePostArgs = {
   id: Scalars['ID'];
   input: UpdatePostInput;
 };
 
-
 export type MutationUpdateRequestArgs = {
   id: Scalars['ID'];
   input: UpdateRequestInput;
 };
-
 
 export type MutationUpdateSessionArgs = {
   id: Scalars['ID'];
@@ -848,7 +822,7 @@ export enum OrderDirection {
   /** Specifies an ascending order for a given `orderBy` argument. */
   Asc = 'ASC',
   /** Specifies a descending order for a given `orderBy` argument. */
-  Desc = 'DESC'
+  Desc = 'DESC',
 }
 
 /**
@@ -1001,41 +975,33 @@ export type Query = {
   sessions: Array<Session>;
 };
 
-
 export type QueryAccountByIdArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryAccountBySelfIdArgs = {
   id: Scalars['ID'];
 };
 
-
 export type QueryLikesByPostIdArgs = {
   postID: Scalars['ID'];
 };
-
 
 export type QueryRequestsByAccountIdArgs = {
   accountID: Scalars['ID'];
 };
 
-
 export type QueryRequestsByRequestIdArgs = {
   requestID: Scalars['ID'];
 };
-
 
 export type QuerySessionByIdArgs = {
   id: Scalars['ID'];
 };
 
-
 export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
-
 
 export type QueryNodesArgs = {
   ids: Array<Scalars['ID']>;
@@ -1060,7 +1026,7 @@ export enum RequestStatus {
   BreakInAccept = 'BREAK_IN_ACCEPT',
   BreakInProcess = 'BREAK_IN_PROCESS',
   Deny = 'DENY',
-  InProcess = 'IN_PROCESS'
+  InProcess = 'IN_PROCESS',
 }
 
 /**
@@ -1320,8 +1286,20 @@ export type CreateAccountMutationVariables = Exact<{
   introduction: Scalars['String'];
 }>;
 
-
-export type CreateAccountMutation = { __typename?: 'Mutation', CreateAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
+export type CreateAccountMutation = {
+  __typename?: 'Mutation';
+  CreateAccount: {
+    __typename?: 'Account';
+    id: string;
+    email: string;
+    type: AccountType;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+  };
+};
 
 export type UpdateAccountMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1335,15 +1313,39 @@ export type UpdateAccountMutationVariables = Exact<{
   introduction: Scalars['String'];
 }>;
 
-
-export type UpdateAccountMutation = { __typename?: 'Mutation', UpdateAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
+export type UpdateAccountMutation = {
+  __typename?: 'Mutation';
+  UpdateAccount: {
+    __typename?: 'Account';
+    id: string;
+    email: string;
+    type: AccountType;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+  };
+};
 
 export type DeleteAccountMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteAccountMutation = { __typename?: 'Mutation', DeleteAccount: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string } };
+export type DeleteAccountMutation = {
+  __typename?: 'Mutation';
+  DeleteAccount: {
+    __typename?: 'Account';
+    id: string;
+    email: string;
+    type: AccountType;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+  };
+};
 
 export type CreateCommentMutationVariables = Exact<{
   postID: Scalars['ID'];
@@ -1351,8 +1353,16 @@ export type CreateCommentMutationVariables = Exact<{
   body: Scalars['String'];
 }>;
 
-
-export type CreateCommentMutation = { __typename?: 'Mutation', CreateComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
+export type CreateCommentMutation = {
+  __typename?: 'Mutation';
+  CreateComment: {
+    __typename?: 'Comment';
+    id: string;
+    postID: string;
+    accountID: string;
+    body: string;
+  };
+};
 
 export type UpdateCommentMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1361,45 +1371,89 @@ export type UpdateCommentMutationVariables = Exact<{
   body: Scalars['String'];
 }>;
 
-
-export type UpdateCommentMutation = { __typename?: 'Mutation', UpdateComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
+export type UpdateCommentMutation = {
+  __typename?: 'Mutation';
+  UpdateComment: {
+    __typename?: 'Comment';
+    id: string;
+    postID: string;
+    accountID: string;
+    body: string;
+  };
+};
 
 export type DeleteCommentMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteCommentMutation = { __typename?: 'Mutation', DeleteComment: { __typename?: 'Comment', id: string, postID: string, accountID: string, body: string } };
+export type DeleteCommentMutation = {
+  __typename?: 'Mutation';
+  DeleteComment: {
+    __typename?: 'Comment';
+    id: string;
+    postID: string;
+    accountID: string;
+    body: string;
+  };
+};
 
 export type CreateFriendMutationVariables = Exact<{
   accountID: Scalars['ID'];
   friendID: Scalars['ID'];
 }>;
 
-
-export type CreateFriendMutation = { __typename?: 'Mutation', CreateFriend: { __typename?: 'Friend', id: string, accountID: string, friendID: string } };
+export type CreateFriendMutation = {
+  __typename?: 'Mutation';
+  CreateFriend: {
+    __typename?: 'Friend';
+    id: string;
+    accountID: string;
+    friendID: string;
+  };
+};
 
 export type DeleteFriendMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteFriendMutation = { __typename?: 'Mutation', DeleteFriend: { __typename?: 'Friend', id: string, accountID: string, friendID: string } };
+export type DeleteFriendMutation = {
+  __typename?: 'Mutation';
+  DeleteFriend: {
+    __typename?: 'Friend';
+    id: string;
+    accountID: string;
+    friendID: string;
+  };
+};
 
 export type CreateLikeMutationVariables = Exact<{
   postID: Scalars['ID'];
   accountID: Scalars['ID'];
 }>;
 
-
-export type CreateLikeMutation = { __typename?: 'Mutation', CreateLike: { __typename?: 'Like', id: string, postID: string, accountID: string } };
+export type CreateLikeMutation = {
+  __typename?: 'Mutation';
+  CreateLike: {
+    __typename?: 'Like';
+    id: string;
+    postID: string;
+    accountID: string;
+  };
+};
 
 export type DeleteLikeMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteLikeMutation = { __typename?: 'Mutation', DeleteLike: { __typename?: 'Like', id: string, postID: string, accountID: string } };
+export type DeleteLikeMutation = {
+  __typename?: 'Mutation';
+  DeleteLike: {
+    __typename?: 'Like';
+    id: string;
+    postID: string;
+    accountID: string;
+  };
+};
 
 export type CreateMarkerMutationVariables = Exact<{
   postID: Scalars['ID'];
@@ -1408,8 +1462,17 @@ export type CreateMarkerMutationVariables = Exact<{
   lng: Scalars['String'];
 }>;
 
-
-export type CreateMarkerMutation = { __typename?: 'Mutation', CreateMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
+export type CreateMarkerMutation = {
+  __typename?: 'Mutation';
+  CreateMarker: {
+    __typename?: 'Marker';
+    id: string;
+    postID: string;
+    title: string;
+    lat: string;
+    lng: string;
+  };
+};
 
 export type UpdateMarkerMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1418,30 +1481,62 @@ export type UpdateMarkerMutationVariables = Exact<{
   lng: Scalars['String'];
 }>;
 
-
-export type UpdateMarkerMutation = { __typename?: 'Mutation', UpdateMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
+export type UpdateMarkerMutation = {
+  __typename?: 'Mutation';
+  UpdateMarker: {
+    __typename?: 'Marker';
+    id: string;
+    postID: string;
+    title: string;
+    lat: string;
+    lng: string;
+  };
+};
 
 export type DeleteMarkerMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteMarkerMutation = { __typename?: 'Mutation', DeleteMarker: { __typename?: 'Marker', id: string, postID: string, title: string, lat: string, lng: string } };
+export type DeleteMarkerMutation = {
+  __typename?: 'Mutation';
+  DeleteMarker: {
+    __typename?: 'Marker';
+    id: string;
+    postID: string;
+    title: string;
+    lat: string;
+    lng: string;
+  };
+};
 
 export type CreateMuteMutationVariables = Exact<{
   accountID: Scalars['ID'];
   muteID: Scalars['ID'];
 }>;
 
-
-export type CreateMuteMutation = { __typename?: 'Mutation', CreateMute: { __typename?: 'Mute', id: string, accountID: string, muteID: string } };
+export type CreateMuteMutation = {
+  __typename?: 'Mutation';
+  CreateMute: {
+    __typename?: 'Mute';
+    id: string;
+    accountID: string;
+    muteID: string;
+  };
+};
 
 export type DeleteMuteMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteMuteMutation = { __typename?: 'Mutation', DeleteMute: { __typename?: 'Mute', id: string, accountID: string, muteID: string } };
+export type DeleteMuteMutation = {
+  __typename?: 'Mutation';
+  DeleteMute: {
+    __typename?: 'Mute';
+    id: string;
+    accountID: string;
+    muteID: string;
+  };
+};
 
 export type CreatePostMutationVariables = Exact<{
   accountID: Scalars['ID'];
@@ -1450,8 +1545,17 @@ export type CreatePostMutationVariables = Exact<{
   img: Scalars['String'];
 }>;
 
-
-export type CreatePostMutation = { __typename?: 'Mutation', CreatePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
+export type CreatePostMutation = {
+  __typename?: 'Mutation';
+  CreatePost: {
+    __typename?: 'Post';
+    id: string;
+    accountID: string;
+    title: string;
+    body: string;
+    img: string;
+  };
+};
 
 export type UpdatePostMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1461,15 +1565,33 @@ export type UpdatePostMutationVariables = Exact<{
   img: Scalars['String'];
 }>;
 
-
-export type UpdatePostMutation = { __typename?: 'Mutation', UpdatePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
+export type UpdatePostMutation = {
+  __typename?: 'Mutation';
+  UpdatePost: {
+    __typename?: 'Post';
+    id: string;
+    accountID: string;
+    title: string;
+    body: string;
+    img: string;
+  };
+};
 
 export type DeletePostMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeletePostMutation = { __typename?: 'Mutation', DeletePost: { __typename?: 'Post', id: string, accountID: string, title: string, body: string, img: string } };
+export type DeletePostMutation = {
+  __typename?: 'Mutation';
+  DeletePost: {
+    __typename?: 'Post';
+    id: string;
+    accountID: string;
+    title: string;
+    body: string;
+    img: string;
+  };
+};
 
 export type CreateRequestMutationVariables = Exact<{
   accountID: Scalars['ID'];
@@ -1477,8 +1599,16 @@ export type CreateRequestMutationVariables = Exact<{
   status: RequestStatus;
 }>;
 
-
-export type CreateRequestMutation = { __typename?: 'Mutation', CreateRequest: { __typename?: 'Request', id: string, accountID: string, requestID: string, status: RequestStatus } };
+export type CreateRequestMutation = {
+  __typename?: 'Mutation';
+  CreateRequest: {
+    __typename?: 'Request';
+    id: string;
+    accountID: string;
+    requestID: string;
+    status: RequestStatus;
+  };
+};
 
 export type UpdateRequestMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1487,23 +1617,41 @@ export type UpdateRequestMutationVariables = Exact<{
   status: RequestStatus;
 }>;
 
-
-export type UpdateRequestMutation = { __typename?: 'Mutation', UpdateRequest: { __typename?: 'Request', id: string, accountID: string, requestID: string, status: RequestStatus } };
+export type UpdateRequestMutation = {
+  __typename?: 'Mutation';
+  UpdateRequest: {
+    __typename?: 'Request';
+    id: string;
+    accountID: string;
+    requestID: string;
+    status: RequestStatus;
+  };
+};
 
 export type DeleteRequestMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteRequestMutation = { __typename?: 'Mutation', DeleteRequest: { __typename?: 'Request', id: string, accountID: string, requestID: string, status: RequestStatus } };
+export type DeleteRequestMutation = {
+  __typename?: 'Mutation';
+  DeleteRequest: {
+    __typename?: 'Request';
+    id: string;
+    accountID: string;
+    requestID: string;
+    status: RequestStatus;
+  };
+};
 
 export type CreateSessionMutationVariables = Exact<{
   session: Scalars['String'];
   accountID: Scalars['ID'];
 }>;
 
-
-export type CreateSessionMutation = { __typename?: 'Mutation', CreateSession: { __typename?: 'Session', id: string, accountID: string } };
+export type CreateSessionMutation = {
+  __typename?: 'Mutation';
+  CreateSession: { __typename?: 'Session'; id: string; accountID: string };
+};
 
 export type UpdateSessionMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1511,843 +1659,683 @@ export type UpdateSessionMutationVariables = Exact<{
   accountID: Scalars['ID'];
 }>;
 
-
-export type UpdateSessionMutation = { __typename?: 'Mutation', UpdateSession: { __typename?: 'Session', id: string, accountID: string, session: string } };
+export type UpdateSessionMutation = {
+  __typename?: 'Mutation';
+  UpdateSession: {
+    __typename?: 'Session';
+    id: string;
+    accountID: string;
+    session: string;
+  };
+};
 
 export type DeleteSessionMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type DeleteSessionMutation = { __typename?: 'Mutation', DeleteSession: { __typename?: 'Session', id: string, accountID: string } };
+export type DeleteSessionMutation = {
+  __typename?: 'Mutation';
+  DeleteSession: { __typename?: 'Session'; id: string; accountID: string };
+};
 
 export type AccountByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type AccountByIdQuery = { __typename?: 'Query', AccountByID: { __typename?: 'Account', id: string, name: string, age: number, gender: AccountGender, avatar: string, introduction: string, posts?: Array<{ __typename?: 'Post', id: string, title: string, updatedAt: any, likes?: Array<{ __typename?: 'Like', accountID: string }> | null }> | null, friends?: Array<{ __typename?: 'Account', friends?: Array<{ __typename?: 'Account', id: string, name: string, avatar: string }> | null }> | null } };
+export type AccountByIdQuery = {
+  __typename?: 'Query';
+  AccountByID: {
+    __typename?: 'Account';
+    id: string;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+    posts?: Array<{
+      __typename?: 'Post';
+      id: string;
+      title: string;
+      updatedAt: any;
+      likes?: Array<{ __typename?: 'Like'; accountID: string }> | null;
+    }> | null;
+    friends?: Array<{
+      __typename?: 'Account';
+      friends?: Array<{
+        __typename?: 'Account';
+        id: string;
+        name: string;
+        avatar: string;
+      }> | null;
+    }> | null;
+  };
+};
 
 export type AccountBySelfIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
-
-export type AccountBySelfIdQuery = { __typename?: 'Query', AccountBySelfID: { __typename?: 'Account', id: string, email: string, type: AccountType, name: string, age: number, gender: AccountGender, avatar: string, introduction: string, posts?: Array<{ __typename?: 'Post', id: string, title: string, createdAt: any, updatedAt: any, likes?: Array<{ __typename?: 'Like', accountID: string }> | null }> | null, likes?: Array<{ __typename?: 'Like', post: { __typename?: 'Post', id: string, accountID: string, title: string, updatedAt: any }, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> | null, friends?: Array<{ __typename?: 'Account', friends?: Array<{ __typename?: 'Account', id: string, name: string, avatar: string }> | null }> | null, mutes?: Array<{ __typename?: 'Account', mutes?: Array<{ __typename?: 'Account', id: string, name: string, avatar: string }> | null }> | null } };
+export type AccountBySelfIdQuery = {
+  __typename?: 'Query';
+  AccountBySelfID: {
+    __typename?: 'Account';
+    id: string;
+    email: string;
+    type: AccountType;
+    name: string;
+    age: number;
+    gender: AccountGender;
+    avatar: string;
+    introduction: string;
+    posts?: Array<{
+      __typename?: 'Post';
+      id: string;
+      title: string;
+      createdAt: any;
+      updatedAt: any;
+      likes?: Array<{ __typename?: 'Like'; accountID: string }> | null;
+    }> | null;
+    likes?: Array<{
+      __typename?: 'Like';
+      post: {
+        __typename?: 'Post';
+        id: string;
+        accountID: string;
+        title: string;
+        updatedAt: any;
+      };
+      account: {
+        __typename?: 'Account';
+        id: string;
+        name: string;
+        avatar: string;
+      };
+    }> | null;
+    friends?: Array<{
+      __typename?: 'Account';
+      friends?: Array<{
+        __typename?: 'Account';
+        id: string;
+        name: string;
+        avatar: string;
+      }> | null;
+    }> | null;
+    mutes?: Array<{
+      __typename?: 'Account';
+      mutes?: Array<{
+        __typename?: 'Account';
+        id: string;
+        name: string;
+        avatar: string;
+      }> | null;
+    }> | null;
+  };
+};
 
 export type LikesByPostIdQueryVariables = Exact<{
   postID: Scalars['ID'];
 }>;
 
+export type LikesByPostIdQuery = {
+  __typename?: 'Query';
+  LikesByPostID: Array<{
+    __typename?: 'Like';
+    id: string;
+    createdAt: any;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      name: string;
+      avatar: string;
+    };
+  }>;
+};
 
-export type LikesByPostIdQuery = { __typename?: 'Query', LikesByPostID: Array<{ __typename?: 'Like', id: string, createdAt: any, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> };
+export type MarkersQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MarkersQueryVariables = Exact<{ [key: string]: never; }>;
+export type MarkersQuery = {
+  __typename?: 'Query';
+  markers: Array<{
+    __typename?: 'Marker';
+    id: string;
+    title: string;
+    lat: string;
+    lng: string;
+    post: {
+      __typename?: 'Post';
+      id: string;
+      title: string;
+      body: string;
+      img: string;
+      account: {
+        __typename?: 'Account';
+        id: string;
+        name: string;
+        avatar: string;
+      };
+      likes?: Array<{ __typename?: 'Like'; accountID: string }> | null;
+    };
+  }>;
+};
 
+export type PostsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: string, title: string, lat: string, lng: string, post: { __typename?: 'Post', id: string, title: string, body: string, img: string, account: { __typename?: 'Account', id: string, name: string, avatar: string }, likes?: Array<{ __typename?: 'Like', accountID: string }> | null } }> };
-
-export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: string, title: string, body: string, img: string, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, avatar: string }, marker?: { __typename?: 'Marker', id: string, title: string, lat: string, lng: string } | null, likes?: Array<{ __typename?: 'Like', id: string, accountID: string }> | null, comments?: Array<{ __typename?: 'Comment', id: string, body: string, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> | null }> };
+export type PostsQuery = {
+  __typename?: 'Query';
+  posts: Array<{
+    __typename?: 'Post';
+    id: string;
+    title: string;
+    body: string;
+    img: string;
+    createdAt: any;
+    updatedAt: any;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      name: string;
+      avatar: string;
+    };
+    marker?: {
+      __typename?: 'Marker';
+      id: string;
+      title: string;
+      lat: string;
+      lng: string;
+    } | null;
+    likes?: Array<{
+      __typename?: 'Like';
+      id: string;
+      accountID: string;
+    }> | null;
+    comments?: Array<{
+      __typename?: 'Comment';
+      id: string;
+      body: string;
+      account: {
+        __typename?: 'Account';
+        id: string;
+        name: string;
+        avatar: string;
+      };
+    }> | null;
+  }>;
+};
 
 export type RequestsByAccountIdQueryVariables = Exact<{
   accountID: Scalars['ID'];
 }>;
 
-
-export type RequestsByAccountIdQuery = { __typename?: 'Query', RequestsByAccountID: Array<{ __typename?: 'Request', id: string, createdAt: any, updatedAt: any, request: { __typename?: 'Account', id: string, name: string, avatar: string } }> };
+export type RequestsByAccountIdQuery = {
+  __typename?: 'Query';
+  RequestsByAccountID: Array<{
+    __typename?: 'Request';
+    id: string;
+    createdAt: any;
+    updatedAt: any;
+    request: {
+      __typename?: 'Account';
+      id: string;
+      name: string;
+      avatar: string;
+    };
+  }>;
+};
 
 export type RequestsByRequestIdQueryVariables = Exact<{
   requestID: Scalars['ID'];
 }>;
 
-
-export type RequestsByRequestIdQuery = { __typename?: 'Query', RequestsByRequestID: Array<{ __typename?: 'Request', id: string, createdAt: any, account: { __typename?: 'Account', id: string, name: string, avatar: string } }> };
+export type RequestsByRequestIdQuery = {
+  __typename?: 'Query';
+  RequestsByRequestID: Array<{
+    __typename?: 'Request';
+    id: string;
+    createdAt: any;
+    account: {
+      __typename?: 'Account';
+      id: string;
+      name: string;
+      avatar: string;
+    };
+  }>;
+};
 
 export type SessionByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
+export type SessionByIdQuery = {
+  __typename?: 'Query';
+  SessionByID: { __typename?: 'Session'; id: string; session: string };
+};
 
-export type SessionByIdQuery = { __typename?: 'Query', SessionByID: { __typename?: 'Session', id: string, session: string } };
-
-
-export const CreateAccountDocument = `
-    mutation CreateAccount($email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
-  CreateAccount(
-    input: {email: $email, password: $password, type: $type, name: $name, age: $age, gender: $gender, avatar: $avatar, introduction: $introduction}
+export const CreateAccountDocument = gql`
+  mutation CreateAccount(
+    $email: String!
+    $password: String!
+    $type: AccountType!
+    $name: String!
+    $age: Int!
+    $gender: AccountGender!
+    $avatar: String!
+    $introduction: String!
   ) {
-    id
-    email
-    type
-    name
-    age
-    gender
-    avatar
-    introduction
-  }
-}
-    `;
-export const useCreateAccountMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateAccountMutation, TError, CreateAccountMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateAccountMutation, TError, CreateAccountMutationVariables, TContext>(
-      ['CreateAccount'],
-      (variables?: CreateAccountMutationVariables) => fetcher<CreateAccountMutation, CreateAccountMutationVariables>(client, CreateAccountDocument, variables, headers)(),
-      options
-    );
-export const UpdateAccountDocument = `
-    mutation UpdateAccount($id: ID!, $email: String!, $password: String!, $type: AccountType!, $name: String!, $age: Int!, $gender: AccountGender!, $avatar: String!, $introduction: String!) {
-  UpdateAccount(
-    id: $id
-    input: {email: $email, password: $password, type: $type, name: $name, age: $age, gender: $gender, avatar: $avatar, introduction: $introduction}
-  ) {
-    id
-    email
-    type
-    name
-    age
-    gender
-    avatar
-    introduction
-  }
-}
-    `;
-export const useUpdateAccountMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<UpdateAccountMutation, TError, UpdateAccountMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<UpdateAccountMutation, TError, UpdateAccountMutationVariables, TContext>(
-      ['UpdateAccount'],
-      (variables?: UpdateAccountMutationVariables) => fetcher<UpdateAccountMutation, UpdateAccountMutationVariables>(client, UpdateAccountDocument, variables, headers)(),
-      options
-    );
-export const DeleteAccountDocument = `
-    mutation DeleteAccount($id: ID!) {
-  DeleteAccount(id: $id) {
-    id
-    email
-    type
-    name
-    age
-    gender
-    avatar
-    introduction
-  }
-}
-    `;
-export const useDeleteAccountMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteAccountMutation, TError, DeleteAccountMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteAccountMutation, TError, DeleteAccountMutationVariables, TContext>(
-      ['DeleteAccount'],
-      (variables?: DeleteAccountMutationVariables) => fetcher<DeleteAccountMutation, DeleteAccountMutationVariables>(client, DeleteAccountDocument, variables, headers)(),
-      options
-    );
-export const CreateCommentDocument = `
-    mutation CreateComment($postID: ID!, $accountID: ID!, $body: String!) {
-  CreateComment(input: {postID: $postID, accountID: $accountID, body: $body}) {
-    id
-    postID
-    accountID
-    body
-  }
-}
-    `;
-export const useCreateCommentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateCommentMutation, TError, CreateCommentMutationVariables, TContext>(
-      ['CreateComment'],
-      (variables?: CreateCommentMutationVariables) => fetcher<CreateCommentMutation, CreateCommentMutationVariables>(client, CreateCommentDocument, variables, headers)(),
-      options
-    );
-export const UpdateCommentDocument = `
-    mutation UpdateComment($id: ID!, $postID: ID!, $accountID: ID!, $body: String!) {
-  UpdateComment(
-    id: $id
-    input: {postID: $postID, accountID: $accountID, body: $body}
-  ) {
-    id
-    postID
-    accountID
-    body
-  }
-}
-    `;
-export const useUpdateCommentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<UpdateCommentMutation, TError, UpdateCommentMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<UpdateCommentMutation, TError, UpdateCommentMutationVariables, TContext>(
-      ['UpdateComment'],
-      (variables?: UpdateCommentMutationVariables) => fetcher<UpdateCommentMutation, UpdateCommentMutationVariables>(client, UpdateCommentDocument, variables, headers)(),
-      options
-    );
-export const DeleteCommentDocument = `
-    mutation DeleteComment($id: ID!) {
-  DeleteComment(id: $id) {
-    id
-    postID
-    accountID
-    body
-  }
-}
-    `;
-export const useDeleteCommentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteCommentMutation, TError, DeleteCommentMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteCommentMutation, TError, DeleteCommentMutationVariables, TContext>(
-      ['DeleteComment'],
-      (variables?: DeleteCommentMutationVariables) => fetcher<DeleteCommentMutation, DeleteCommentMutationVariables>(client, DeleteCommentDocument, variables, headers)(),
-      options
-    );
-export const CreateFriendDocument = `
-    mutation CreateFriend($accountID: ID!, $friendID: ID!) {
-  CreateFriend(input: {accountID: $accountID, friendID: $friendID}) {
-    id
-    accountID
-    friendID
-  }
-}
-    `;
-export const useCreateFriendMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateFriendMutation, TError, CreateFriendMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateFriendMutation, TError, CreateFriendMutationVariables, TContext>(
-      ['CreateFriend'],
-      (variables?: CreateFriendMutationVariables) => fetcher<CreateFriendMutation, CreateFriendMutationVariables>(client, CreateFriendDocument, variables, headers)(),
-      options
-    );
-export const DeleteFriendDocument = `
-    mutation DeleteFriend($id: ID!) {
-  DeleteFriend(id: $id) {
-    id
-    accountID
-    friendID
-  }
-}
-    `;
-export const useDeleteFriendMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteFriendMutation, TError, DeleteFriendMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteFriendMutation, TError, DeleteFriendMutationVariables, TContext>(
-      ['DeleteFriend'],
-      (variables?: DeleteFriendMutationVariables) => fetcher<DeleteFriendMutation, DeleteFriendMutationVariables>(client, DeleteFriendDocument, variables, headers)(),
-      options
-    );
-export const CreateLikeDocument = `
-    mutation CreateLike($postID: ID!, $accountID: ID!) {
-  CreateLike(input: {postID: $postID, accountID: $accountID}) {
-    id
-    postID
-    accountID
-  }
-}
-    `;
-export const useCreateLikeMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateLikeMutation, TError, CreateLikeMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateLikeMutation, TError, CreateLikeMutationVariables, TContext>(
-      ['CreateLike'],
-      (variables?: CreateLikeMutationVariables) => fetcher<CreateLikeMutation, CreateLikeMutationVariables>(client, CreateLikeDocument, variables, headers)(),
-      options
-    );
-export const DeleteLikeDocument = `
-    mutation DeleteLike($id: ID!) {
-  DeleteLike(id: $id) {
-    id
-    postID
-    accountID
-  }
-}
-    `;
-export const useDeleteLikeMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteLikeMutation, TError, DeleteLikeMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteLikeMutation, TError, DeleteLikeMutationVariables, TContext>(
-      ['DeleteLike'],
-      (variables?: DeleteLikeMutationVariables) => fetcher<DeleteLikeMutation, DeleteLikeMutationVariables>(client, DeleteLikeDocument, variables, headers)(),
-      options
-    );
-export const CreateMarkerDocument = `
-    mutation CreateMarker($postID: ID!, $title: String!, $lat: String!, $lng: String!) {
-  CreateMarker(input: {postID: $postID, title: $title, lat: $lat, lng: $lng}) {
-    id
-    postID
-    title
-    lat
-    lng
-  }
-}
-    `;
-export const useCreateMarkerMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateMarkerMutation, TError, CreateMarkerMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateMarkerMutation, TError, CreateMarkerMutationVariables, TContext>(
-      ['CreateMarker'],
-      (variables?: CreateMarkerMutationVariables) => fetcher<CreateMarkerMutation, CreateMarkerMutationVariables>(client, CreateMarkerDocument, variables, headers)(),
-      options
-    );
-export const UpdateMarkerDocument = `
-    mutation UpdateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
-  UpdateMarker(id: $id, input: {title: $title, lat: $lat, lng: $lng}) {
-    id
-    postID
-    title
-    lat
-    lng
-  }
-}
-    `;
-export const useUpdateMarkerMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<UpdateMarkerMutation, TError, UpdateMarkerMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<UpdateMarkerMutation, TError, UpdateMarkerMutationVariables, TContext>(
-      ['UpdateMarker'],
-      (variables?: UpdateMarkerMutationVariables) => fetcher<UpdateMarkerMutation, UpdateMarkerMutationVariables>(client, UpdateMarkerDocument, variables, headers)(),
-      options
-    );
-export const DeleteMarkerDocument = `
-    mutation DeleteMarker($id: ID!) {
-  DeleteMarker(id: $id) {
-    id
-    postID
-    title
-    lat
-    lng
-  }
-}
-    `;
-export const useDeleteMarkerMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteMarkerMutation, TError, DeleteMarkerMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteMarkerMutation, TError, DeleteMarkerMutationVariables, TContext>(
-      ['DeleteMarker'],
-      (variables?: DeleteMarkerMutationVariables) => fetcher<DeleteMarkerMutation, DeleteMarkerMutationVariables>(client, DeleteMarkerDocument, variables, headers)(),
-      options
-    );
-export const CreateMuteDocument = `
-    mutation CreateMute($accountID: ID!, $muteID: ID!) {
-  CreateMute(input: {accountID: $accountID, muteID: $muteID}) {
-    id
-    accountID
-    muteID
-  }
-}
-    `;
-export const useCreateMuteMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateMuteMutation, TError, CreateMuteMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateMuteMutation, TError, CreateMuteMutationVariables, TContext>(
-      ['CreateMute'],
-      (variables?: CreateMuteMutationVariables) => fetcher<CreateMuteMutation, CreateMuteMutationVariables>(client, CreateMuteDocument, variables, headers)(),
-      options
-    );
-export const DeleteMuteDocument = `
-    mutation DeleteMute($id: ID!) {
-  DeleteMute(id: $id) {
-    id
-    accountID
-    muteID
-  }
-}
-    `;
-export const useDeleteMuteMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteMuteMutation, TError, DeleteMuteMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteMuteMutation, TError, DeleteMuteMutationVariables, TContext>(
-      ['DeleteMute'],
-      (variables?: DeleteMuteMutationVariables) => fetcher<DeleteMuteMutation, DeleteMuteMutationVariables>(client, DeleteMuteDocument, variables, headers)(),
-      options
-    );
-export const CreatePostDocument = `
-    mutation CreatePost($accountID: ID!, $title: String!, $body: String!, $img: String!) {
-  CreatePost(
-    input: {accountID: $accountID, title: $title, body: $body, img: $img}
-  ) {
-    id
-    accountID
-    title
-    body
-    img
-  }
-}
-    `;
-export const useCreatePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
-      ['CreatePost'],
-      (variables?: CreatePostMutationVariables) => fetcher<CreatePostMutation, CreatePostMutationVariables>(client, CreatePostDocument, variables, headers)(),
-      options
-    );
-export const UpdatePostDocument = `
-    mutation UpdatePost($id: ID!, $accountID: ID!, $title: String!, $body: String!, $img: String!) {
-  UpdatePost(
-    id: $id
-    input: {accountID: $accountID, title: $title, body: $body, img: $img}
-  ) {
-    id
-    accountID
-    title
-    body
-    img
-  }
-}
-    `;
-export const useUpdatePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<UpdatePostMutation, TError, UpdatePostMutationVariables, TContext>(
-      ['UpdatePost'],
-      (variables?: UpdatePostMutationVariables) => fetcher<UpdatePostMutation, UpdatePostMutationVariables>(client, UpdatePostDocument, variables, headers)(),
-      options
-    );
-export const DeletePostDocument = `
-    mutation DeletePost($id: ID!) {
-  DeletePost(id: $id) {
-    id
-    accountID
-    title
-    body
-    img
-  }
-}
-    `;
-export const useDeletePostMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeletePostMutation, TError, DeletePostMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeletePostMutation, TError, DeletePostMutationVariables, TContext>(
-      ['DeletePost'],
-      (variables?: DeletePostMutationVariables) => fetcher<DeletePostMutation, DeletePostMutationVariables>(client, DeletePostDocument, variables, headers)(),
-      options
-    );
-export const CreateRequestDocument = `
-    mutation CreateRequest($accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
-  CreateRequest(
-    input: {accountID: $accountID, requestID: $requestID, status: $status}
-  ) {
-    id
-    accountID
-    requestID
-    status
-  }
-}
-    `;
-export const useCreateRequestMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateRequestMutation, TError, CreateRequestMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateRequestMutation, TError, CreateRequestMutationVariables, TContext>(
-      ['CreateRequest'],
-      (variables?: CreateRequestMutationVariables) => fetcher<CreateRequestMutation, CreateRequestMutationVariables>(client, CreateRequestDocument, variables, headers)(),
-      options
-    );
-export const UpdateRequestDocument = `
-    mutation UpdateRequest($id: ID!, $accountID: ID!, $requestID: ID!, $status: RequestStatus!) {
-  UpdateRequest(
-    id: $id
-    input: {accountID: $accountID, requestID: $requestID, status: $status}
-  ) {
-    id
-    accountID
-    requestID
-    status
-  }
-}
-    `;
-export const useUpdateRequestMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<UpdateRequestMutation, TError, UpdateRequestMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<UpdateRequestMutation, TError, UpdateRequestMutationVariables, TContext>(
-      ['UpdateRequest'],
-      (variables?: UpdateRequestMutationVariables) => fetcher<UpdateRequestMutation, UpdateRequestMutationVariables>(client, UpdateRequestDocument, variables, headers)(),
-      options
-    );
-export const DeleteRequestDocument = `
-    mutation DeleteRequest($id: ID!) {
-  DeleteRequest(id: $id) {
-    id
-    accountID
-    requestID
-    status
-  }
-}
-    `;
-export const useDeleteRequestMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteRequestMutation, TError, DeleteRequestMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteRequestMutation, TError, DeleteRequestMutationVariables, TContext>(
-      ['DeleteRequest'],
-      (variables?: DeleteRequestMutationVariables) => fetcher<DeleteRequestMutation, DeleteRequestMutationVariables>(client, DeleteRequestDocument, variables, headers)(),
-      options
-    );
-export const CreateSessionDocument = `
-    mutation CreateSession($session: String!, $accountID: ID!) {
-  CreateSession(input: {session: $session, accountID: $accountID}) {
-    id
-    accountID
-  }
-}
-    `;
-export const useCreateSessionMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<CreateSessionMutation, TError, CreateSessionMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<CreateSessionMutation, TError, CreateSessionMutationVariables, TContext>(
-      ['CreateSession'],
-      (variables?: CreateSessionMutationVariables) => fetcher<CreateSessionMutation, CreateSessionMutationVariables>(client, CreateSessionDocument, variables, headers)(),
-      options
-    );
-export const UpdateSessionDocument = `
-    mutation UpdateSession($id: ID!, $session: String!, $accountID: ID!) {
-  UpdateSession(id: $id, input: {session: $session, accountID: $accountID}) {
-    id
-    accountID
-    session
-  }
-}
-    `;
-export const useUpdateSessionMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<UpdateSessionMutation, TError, UpdateSessionMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<UpdateSessionMutation, TError, UpdateSessionMutationVariables, TContext>(
-      ['UpdateSession'],
-      (variables?: UpdateSessionMutationVariables) => fetcher<UpdateSessionMutation, UpdateSessionMutationVariables>(client, UpdateSessionDocument, variables, headers)(),
-      options
-    );
-export const DeleteSessionDocument = `
-    mutation DeleteSession($id: ID!) {
-  DeleteSession(id: $id) {
-    id
-    accountID
-  }
-}
-    `;
-export const useDeleteSessionMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(
-      client: GraphQLClient,
-      options?: UseMutationOptions<DeleteSessionMutation, TError, DeleteSessionMutationVariables, TContext>,
-      headers?: RequestInit['headers']
-    ) =>
-    useMutation<DeleteSessionMutation, TError, DeleteSessionMutationVariables, TContext>(
-      ['DeleteSession'],
-      (variables?: DeleteSessionMutationVariables) => fetcher<DeleteSessionMutation, DeleteSessionMutationVariables>(client, DeleteSessionDocument, variables, headers)(),
-      options
-    );
-export const AccountByIdDocument = `
-    query AccountByID($id: ID!) {
-  AccountByID(id: $id) {
-    id
-    name
-    age
-    gender
-    avatar
-    introduction
-    posts {
+    CreateAccount(
+      input: {
+        email: $email
+        password: $password
+        type: $type
+        name: $name
+        age: $age
+        gender: $gender
+        avatar: $avatar
+        introduction: $introduction
+      }
+    ) {
       id
-      title
-      updatedAt
-      likes {
-        accountID
-      }
-    }
-    friends {
-      friends {
-        id
-        name
-        avatar
-      }
-    }
-  }
-}
-    `;
-export const useAccountByIdQuery = <
-      TData = AccountByIdQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: AccountByIdQueryVariables,
-      options?: UseQueryOptions<AccountByIdQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<AccountByIdQuery, TError, TData>(
-      ['AccountByID', variables],
-      fetcher<AccountByIdQuery, AccountByIdQueryVariables>(client, AccountByIdDocument, variables, headers),
-      options
-    );
-export const AccountBySelfIdDocument = `
-    query AccountBySelfID($id: ID!) {
-  AccountBySelfID(id: $id) {
-    id
-    email
-    type
-    name
-    age
-    gender
-    avatar
-    introduction
-    posts {
-      id
-      title
-      createdAt
-      updatedAt
-      likes {
-        accountID
-      }
-    }
-    likes {
-      post {
-        id
-        accountID
-        title
-        updatedAt
-      }
-      account {
-        id
-        name
-        avatar
-      }
-    }
-    friends {
-      friends {
-        id
-        name
-        avatar
-      }
-    }
-    mutes {
-      mutes {
-        id
-        name
-        avatar
-      }
-    }
-  }
-}
-    `;
-export const useAccountBySelfIdQuery = <
-      TData = AccountBySelfIdQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: AccountBySelfIdQueryVariables,
-      options?: UseQueryOptions<AccountBySelfIdQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<AccountBySelfIdQuery, TError, TData>(
-      ['AccountBySelfID', variables],
-      fetcher<AccountBySelfIdQuery, AccountBySelfIdQueryVariables>(client, AccountBySelfIdDocument, variables, headers),
-      options
-    );
-export const LikesByPostIdDocument = `
-    query LikesByPostID($postID: ID!) {
-  LikesByPostID(postID: $postID) {
-    id
-    createdAt
-    account {
-      id
+      email
+      type
       name
+      age
+      gender
       avatar
+      introduction
     }
   }
-}
-    `;
-export const useLikesByPostIdQuery = <
-      TData = LikesByPostIdQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables: LikesByPostIdQueryVariables,
-      options?: UseQueryOptions<LikesByPostIdQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<LikesByPostIdQuery, TError, TData>(
-      ['LikesByPostID', variables],
-      fetcher<LikesByPostIdQuery, LikesByPostIdQueryVariables>(client, LikesByPostIdDocument, variables, headers),
-      options
-    );
-export const MarkersDocument = `
-    query Markers {
-  markers {
-    id
-    title
-    lat
-    lng
-    post {
+`;
+export const UpdateAccountDocument = gql`
+  mutation UpdateAccount(
+    $id: ID!
+    $email: String!
+    $password: String!
+    $type: AccountType!
+    $name: String!
+    $age: Int!
+    $gender: AccountGender!
+    $avatar: String!
+    $introduction: String!
+  ) {
+    UpdateAccount(
+      id: $id
+      input: {
+        email: $email
+        password: $password
+        type: $type
+        name: $name
+        age: $age
+        gender: $gender
+        avatar: $avatar
+        introduction: $introduction
+      }
+    ) {
       id
-      title
+      email
+      type
+      name
+      age
+      gender
+      avatar
+      introduction
+    }
+  }
+`;
+export const DeleteAccountDocument = gql`
+  mutation DeleteAccount($id: ID!) {
+    DeleteAccount(id: $id) {
+      id
+      email
+      type
+      name
+      age
+      gender
+      avatar
+      introduction
+    }
+  }
+`;
+export const CreateCommentDocument = gql`
+  mutation CreateComment($postID: ID!, $accountID: ID!, $body: String!) {
+    CreateComment(
+      input: { postID: $postID, accountID: $accountID, body: $body }
+    ) {
+      id
+      postID
+      accountID
       body
-      img
-      account {
-        id
-        name
-        avatar
-      }
-      likes {
-        accountID
-      }
     }
   }
-}
-    `;
-export const useMarkersQuery = <
-      TData = MarkersQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
-      variables?: MarkersQueryVariables,
-      options?: UseQueryOptions<MarkersQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<MarkersQuery, TError, TData>(
-      variables === undefined ? ['Markers'] : ['Markers', variables],
-      fetcher<MarkersQuery, MarkersQueryVariables>(client, MarkersDocument, variables, headers),
-      options
-    );
-export const PostsDocument = `
-    query Posts {
-  posts {
-    id
-    title
-    body
-    img
-    createdAt
-    updatedAt
-    account {
+`;
+export const UpdateCommentDocument = gql`
+  mutation UpdateComment(
+    $id: ID!
+    $postID: ID!
+    $accountID: ID!
+    $body: String!
+  ) {
+    UpdateComment(
+      id: $id
+      input: { postID: $postID, accountID: $accountID, body: $body }
+    ) {
       id
-      name
-      avatar
+      postID
+      accountID
+      body
     }
-    marker {
+  }
+`;
+export const DeleteCommentDocument = gql`
+  mutation DeleteComment($id: ID!) {
+    DeleteComment(id: $id) {
       id
+      postID
+      accountID
+      body
+    }
+  }
+`;
+export const CreateFriendDocument = gql`
+  mutation CreateFriend($accountID: ID!, $friendID: ID!) {
+    CreateFriend(input: { accountID: $accountID, friendID: $friendID }) {
+      id
+      accountID
+      friendID
+    }
+  }
+`;
+export const DeleteFriendDocument = gql`
+  mutation DeleteFriend($id: ID!) {
+    DeleteFriend(id: $id) {
+      id
+      accountID
+      friendID
+    }
+  }
+`;
+export const CreateLikeDocument = gql`
+  mutation CreateLike($postID: ID!, $accountID: ID!) {
+    CreateLike(input: { postID: $postID, accountID: $accountID }) {
+      id
+      postID
+      accountID
+    }
+  }
+`;
+export const DeleteLikeDocument = gql`
+  mutation DeleteLike($id: ID!) {
+    DeleteLike(id: $id) {
+      id
+      postID
+      accountID
+    }
+  }
+`;
+export const CreateMarkerDocument = gql`
+  mutation CreateMarker(
+    $postID: ID!
+    $title: String!
+    $lat: String!
+    $lng: String!
+  ) {
+    CreateMarker(
+      input: { postID: $postID, title: $title, lat: $lat, lng: $lng }
+    ) {
+      id
+      postID
       title
       lat
       lng
     }
-    likes {
+  }
+`;
+export const UpdateMarkerDocument = gql`
+  mutation UpdateMarker(
+    $id: ID!
+    $title: String!
+    $lat: String!
+    $lng: String!
+  ) {
+    UpdateMarker(id: $id, input: { title: $title, lat: $lat, lng: $lng }) {
+      id
+      postID
+      title
+      lat
+      lng
+    }
+  }
+`;
+export const DeleteMarkerDocument = gql`
+  mutation DeleteMarker($id: ID!) {
+    DeleteMarker(id: $id) {
+      id
+      postID
+      title
+      lat
+      lng
+    }
+  }
+`;
+export const CreateMuteDocument = gql`
+  mutation CreateMute($accountID: ID!, $muteID: ID!) {
+    CreateMute(input: { accountID: $accountID, muteID: $muteID }) {
+      id
+      accountID
+      muteID
+    }
+  }
+`;
+export const DeleteMuteDocument = gql`
+  mutation DeleteMute($id: ID!) {
+    DeleteMute(id: $id) {
+      id
+      accountID
+      muteID
+    }
+  }
+`;
+export const CreatePostDocument = gql`
+  mutation CreatePost(
+    $accountID: ID!
+    $title: String!
+    $body: String!
+    $img: String!
+  ) {
+    CreatePost(
+      input: { accountID: $accountID, title: $title, body: $body, img: $img }
+    ) {
+      id
+      accountID
+      title
+      body
+      img
+    }
+  }
+`;
+export const UpdatePostDocument = gql`
+  mutation UpdatePost(
+    $id: ID!
+    $accountID: ID!
+    $title: String!
+    $body: String!
+    $img: String!
+  ) {
+    UpdatePost(
+      id: $id
+      input: { accountID: $accountID, title: $title, body: $body, img: $img }
+    ) {
+      id
+      accountID
+      title
+      body
+      img
+    }
+  }
+`;
+export const DeletePostDocument = gql`
+  mutation DeletePost($id: ID!) {
+    DeletePost(id: $id) {
+      id
+      accountID
+      title
+      body
+      img
+    }
+  }
+`;
+export const CreateRequestDocument = gql`
+  mutation CreateRequest(
+    $accountID: ID!
+    $requestID: ID!
+    $status: RequestStatus!
+  ) {
+    CreateRequest(
+      input: { accountID: $accountID, requestID: $requestID, status: $status }
+    ) {
+      id
+      accountID
+      requestID
+      status
+    }
+  }
+`;
+export const UpdateRequestDocument = gql`
+  mutation UpdateRequest(
+    $id: ID!
+    $accountID: ID!
+    $requestID: ID!
+    $status: RequestStatus!
+  ) {
+    UpdateRequest(
+      id: $id
+      input: { accountID: $accountID, requestID: $requestID, status: $status }
+    ) {
+      id
+      accountID
+      requestID
+      status
+    }
+  }
+`;
+export const DeleteRequestDocument = gql`
+  mutation DeleteRequest($id: ID!) {
+    DeleteRequest(id: $id) {
+      id
+      accountID
+      requestID
+      status
+    }
+  }
+`;
+export const CreateSessionDocument = gql`
+  mutation CreateSession($session: String!, $accountID: ID!) {
+    CreateSession(input: { session: $session, accountID: $accountID }) {
       id
       accountID
     }
-    comments {
+  }
+`;
+export const UpdateSessionDocument = gql`
+  mutation UpdateSession($id: ID!, $session: String!, $accountID: ID!) {
+    UpdateSession(
+      id: $id
+      input: { session: $session, accountID: $accountID }
+    ) {
       id
-      body
+      accountID
+      session
+    }
+  }
+`;
+export const DeleteSessionDocument = gql`
+  mutation DeleteSession($id: ID!) {
+    DeleteSession(id: $id) {
+      id
+      accountID
+    }
+  }
+`;
+export const AccountByIdDocument = gql`
+  query AccountByID($id: ID!) {
+    AccountByID(id: $id) {
+      id
+      name
+      age
+      gender
+      avatar
+      introduction
+      posts {
+        id
+        title
+        updatedAt
+        likes {
+          accountID
+        }
+      }
+      friends {
+        friends {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+`;
+export const AccountBySelfIdDocument = gql`
+  query AccountBySelfID($id: ID!) {
+    AccountBySelfID(id: $id) {
+      id
+      email
+      type
+      name
+      age
+      gender
+      avatar
+      introduction
+      posts {
+        id
+        title
+        createdAt
+        updatedAt
+        likes {
+          accountID
+        }
+      }
+      likes {
+        post {
+          id
+          accountID
+          title
+          updatedAt
+        }
+        account {
+          id
+          name
+          avatar
+        }
+      }
+      friends {
+        friends {
+          id
+          name
+          avatar
+        }
+      }
+      mutes {
+        mutes {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+`;
+export const LikesByPostIdDocument = gql`
+  query LikesByPostID($postID: ID!) {
+    LikesByPostID(postID: $postID) {
+      id
+      createdAt
       account {
         id
         name
@@ -2355,96 +2343,588 @@ export const PostsDocument = `
       }
     }
   }
-}
-    `;
-export const usePostsQuery = <
-      TData = PostsQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
+`;
+export const MarkersDocument = gql`
+  query Markers {
+    markers {
+      id
+      title
+      lat
+      lng
+      post {
+        id
+        title
+        body
+        img
+        account {
+          id
+          name
+          avatar
+        }
+        likes {
+          accountID
+        }
+      }
+    }
+  }
+`;
+export const PostsDocument = gql`
+  query Posts {
+    posts {
+      id
+      title
+      body
+      img
+      createdAt
+      updatedAt
+      account {
+        id
+        name
+        avatar
+      }
+      marker {
+        id
+        title
+        lat
+        lng
+      }
+      likes {
+        id
+        accountID
+      }
+      comments {
+        id
+        body
+        account {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+`;
+export const RequestsByAccountIdDocument = gql`
+  query RequestsByAccountID($accountID: ID!) {
+    RequestsByAccountID(accountID: $accountID) {
+      id
+      createdAt
+      updatedAt
+      request {
+        id
+        name
+        avatar
+      }
+    }
+  }
+`;
+export const RequestsByRequestIdDocument = gql`
+  query RequestsByRequestID($requestID: ID!) {
+    RequestsByRequestID(requestID: $requestID) {
+      id
+      createdAt
+      account {
+        id
+        name
+        avatar
+      }
+    }
+  }
+`;
+export const SessionByIdDocument = gql`
+  query SessionByID($id: ID!) {
+    SessionByID(id: $id) {
+      id
+      session
+    }
+  }
+`;
+
+export type SdkFunctionWrapper = <T>(
+  action: (requestHeaders?: Record<string, string>) => Promise<T>,
+  operationName: string,
+  operationType?: string,
+) => Promise<T>;
+
+const defaultWrapper: SdkFunctionWrapper = (
+  action,
+  _operationName,
+  _operationType,
+) => action();
+
+export function getSdk(
+  client: GraphQLClient,
+  withWrapper: SdkFunctionWrapper = defaultWrapper,
+) {
+  return {
+    CreateAccount(
+      variables: CreateAccountMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateAccountMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateAccountMutation>(
+            CreateAccountDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'CreateAccount',
+        'mutation',
+      );
+    },
+    UpdateAccount(
+      variables: UpdateAccountMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<UpdateAccountMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateAccountMutation>(
+            UpdateAccountDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'UpdateAccount',
+        'mutation',
+      );
+    },
+    DeleteAccount(
+      variables: DeleteAccountMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteAccountMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteAccountMutation>(
+            DeleteAccountDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'DeleteAccount',
+        'mutation',
+      );
+    },
+    CreateComment(
+      variables: CreateCommentMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateCommentMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateCommentMutation>(
+            CreateCommentDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'CreateComment',
+        'mutation',
+      );
+    },
+    UpdateComment(
+      variables: UpdateCommentMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<UpdateCommentMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateCommentMutation>(
+            UpdateCommentDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'UpdateComment',
+        'mutation',
+      );
+    },
+    DeleteComment(
+      variables: DeleteCommentMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteCommentMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteCommentMutation>(
+            DeleteCommentDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'DeleteComment',
+        'mutation',
+      );
+    },
+    CreateFriend(
+      variables: CreateFriendMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateFriendMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateFriendMutation>(
+            CreateFriendDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'CreateFriend',
+        'mutation',
+      );
+    },
+    DeleteFriend(
+      variables: DeleteFriendMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteFriendMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteFriendMutation>(
+            DeleteFriendDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'DeleteFriend',
+        'mutation',
+      );
+    },
+    CreateLike(
+      variables: CreateLikeMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateLikeMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateLikeMutation>(CreateLikeDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'CreateLike',
+        'mutation',
+      );
+    },
+    DeleteLike(
+      variables: DeleteLikeMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteLikeMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteLikeMutation>(DeleteLikeDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'DeleteLike',
+        'mutation',
+      );
+    },
+    CreateMarker(
+      variables: CreateMarkerMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateMarkerMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateMarkerMutation>(
+            CreateMarkerDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'CreateMarker',
+        'mutation',
+      );
+    },
+    UpdateMarker(
+      variables: UpdateMarkerMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<UpdateMarkerMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateMarkerMutation>(
+            UpdateMarkerDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'UpdateMarker',
+        'mutation',
+      );
+    },
+    DeleteMarker(
+      variables: DeleteMarkerMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteMarkerMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteMarkerMutation>(
+            DeleteMarkerDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'DeleteMarker',
+        'mutation',
+      );
+    },
+    CreateMute(
+      variables: CreateMuteMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateMuteMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateMuteMutation>(CreateMuteDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'CreateMute',
+        'mutation',
+      );
+    },
+    DeleteMute(
+      variables: DeleteMuteMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteMuteMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteMuteMutation>(DeleteMuteDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'DeleteMute',
+        'mutation',
+      );
+    },
+    CreatePost(
+      variables: CreatePostMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreatePostMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreatePostMutation>(CreatePostDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'CreatePost',
+        'mutation',
+      );
+    },
+    UpdatePost(
+      variables: UpdatePostMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<UpdatePostMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdatePostMutation>(UpdatePostDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'UpdatePost',
+        'mutation',
+      );
+    },
+    DeletePost(
+      variables: DeletePostMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeletePostMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeletePostMutation>(DeletePostDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'DeletePost',
+        'mutation',
+      );
+    },
+    CreateRequest(
+      variables: CreateRequestMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateRequestMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateRequestMutation>(
+            CreateRequestDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'CreateRequest',
+        'mutation',
+      );
+    },
+    UpdateRequest(
+      variables: UpdateRequestMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<UpdateRequestMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateRequestMutation>(
+            UpdateRequestDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'UpdateRequest',
+        'mutation',
+      );
+    },
+    DeleteRequest(
+      variables: DeleteRequestMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteRequestMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteRequestMutation>(
+            DeleteRequestDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'DeleteRequest',
+        'mutation',
+      );
+    },
+    CreateSession(
+      variables: CreateSessionMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<CreateSessionMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<CreateSessionMutation>(
+            CreateSessionDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'CreateSession',
+        'mutation',
+      );
+    },
+    UpdateSession(
+      variables: UpdateSessionMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<UpdateSessionMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<UpdateSessionMutation>(
+            UpdateSessionDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'UpdateSession',
+        'mutation',
+      );
+    },
+    DeleteSession(
+      variables: DeleteSessionMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<DeleteSessionMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteSessionMutation>(
+            DeleteSessionDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'DeleteSession',
+        'mutation',
+      );
+    },
+    AccountByID(
+      variables: AccountByIdQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<AccountByIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<AccountByIdQuery>(AccountByIdDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'AccountByID',
+        'query',
+      );
+    },
+    AccountBySelfID(
+      variables: AccountBySelfIdQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<AccountBySelfIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<AccountBySelfIdQuery>(
+            AccountBySelfIdDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'AccountBySelfID',
+        'query',
+      );
+    },
+    LikesByPostID(
+      variables: LikesByPostIdQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<LikesByPostIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<LikesByPostIdQuery>(LikesByPostIdDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'LikesByPostID',
+        'query',
+      );
+    },
+    Markers(
+      variables?: MarkersQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<MarkersQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<MarkersQuery>(MarkersDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'Markers',
+        'query',
+      );
+    },
+    Posts(
       variables?: PostsQueryVariables,
-      options?: UseQueryOptions<PostsQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<PostsQuery, TError, TData>(
-      variables === undefined ? ['Posts'] : ['Posts', variables],
-      fetcher<PostsQuery, PostsQueryVariables>(client, PostsDocument, variables, headers),
-      options
-    );
-export const RequestsByAccountIdDocument = `
-    query RequestsByAccountID($accountID: ID!) {
-  RequestsByAccountID(accountID: $accountID) {
-    id
-    createdAt
-    updatedAt
-    request {
-      id
-      name
-      avatar
-    }
-  }
-}
-    `;
-export const useRequestsByAccountIdQuery = <
-      TData = RequestsByAccountIdQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<PostsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<PostsQuery>(PostsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'Posts',
+        'query',
+      );
+    },
+    RequestsByAccountID(
       variables: RequestsByAccountIdQueryVariables,
-      options?: UseQueryOptions<RequestsByAccountIdQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<RequestsByAccountIdQuery, TError, TData>(
-      ['RequestsByAccountID', variables],
-      fetcher<RequestsByAccountIdQuery, RequestsByAccountIdQueryVariables>(client, RequestsByAccountIdDocument, variables, headers),
-      options
-    );
-export const RequestsByRequestIdDocument = `
-    query RequestsByRequestID($requestID: ID!) {
-  RequestsByRequestID(requestID: $requestID) {
-    id
-    createdAt
-    account {
-      id
-      name
-      avatar
-    }
-  }
-}
-    `;
-export const useRequestsByRequestIdQuery = <
-      TData = RequestsByRequestIdQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<RequestsByAccountIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RequestsByAccountIdQuery>(
+            RequestsByAccountIdDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'RequestsByAccountID',
+        'query',
+      );
+    },
+    RequestsByRequestID(
       variables: RequestsByRequestIdQueryVariables,
-      options?: UseQueryOptions<RequestsByRequestIdQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<RequestsByRequestIdQuery, TError, TData>(
-      ['RequestsByRequestID', variables],
-      fetcher<RequestsByRequestIdQuery, RequestsByRequestIdQueryVariables>(client, RequestsByRequestIdDocument, variables, headers),
-      options
-    );
-export const SessionByIdDocument = `
-    query SessionByID($id: ID!) {
-  SessionByID(id: $id) {
-    id
-    session
-  }
-}
-    `;
-export const useSessionByIdQuery = <
-      TData = SessionByIdQuery,
-      TError = unknown
-    >(
-      client: GraphQLClient,
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<RequestsByRequestIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<RequestsByRequestIdQuery>(
+            RequestsByRequestIdDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders },
+          ),
+        'RequestsByRequestID',
+        'query',
+      );
+    },
+    SessionByID(
       variables: SessionByIdQueryVariables,
-      options?: UseQueryOptions<SessionByIdQuery, TError, TData>,
-      headers?: RequestInit['headers']
-    ) =>
-    useQuery<SessionByIdQuery, TError, TData>(
-      ['SessionByID', variables],
-      fetcher<SessionByIdQuery, SessionByIdQueryVariables>(client, SessionByIdDocument, variables, headers),
-      options
-    );
+      requestHeaders?: Dom.RequestInit['headers'],
+    ): Promise<SessionByIdQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<SessionByIdQuery>(SessionByIdDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'SessionByID',
+        'query',
+      );
+    },
+  };
+}
+export type Sdk = ReturnType<typeof getSdk>;
