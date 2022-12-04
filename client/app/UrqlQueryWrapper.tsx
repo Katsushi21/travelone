@@ -19,7 +19,7 @@ if (!isServerSide) {
   ssr.restoreData(window.__URQL_DATA__);
 }
 const client = createClient({
-  url: process.env.NEXT_PUBLIC_URQL_REQUEST_DEST,
+  url: process.env.NEXT_PUBLIC_GRAPHQL_REQUEST_DEST,
   exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange],
   requestPolicy: 'cache-and-network',
   suspense: true,

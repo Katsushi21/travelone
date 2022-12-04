@@ -1,16 +1,6 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import '../styles/globals.css';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 1000,
-    },
-  },
-});
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -19,7 +9,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <title>travelone</title>
       </head>
       <body>
-        {/* <QueryClientProvider client={queryClient}> */}
         <div data-theme="light">
           <header>
             <Header />
@@ -29,7 +18,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <footer>
           <Footer />
         </footer>
-        {/* </QueryClientProvider> */}
       </body>
     </html>
   );

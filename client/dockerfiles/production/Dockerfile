@@ -1,10 +1,11 @@
 FROM node:18-alpine3.14 AS deps
 WORKDIR /src/client
 
-COPY package.json .
 RUN apk update && \
-  apk add --no-cache libc6-compat=1.2.2-r3 && \
-  yarn install --frozen-lockfile --ignore-optional && \
+  apk add --no-cache libc6-compat=1.2.2-r3
+
+COPY package.json .
+RUN yarn install --frozen-lockfile --ignore-optional && \
   yarn cache clean
 
 FROM deps AS builder
