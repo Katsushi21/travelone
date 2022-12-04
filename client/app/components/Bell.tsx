@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const Bell = () => {
   return (
     <button className="btn-ghost btn-circle btn">

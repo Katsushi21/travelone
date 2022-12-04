@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function MenuListComposition() {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
