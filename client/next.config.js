@@ -5,9 +5,6 @@ const nextConfig = {
   images: {
     domains: ['travel-client.com', 'api.lorem.space'],
   },
-  experimental: {
-    appDir: true,
-  },
 };
 
 module.exports = nextConfig;
