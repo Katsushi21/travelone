@@ -1,3 +1,4 @@
+import { executeExchange } from '@urql/exchange-execute';
 import { withUrqlClient, initUrqlClient } from 'next-urql';
 import {
   ssrExchange,
@@ -6,7 +7,6 @@ import {
   fetchExchange,
   useQuery,
 } from 'urql';
-import { executeExchange } from '@urql/exchange-execute';
 
 import { schema } from '@/server/graphql'; // our GraphQL server's executable schema
 
