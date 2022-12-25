@@ -1,21 +1,19 @@
 import { executeExchange } from '@urql/exchange-execute';
 import { withUrqlClient, initUrqlClient } from 'next-urql';
-import {
-  ssrExchange,
-  dedupExchange,
-  cacheExchange,
-  fetchExchange,
-  useQuery,
-} from 'urql';
+import { ssrExchange, dedupExchange, cacheExchange, useQuery } from 'urql';
+
+import { PostsDocument } from '../queries/query.generated';
 
 import { schema } from '@/server/graphql'; // our GraphQL server's executable schema
 
-const TODOS_QUERY = `
+const url = process.env.NEXT_PUBLIC_GRAPHQL_REQUEST_DEST;
+
+const POSTS_QUERY = `
   query { todos { id text } }
 `;
 
-function Todos() {
-  const [res] = useQuery({ query: TODOS_QUERY });
+function Posts() {
+  const [res] = useQuery({ query: POSTS_QUERY });
   return (
     <div>
       {res.data.todos.map((todo) => (
@@ -31,7 +29,7 @@ export async function getServerSideProps(ctx) {
   const ssrCache = ssrExchange({ isClient: false });
   const client = initUrqlClient(
     {
-      url: '', // not needed without `fetchExchange`
+      url: url, // not needed without `fetchExchange`
       exchanges: [
         dedupExchange,
         cacheExchange,
@@ -42,7 +40,7 @@ export async function getServerSideProps(ctx) {
     false,
   );
 
-  await client.query(TODOS_QUERY).toPromise();
+  await client.query(PostsDocument).toPromise();
 
   return {
     props: {
@@ -52,5 +50,5 @@ export async function getServerSideProps(ctx) {
 }
 
 export default withUrqlClient((ssr) => ({
-  url: 'your-url',
-}))(Todos);
+  url: url,
+}))(Posts);
