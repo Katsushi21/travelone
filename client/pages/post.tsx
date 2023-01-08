@@ -1,54 +1,57 @@
 import { executeExchange } from '@urql/exchange-execute';
+import { buildASTSchema } from 'graphql';
+import { GetServerSideProps } from 'next';
 import { withUrqlClient, initUrqlClient } from 'next-urql';
 import { ssrExchange, dedupExchange, cacheExchange, useQuery } from 'urql';
 
 import { PostsDocument } from '../queries/query.generated';
 
-import { schema } from '@/server/graphql'; // our GraphQL server's executable schema
-
 const url = process.env.NEXT_PUBLIC_GRAPHQL_REQUEST_DEST;
 
-const POSTS_QUERY = `
-  query { todos { id text } }
-`;
-
-function Posts() {
-  const [res] = useQuery({ query: POSTS_QUERY });
+function Posts({ props }) {
+  const [res] = useQuery({ query: PostsDocument });
   return (
     <div>
-      {res.data.todos.map((todo) => (
-        <div key={todo.id}>
-          {todo.id} - {todo.text}
+      {res.data?.posts.map((post) => (
+        <div key={post.id}>
+          {post.id} - {post.body}
         </div>
       ))}
     </div>
   );
 }
 
-export async function getServerSideProps(ctx) {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const ssrCache = ssrExchange({ isClient: false });
+  const schema = buildASTSchema(PostsDocument);
   const client = initUrqlClient(
     {
-      url: url, // not needed without `fetchExchange`
+      url: url,
       exchanges: [
         dedupExchange,
         cacheExchange,
         ssrCache,
-        executeExchange({ schema }), // replaces `fetchExchange`
+        executeExchange({ schema }),
       ],
     },
     false,
   );
 
-  await client.query(PostsDocument).toPromise();
+  if (!client) {
+    return {
+      props: {},
+    };
+  }
+
+  await client.query(PostsDocument, {}).toPromise();
 
   return {
     props: {
       urqlState: ssrCache.extractData(),
     },
   };
-}
+};
 
-export default withUrqlClient((ssr) => ({
+export default withUrqlClient((ssrCache) => ({
   url: url,
 }))(Posts);

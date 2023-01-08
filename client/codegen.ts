@@ -13,6 +13,7 @@ const config: CodegenConfig = {
           },
         },
         'typescript',
+        'codegen.plugin.js',
       ],
       config: {
         immutableTypes: true,
@@ -36,6 +37,7 @@ const config: CodegenConfig = {
         },
         'typescript-operations',
         'typed-document-node',
+        'codegen.plugin.js',
       ],
       config: {
         immutableTypes: true,
