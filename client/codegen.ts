@@ -1,8 +1,10 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+const schema = process.env.NEXT_PUBLIC_GRAPHQL_REQUEST_DEST;
+
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'http://host.docker.internal:8000/graphql',
+  schema: schema,
   documents: '**/*.graphql',
   generates: {
     './types/graphql.ts': {
@@ -13,7 +15,6 @@ const config: CodegenConfig = {
           },
         },
         'typescript',
-        'codegen.plugin.js',
       ],
       config: {
         immutableTypes: true,
@@ -26,7 +27,6 @@ const config: CodegenConfig = {
     './types': {
       preset: 'near-operation-file',
       presetConfig: {
-        extension: '.generated.ts',
         baseTypesPath: 'graphql.ts',
       },
       plugins: [
@@ -37,7 +37,6 @@ const config: CodegenConfig = {
         },
         'typescript-operations',
         'typed-document-node',
-        'codegen.plugin.js',
       ],
       config: {
         immutableTypes: true,
