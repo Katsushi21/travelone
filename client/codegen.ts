@@ -49,6 +49,22 @@ const config: CodegenConfig = {
     'queries/schema-ast.graphql': {
       plugins: ['schema-ast'],
     },
+    './src/modules/': {
+      preset: 'graphql-modules',
+      presetConfig: {
+        baseTypesPath: '../generated-types/graphql.ts',
+        filename: 'generated-types/module-types.ts',
+      },
+      plugins: [
+        {
+          add: {
+            content: '/* eslint-disable */',
+          },
+        },
+        'typescript',
+        'typescript-resolvers',
+      ],
+    },
   },
   hooks: {
     afterOneFileWrite: ['prettier --write'],

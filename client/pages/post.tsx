@@ -8,7 +8,7 @@ import { PostsDocument } from '../queries/query.generated';
 
 const url = process.env.NEXT_PUBLIC_GRAPHQL_REQUEST_DEST;
 
-function Posts({ props }) {
+function Posts() {
   const [res] = useQuery({ query: PostsDocument });
   return (
     <div>
