@@ -1,38 +1,18 @@
-import { executeExchange } from '@urql/exchange-execute';
-import { buildASTSchema } from 'graphql';
-import { GetServerSideProps } from 'next';
 import { withUrqlClient, initUrqlClient } from 'next-urql';
-import { ssrExchange, dedupExchange, cacheExchange, useQuery } from 'urql';
+import { ssrExchange, dedupExchange, cacheExchange, fetchExchange } from 'urql';
+
+import { PostList } from 'components/layouts/PostList';
 
 import { PostsDocument } from '../queries/query.generated';
 
 const url = process.env.NEXT_PUBLIC_GRAPHQL_REQUEST_DEST;
 
-function Posts() {
-  const [res] = useQuery({ query: PostsDocument });
-  return (
-    <div>
-      {res.data?.posts.map((post) => (
-        <div key={post.id}>
-          {post.id} - {post.body}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export async function getServerSideProps() {
   const ssrCache = ssrExchange({ isClient: false });
-  const schema = buildASTSchema(PostsDocument);
   const client = initUrqlClient(
     {
       url: url,
-      exchanges: [
-        dedupExchange,
-        cacheExchange,
-        ssrCache,
-        executeExchange({ schema }),
-      ],
+      exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
     },
     false,
   );
@@ -50,8 +30,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       urqlState: ssrCache.extractData(),
     },
   };
-};
+}
 
-export default withUrqlClient((ssrCache) => ({
+function Posts(props) {
+  return <PostList props={props} />;
+}
+
+export default withUrqlClient((ssr) => ({
   url: url,
 }))(Posts);
