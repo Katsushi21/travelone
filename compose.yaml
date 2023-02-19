@@ -50,11 +50,12 @@ services:
       - ./client:/src/client
     depends_on:
       - app
-  # proxy:
-  #   build: proxy
-  #   container_name: proxy
-  #   hostname: travel-proxy.com
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - client
+
+  proxy:
+    build: proxy
+    container_name: proxy
+    hostname: travel-proxy.com
+    ports:
+      - 80:80
+    depends_on:
+      - client
