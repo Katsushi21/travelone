@@ -1,0 +1,91 @@
+type Mutation {
+  ###############
+  # Account
+  ###############
+  # CREATE
+  CreateAccount(input: CreateAccountInput!): Account!
+  # UPDATE
+  UpdateAccount(id: ID!, input: UpdateAccountInput!): Account!
+  # DELETE
+  DeleteAccount(id: ID!): Account!
+
+  ###############
+  # Comment
+  ###############
+  # CREATE
+  CreateComment(input: CreateCommentInput!): Comment!
+  # UPDATE
+  UpdateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  # DELETE
+  DeleteComment(id: ID!): Comment!
+
+  ###############
+  # File
+  ###############
+  # UPLOAD
+  # uploadFile(input: UploadFile!): File!
+
+  ###############
+  # Friend
+  ###############
+  # CREATE
+  CreateFriend(input: CreateFriendInput!): Friend!
+  # DELETE
+  DeleteFriend(id: ID!): Friend!
+
+  ###############
+  # Like
+  ###############
+  # CREATE
+  CreateLike(input: CreateLikeInput!): Like!
+  # DELETE
+  DeleteLike(id: ID!): Like!
+
+  ###############
+  # Marker
+  ###############
+  # CREATE
+  CreateMarker(input: CreateMarkerInput!): Marker!
+  # UPDATE
+  UpdateMarker(id: ID!, input: UpdateMarkerInput!): Marker!
+  # DELETE
+  DeleteMarker(id: ID!): Marker!
+
+  ###############
+  # Mute
+  ###############
+  # CREATE
+  CreateMute(input: CreateMuteInput!): Mute!
+  # DELETE
+  DeleteMute(id: ID!): Mute!
+
+  ###############
+  # Post
+  ###############
+  # CREATE
+  CreatePost(input: CreatePostInput!): Post!
+  # UPDATE
+  UpdatePost(id: ID!, input: UpdatePostInput!): Post!
+  # DELETE
+  DeletePost(id: ID!): Post!
+
+  ###############
+  # Request
+  ###############
+  # CREATE
+  CreateRequest(input: CreateRequestInput!): Request!
+  # UPDATE
+  UpdateRequest(id: ID!, input: UpdateRequestInput!): Request!
+  # DELETE
+  DeleteRequest(id: ID!): Request!
+
+  ###############
+  # Session
+  ###############
+  # CREATE
+  CreateSession(input: CreateSessionInput!): Session!
+  # UPDATE
+  UpdateSession(id: ID!, input: UpdateSessionInput!): Session!
+  # DELETE
+  DeleteSession(id: ID!): Session!
+}
