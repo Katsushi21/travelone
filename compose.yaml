@@ -2,11 +2,9 @@ services:
   db:
     image: postgres:${POSTGRES_VERSION}-alpine
     container_name: db
-    hostname: travel-db.com
-    # restart: always
+    hostname: db.travelone.com
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
-      # - ./pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -20,11 +18,10 @@ services:
       context: ./app
       dockerfile: ./dockerfiles/develop/Dockerfile
     container_name: app
-    hostname: travel-app.com
+    hostname: app.travelone.com
     ports:
       - '8000:8000'
     environment:
-      # - SERVER_LOG=${SERVER_LOG}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DBNAME=${POSTGRES_DBNAME}
@@ -40,7 +37,7 @@ services:
       context: ./auth
       dockerfile: ./dockerfiles/develop/Dockerfile
     container_name: auth
-    hostname: travel-auth.com
+    hostname: auth.travelone.com
     ports:
       - '8010:8010'
     environment:
@@ -59,7 +56,7 @@ services:
       context: ./client
       dockerfile: ./dockerfiles/develop/Dockerfile
     container_name: client
-    hostname: travel-client.com
+    hostname: client.travelone.com
     ports:
       - '3000:3000'
     environment:
@@ -70,9 +67,11 @@ services:
     depends_on:
       - app
 
-  proxy:
-    build: proxy
-    container_name: proxy
-    hostname: travel-proxy.com
+  www:
+    build: www
+    container_name: www
+    hostname: www.travelone.com
+    ports:
+      - '8080:8080'
     depends_on:
       - client

@@ -4,9 +4,9 @@ ENV CGO_ENABLED 0
 
 COPY go.mod .
 RUN apk update && \
-  apk --no-cache add git=2.34.5-r0 && \
+  apk --no-cache add git=2.34.7-r0 && \
   go mod tidy && \
-  go install github.com/cosmtrek/air@v1.29.0
+  go install github.com/cosmtrek/air@v1.41.0
 
 COPY . .
 
