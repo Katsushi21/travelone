@@ -1,0 +1,4 @@
+node_modules
+app/generated
+*.config.js
+*.plugin.js

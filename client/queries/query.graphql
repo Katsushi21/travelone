@@ -1,0 +1,194 @@
+# ###############
+# # Account
+# ###############
+query AccountByID($id: ID!) {
+  AccountByID(id: $id) {
+    id
+    name
+    age
+    gender
+    avatar
+    introduction
+    posts {
+      id
+      title
+      updatedAt
+      likes {
+        accountID
+      }
+    }
+    friends {
+      friends {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+
+query AccountBySelfID($id: ID!) {
+  AccountBySelfID(id: $id) {
+    id
+    email
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+    posts {
+      id
+      title
+      createdAt
+      updatedAt
+      likes {
+        accountID
+      }
+    }
+    likes {
+      post {
+        id
+        accountID
+        title
+        updatedAt
+      }
+      account {
+        id
+        name
+        avatar
+      }
+    }
+    friends {
+      friends {
+        id
+        name
+        avatar
+      }
+    }
+    mutes {
+      mutes {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+
+# ###############
+# # Like
+# ###############
+query LikesByPostID($postID: ID!) {
+  LikesByPostID(postID: $postID) {
+    id
+    createdAt
+    account {
+      id
+      name
+      avatar
+    }
+  }
+}
+
+# ###############
+# # Marker
+# ###############
+query Markers {
+  markers {
+    id
+    title
+    lat
+    lng
+    post {
+      id
+      title
+      body
+      img
+      account {
+        id
+        name
+        avatar
+      }
+      likes {
+        accountID
+      }
+    }
+  }
+}
+
+# ###############
+# # Post
+# ###############
+query Posts {
+  posts {
+    id
+    title
+    body
+    img
+    createdAt
+    updatedAt
+    account {
+      id
+      name
+      avatar
+    }
+    marker {
+      id
+      title
+      lat
+      lng
+    }
+    likes {
+      id
+      accountID
+    }
+    comments {
+      id
+      body
+      account {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+
+# ###############
+# # Request
+# ###############
+query RequestsByAccountID($accountID: ID!) {
+  RequestsByAccountID(accountID: $accountID) {
+    id
+    createdAt
+    updatedAt
+    request {
+      id
+      name
+      avatar
+    }
+  }
+}
+
+query RequestsByRequestID($requestID: ID!) {
+  RequestsByRequestID(requestID: $requestID) {
+    id
+    createdAt
+    account {
+      id
+      name
+      avatar
+    }
+  }
+}
+
+# ###############
+# # Session
+# ###############
+query SessionByID($id: ID!) {
+  SessionByID(id: $id) {
+    id
+    session
+  }
+}

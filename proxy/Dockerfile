@@ -1,2 +1,1 @@
-FROM nginx:1.21.5-alpine
-COPY conf /etc/nginx/nginx.conf
+FROM envoyproxy/envoy:v1.25.1

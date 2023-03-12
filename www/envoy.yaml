@@ -1,0 +1,71 @@
+static_resources:
+  listeners:
+    - name: service_listener
+      address:
+        socket_address:
+          protocol: TCP
+          address: 127.0.0.1
+          port_value: 8080
+        listener_filters:
+          - name: 'envoy.filters.listener.tls_inspector'
+            typed_config:
+              '@type': type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
+        filter_chains:
+          - filter_chain_match:
+              server_names: ['travelone.com']
+            transport_socket:
+              name: travelone.transport_sockets.tls
+              typed_config:
+                '@type': type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+            # common_tls_context:
+            #   tls_certificates:
+            #     certificate_chain:
+            #       filename: xxx
+            #     private_key:
+            #       filename: xxx
+            filters:
+              - name: envoy.filters.network.http_connection_manager
+                typed_config:
+                  '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                  scheme_header_transformation:
+                    scheme_to_overwrite: https
+                  stat_prefix: ingress_http
+                  use_remote_address: true
+                  http2_protocol_options:
+                    max_concurrent_streams: 100
+                  route_config:
+                    name: local_route
+                    virtual_hosts:
+                      - name: local_service
+                        domains: ['*']
+                        routes:
+                          - match:
+                              prefix: '/'
+                            route:
+                              host_rewrite_literal: www.travelone.com
+                              cluster: service_travelone_cluster
+                  http_filters:
+                    - name: envoy.filters.http.router
+                      typed_config:
+                        '@type': type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+  clusters:
+    - name: service_travelone_cluster
+      connect_timeout: 30s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: service_envoyproxy_io
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: www.envoyproxy.io
+                      port_value: 443
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          sni: www.envoyproxy.io

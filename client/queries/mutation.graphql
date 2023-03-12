@@ -1,0 +1,367 @@
+###############
+# Account
+###############
+# CREATE
+mutation CreateAccount(
+  $email: String!
+  $password: String!
+  $type: AccountType!
+  $name: String!
+  $age: Int!
+  $gender: AccountGender!
+  $avatar: String!
+  $introduction: String!
+) {
+  CreateAccount(
+    input: {
+      email: $email
+      password: $password
+      type: $type
+      name: $name
+      age: $age
+      gender: $gender
+      avatar: $avatar
+      introduction: $introduction
+    }
+  ) {
+    id
+    email
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+  }
+}
+
+# UPDATE
+mutation UpdateAccount(
+  $id: ID!
+  $email: String!
+  $password: String!
+  $type: AccountType!
+  $name: String!
+  $age: Int!
+  $gender: AccountGender!
+  $avatar: String!
+  $introduction: String!
+) {
+  UpdateAccount(
+    id: $id
+    input: {
+      email: $email
+      password: $password
+      type: $type
+      name: $name
+      age: $age
+      gender: $gender
+      avatar: $avatar
+      introduction: $introduction
+    }
+  ) {
+    id
+    email
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+  }
+}
+# DELETE
+mutation DeleteAccount($id: ID!) {
+  DeleteAccount(id: $id) {
+    id
+    email
+    type
+    name
+    age
+    gender
+    avatar
+    introduction
+  }
+}
+# OTHER
+# mutation loginQuery($email: String!, $password: String!) {
+#   loginQuery(input: { email: $email, password: $password }) {
+#     id
+#     email
+#     type
+#     name
+#     age
+#     gender
+#     avatar
+#     introduction
+#   }
+# }
+
+###############
+# Comment
+###############
+# CREATE
+mutation CreateComment($postID: ID!, $accountID: ID!, $body: String!) {
+  CreateComment(
+    input: { postID: $postID, accountID: $accountID, body: $body }
+  ) {
+    id
+    postID
+    accountID
+    body
+  }
+}
+# UPDATE
+mutation UpdateComment(
+  $id: ID!
+  $postID: ID!
+  $accountID: ID!
+  $body: String!
+) {
+  UpdateComment(
+    id: $id
+    input: { postID: $postID, accountID: $accountID, body: $body }
+  ) {
+    id
+    postID
+    accountID
+    body
+  }
+}
+# DELETE
+mutation DeleteComment($id: ID!) {
+  DeleteComment(id: $id) {
+    id
+    postID
+    accountID
+    body
+  }
+}
+
+###############
+# File
+###############
+# UPLOAD
+# uploadFile(input: UploadFile!): File!
+
+###############
+# Friend
+###############
+# CREATE
+mutation CreateFriend($accountID: ID!, $friendID: ID!) {
+  CreateFriend(input: { accountID: $accountID, friendID: $friendID }) {
+    id
+    accountID
+    friendID
+  }
+}
+# DELETE
+mutation DeleteFriend($id: ID!) {
+  DeleteFriend(id: $id) {
+    id
+    accountID
+    friendID
+  }
+}
+
+###############
+# Like
+###############
+# CREATE
+mutation CreateLike($postID: ID!, $accountID: ID!) {
+  CreateLike(input: { postID: $postID, accountID: $accountID }) {
+    id
+    postID
+    accountID
+  }
+}
+# DELETE
+mutation DeleteLike($id: ID!) {
+  DeleteLike(id: $id) {
+    id
+    postID
+    accountID
+  }
+}
+
+###############
+# Marker
+###############
+# CREATE
+mutation CreateMarker(
+  $postID: ID!
+  $title: String!
+  $lat: String!
+  $lng: String!
+) {
+  CreateMarker(
+    input: { postID: $postID, title: $title, lat: $lat, lng: $lng }
+  ) {
+    id
+    postID
+    title
+    lat
+    lng
+  }
+}
+# UPDATE
+mutation UpdateMarker($id: ID!, $title: String!, $lat: String!, $lng: String!) {
+  UpdateMarker(id: $id, input: { title: $title, lat: $lat, lng: $lng }) {
+    id
+    postID
+    title
+    lat
+    lng
+  }
+}
+# DELETE
+mutation DeleteMarker($id: ID!) {
+  DeleteMarker(id: $id) {
+    id
+    postID
+    title
+    lat
+    lng
+  }
+}
+
+###############
+# Mute
+###############
+# CREATE
+mutation CreateMute($accountID: ID!, $muteID: ID!) {
+  CreateMute(input: { accountID: $accountID, muteID: $muteID }) {
+    id
+    accountID
+    muteID
+  }
+}
+# DELETE
+mutation DeleteMute($id: ID!) {
+  DeleteMute(id: $id) {
+    id
+    accountID
+    muteID
+  }
+}
+
+###############
+# Post
+###############
+# CREATE
+mutation CreatePost(
+  $accountID: ID!
+  $title: String!
+  $body: String!
+  $img: String!
+) {
+  CreatePost(
+    input: { accountID: $accountID, title: $title, body: $body, img: $img }
+  ) {
+    id
+    accountID
+    title
+    body
+    img
+  }
+}
+# UPDATE
+mutation UpdatePost(
+  $id: ID!
+  $accountID: ID!
+  $title: String!
+  $body: String!
+  $img: String!
+) {
+  UpdatePost(
+    id: $id
+    input: { accountID: $accountID, title: $title, body: $body, img: $img }
+  ) {
+    id
+    accountID
+    title
+    body
+    img
+  }
+}
+# DELETE
+mutation DeletePost($id: ID!) {
+  DeletePost(id: $id) {
+    id
+    accountID
+    title
+    body
+    img
+  }
+}
+
+###############
+# Request
+###############
+# CREATE
+mutation CreateRequest(
+  $accountID: ID!
+  $requestID: ID!
+  $status: RequestStatus!
+) {
+  CreateRequest(
+    input: { accountID: $accountID, requestID: $requestID, status: $status }
+  ) {
+    id
+    accountID
+    requestID
+    status
+  }
+}
+# UPDATE
+mutation UpdateRequest(
+  $id: ID!
+  $accountID: ID!
+  $requestID: ID!
+  $status: RequestStatus!
+) {
+  UpdateRequest(
+    id: $id
+    input: { accountID: $accountID, requestID: $requestID, status: $status }
+  ) {
+    id
+    accountID
+    requestID
+    status
+  }
+}
+# DELETE
+mutation DeleteRequest($id: ID!) {
+  DeleteRequest(id: $id) {
+    id
+    accountID
+    requestID
+    status
+  }
+}
+
+###############
+# Session
+###############
+# CREATE
+mutation CreateSession($session: String!, $accountID: ID!) {
+  CreateSession(input: { session: $session, accountID: $accountID }) {
+    id
+    accountID
+  }
+}
+# UPDATE
+mutation UpdateSession($id: ID!, $session: String!, $accountID: ID!) {
+  UpdateSession(id: $id, input: { session: $session, accountID: $accountID }) {
+    id
+    accountID
+    session
+  }
+}
+# DELETE
+mutation DeleteSession($id: ID!) {
+  DeleteSession(id: $id) {
+    id
+    accountID
+  }
+}

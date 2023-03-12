@@ -1,0 +1,10 @@
+dockerfiles
+node_modules
+.eslintignore
+.eslintrc.json
+.prettierrc.json
+codegen.yml
+tsconfig.json
+*/*.log
+*.lock
+tmp

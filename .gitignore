@@ -1,0 +1,7 @@
+.DS_Store
+client/node_modules
+client/.next
+client/codegen.yml
+*.env
+tmp
+client/yarn-error.log

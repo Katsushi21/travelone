@@ -1,0 +1,23 @@
+extend type Query {
+  ###############
+  # Account
+  ###############
+  AccountByID(id: ID!): Account!
+  AccountBySelfID(id: ID!): Account!
+
+  ###############
+  # Like
+  ###############
+  LikesByPostID(postID: ID!): [Like!]!
+
+  ###############
+  # Request
+  ###############
+  RequestsByAccountID(accountID: ID!): [Request!]!
+  RequestsByRequestID(requestID: ID!): [Request!]!
+
+  ###############
+  # Session
+  ###############
+  SessionByID(id: ID!): Session!
+}

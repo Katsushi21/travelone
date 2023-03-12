@@ -1,0 +1,4 @@
+dockerfiles
+.air.toml
+gqlgen.yml
+./cmd/travelone/tmp
